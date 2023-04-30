@@ -40,12 +40,10 @@
     );
 
     nixosConfigurations = {
-      # FIXME replace with your hostname
-      your-hostname = nixpkgs.lib.nixosSystem {
+      cheddar = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
-          # > Our main nixos configuration file <
-          ./nixos/configuration.nix
+          ./nixos/hosts/cheddar/configuration.nix
         ];
       };
     };
