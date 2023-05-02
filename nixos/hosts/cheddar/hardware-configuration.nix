@@ -15,12 +15,12 @@
   boot.extraModulePackages = [];
 
   fileSystems."/" = {
-    device = "/dev/sda";
+    device = "/dev/disk/by-label/boot";
     fsType = "ext4";
   };
 
   swapDevices = [
-    {device = "/dev/sdb";}
+    {device = "/dev/disk/by-label/swap";}
   ];
 
   networking.useDHCP = lib.mkDefault true;
