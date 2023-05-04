@@ -5,14 +5,22 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    gomod2nix = {
+      url = "github:tweag/gomod2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    gomod2nix,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -23,20 +31,19 @@
 
     packages = forAllSystems (
       system: let
-        pkgs =
-          pkgsFor
-          .${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [gomod2nix.overlays.default];
+        };
       in
         import ./pkgs {inherit pkgs;}
     );
 
     devShells = forAllSystems (
       system: let
-        pkgs =
-          pkgsFor
-          .${system};
+        pkgs = pkgsFor.${system};
       in
-        import ./shell.nix {inherit pkgs;}
+        import ./shell.nix {inherit inputs pkgs system;}
     );
 
     nixosConfigurations = {
