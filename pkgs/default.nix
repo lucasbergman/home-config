@@ -1,3 +1,3 @@
 {pkgs}: {
-  # example = pkgs.callPackage ./example { };
+  cat-gcp-secret = pkgs.callPackage ./cat-gcp-secret {};
 }
