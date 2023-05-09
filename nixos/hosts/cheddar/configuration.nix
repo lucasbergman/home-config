@@ -14,6 +14,7 @@ in
     ...
   }: {
     imports = [
+      ./../../common
       ./../../linode
       ./hardware-configuration.nix
     ];
@@ -103,6 +104,12 @@ in
       };
 
       certs."cheddar.bergmans.us" = {};
+    };
+
+    slb.backups = {
+      gcsPath = "/cheddar";
+      backupPaths = ["/data"];
+      passwordSecretID = "projects/bergmans-services/secrets/restic-password-cheddar/versions/1";
     };
 
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
