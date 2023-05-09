@@ -48,7 +48,10 @@
 
     nixosConfigurations = {
       cheddar = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {
+          inherit inputs outputs;
+          mypkgs = outputs.packages."x86_64-linux";
+        };
         modules = [
           ./nixos/hosts/cheddar/configuration.nix
         ];
