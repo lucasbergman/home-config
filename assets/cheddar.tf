@@ -119,3 +119,16 @@ resource "local_sensitive_file" "instance_cheddar" {
   content_base64  = google_service_account_key.instance_cheddar.private_key
   filename        = "${path.module}/cheddar-instance-private-key.json"
 }
+
+resource "google_secret_manager_secret" "restic_password_cheddar" {
+  secret_id = "restic-password-cheddar"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "restic_password_cheddar" {
+  secret_id = google_secret_manager_secret.restic_password_cheddar.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
+}
