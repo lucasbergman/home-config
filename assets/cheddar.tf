@@ -132,3 +132,16 @@ resource "google_secret_manager_secret_iam_member" "restic_password_cheddar" {
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
 }
+
+resource "google_secret_manager_secret" "mumble_password" {
+  secret_id = "mumble-password"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "mumble_password_cheddar" {
+  secret_id = google_secret_manager_secret.mumble_password.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
+}
