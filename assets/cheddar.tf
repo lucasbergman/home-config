@@ -83,6 +83,22 @@ resource "google_dns_record_set" "bergmans_aaaa_cheddar" {
   ttl          = 300
 }
 
+resource "google_dns_record_set" "bergmans_a_mumble" {
+  managed_zone = "bergmans"
+  name         = "mumble.bergmans.us."
+  type         = "A"
+  rrdatas      = [linode_instance.cheddar.ip_address]
+  ttl          = 300
+}
+
+resource "google_dns_record_set" "bergmans_aaaa_mumble" {
+  managed_zone = "bergmans"
+  name         = "mumble.bergmans.us."
+  type         = "AAAA"
+  rrdatas      = [split("/", linode_instance.cheddar.ipv6)[0]]
+  ttl          = 300
+}
+
 # Create an instance-level GCP service account and make it a member of
 # IAM roles to enable DNS writes for ACME-generated certificates, log
 # shipping, and writing backups.

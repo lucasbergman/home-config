@@ -17,6 +17,7 @@ in
       ./../../common
       ./../../linode
       ./hardware-configuration.nix
+      ./services
     ];
 
     nix = {
