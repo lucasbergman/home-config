@@ -68,7 +68,7 @@ resource "linode_instance_config" "cheddar" {
 }
 
 resource "google_dns_record_set" "bergmans_a_cheddar" {
-  managed_zone = "bergmans"
+  managed_zone = google_dns_managed_zone.bergmans.name
   name         = "cheddar.bergmans.us."
   type         = "A"
   rrdatas      = [linode_instance.cheddar.ip_address]
@@ -76,7 +76,7 @@ resource "google_dns_record_set" "bergmans_a_cheddar" {
 }
 
 resource "google_dns_record_set" "bergmans_aaaa_cheddar" {
-  managed_zone = "bergmans"
+  managed_zone = google_dns_managed_zone.bergmans.name
   name         = "cheddar.bergmans.us."
   type         = "AAAA"
   rrdatas      = [split("/", linode_instance.cheddar.ipv6)[0]]
@@ -84,7 +84,7 @@ resource "google_dns_record_set" "bergmans_aaaa_cheddar" {
 }
 
 resource "google_dns_record_set" "bergmans_a_mumble" {
-  managed_zone = "bergmans"
+  managed_zone = google_dns_managed_zone.bergmans.name
   name         = "mumble.bergmans.us."
   type         = "A"
   rrdatas      = [linode_instance.cheddar.ip_address]
@@ -92,7 +92,7 @@ resource "google_dns_record_set" "bergmans_a_mumble" {
 }
 
 resource "google_dns_record_set" "bergmans_aaaa_mumble" {
-  managed_zone = "bergmans"
+  managed_zone = google_dns_managed_zone.bergmans.name
   name         = "mumble.bergmans.us."
   type         = "AAAA"
   rrdatas      = [split("/", linode_instance.cheddar.ipv6)[0]]
