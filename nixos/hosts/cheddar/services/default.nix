@@ -1,1 +1,6 @@
-{imports = [./mumble.nix];}
+{
+  imports = [
+    ./matrix.nix
+    ./mumble.nix
+  ];
+}

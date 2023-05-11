@@ -51,3 +51,11 @@ resource "google_dns_record_set" "bergmanhouse_soa" {
   rrdatas      = ["ns-cloud-b1.googledomains.com. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300"]
   ttl          = 21600
 }
+
+resource "google_dns_record_set" "bergmanhouse_srv_matrix" {
+  managed_zone = google_dns_managed_zone.bergmanhouse.name
+  name         = "_matrix._tcp.bergman.house."
+  type         = "SRV"
+  rrdatas      = ["10 0 443 matrix.bergman.house."]
+  ttl          = 300
+}

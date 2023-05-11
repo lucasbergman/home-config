@@ -1,3 +1,6 @@
 {...}: {
-  imports = [./cloudbackup.nix];
+  imports = [
+    ./cloudbackup.nix
+    ./nginx.nix
+  ];
 }
