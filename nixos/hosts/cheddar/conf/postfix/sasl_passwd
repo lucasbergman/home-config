@@ -1,0 +1,1 @@
+[email-smtp.us-east-2.amazonaws.com]:587 {{gcpSecret "projects/bergmans-services/secrets/mail-ses-password/versions/1"}}
