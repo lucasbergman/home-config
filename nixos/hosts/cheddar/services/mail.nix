@@ -1,12 +1,16 @@
 {
+  config,
   lib,
   mypkgs,
   ...
 }: let
   postfixTLSHost = "smtp.bergmans.us";
   postfixDomain = "bergmans.us";
+  dovecotTLSHost = "pop.bergmans.us";
   mailDirectory = "/data/mail";
   saslPasswordFile = "/run/sasl_passwd";
+  dovecotUserFile = "/run/dovecot_users";
+  dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/1";
   vmail_uid = 2000;
   vmail_gid = 2000;
 in {
@@ -115,13 +119,10 @@ in {
       # Enable authentication for incoming SMTP; non-local clients can only
       # use us as a relay or skip spam checks if they're SASL-authenticated.
       # (See permit_sasl_authenticated above.)
-      #
-      # TODO: Enable this once Dovecot is working
-      #
-      # smtpd_sasl_auth_enable = true;
-      # smtpd_sasl_local_domain = "$mydomain";
-      # smtpd_sasl_path = "private/auth";
-      # smtpd_sasl_type = "dovecot";
+      smtpd_sasl_auth_enable = true;
+      smtpd_sasl_local_domain = "$mydomain";
+      smtpd_sasl_path = "private/auth";
+      smtpd_sasl_type = "dovecot";
 
       # Postfix should never act as an SMTP client except to the Amazon relay
       # host, so it's safe to set a high security bar
@@ -156,5 +157,69 @@ in {
       ];
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
     };
+  };
+
+  security.acme.certs.${dovecotTLSHost} = {
+    reloadServices = ["dovecot2.service"];
+  };
+
+  systemd.services."dovecot-userdb" = {
+    description = "download the Dovecot user DB file";
+    wantedBy = ["multi-user.target"];
+    before = ["dovecot2.service"];
+    after = ["instance-key.service"];
+    serviceConfig.Type = "oneshot";
+    environment = {
+      GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
+    };
+
+    script = ''
+      if [[ ! -f ${dovecotUserFile} ]]; then
+        install -m 0640 -g dovecot2 /dev/null ${dovecotUserFile}
+        ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret  \
+          ${dovecotUserFileSecret} > ${dovecotUserFile}
+      fi
+    '';
+  };
+
+  services.dovecot2 = {
+    enable = true;
+    enablePop3 = true;
+    enableImap = true;
+    enableLmtp = false;
+    enablePAM = false;
+
+    sslServerCert = "/var/lib/acme/${dovecotTLSHost}/cert.pem";
+    sslServerKey = "/var/lib/acme/${dovecotTLSHost}/key.pem";
+    createMailUser = false;
+    mailUser = "vmail";
+    mailGroup = "vmail";
+
+    extraConfig = ''
+      service auth {
+        unix_listener ${config.services.postfix.config.queue_directory}/private/auth {
+          mode = 0666
+          user = dovecot2
+          group = dovecot2
+        }
+      }
+
+      passdb {
+        driver = passwd-file
+        args = scheme=CRYPT username_format=%u /run/dovecot_users
+        default_fields = userdb_mail=maildir
+      }
+
+      userdb {
+        driver = passwd-file
+        args = username_format=%u /run/dovecot_users
+      }
+
+      namespace inbox {
+        inbox = yes
+      }
+
+      ssl_min_protocol = TLSv1.2
+    '';
   };
 }
