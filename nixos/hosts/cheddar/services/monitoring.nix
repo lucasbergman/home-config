@@ -22,7 +22,7 @@ in {
       if [[ ! -f ${alertmanagerEnvFile} ]]; then
         install -m 0640 -g prometheus /dev/null ${alertmanagerEnvFile}
         ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst \
-          ${./../conf/prometheus-alertmanager.env}      \
+          ${./../conf/prometheus/alertmanager.env}      \
           > ${alertmanagerEnvFile}
       fi
     '';
@@ -31,6 +31,13 @@ in {
   services.prometheus = {
     enable = true;
     listenAddress = "[::1]";
+    ruleFiles = [./../conf/prometheus/prober_smartmouse.rules];
+
+    alertmanagers = [
+      {
+        static_configs = [{targets = ["[::1]:${toString promcfg.alertmanager.port}"];}];
+      }
+    ];
 
     scrapeConfigs = [
       {
@@ -75,7 +82,7 @@ in {
       blackbox = {
         enable = true;
         listenAddress = "[::1]";
-        configFile = ./../conf/prometheus-blackbox.yml;
+        configFile = ./../conf/prometheus/blackbox.yml;
       };
 
       node = {
