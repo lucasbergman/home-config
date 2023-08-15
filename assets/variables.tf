@@ -36,3 +36,15 @@ variable "linode_type" {
   type        = string
   default     = "g6-standard-2"
 }
+
+variable "slb_greywind_ipv4" {
+  description = "IPv4 address of the legacy mail server, greywind.bergmans.us"
+  type        = string
+  default     = "45.79.142.74"
+}
+
+variable "slb_house_ipv4" {
+  description = "IPv4 address of the legacy house server"
+  type        = string
+  default     = "75.150.214.42"
+}
