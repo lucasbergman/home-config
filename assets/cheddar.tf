@@ -115,6 +115,38 @@ resource "google_dns_record_set" "bergmanhouse_aaaa_matrix" {
   ttl          = 300
 }
 
+resource "google_dns_record_set" "bergmans_a_smtp" {
+  managed_zone = google_dns_managed_zone.bergmans.name
+  name         = "smtp.bergmans.us."
+  type         = "A"
+  rrdatas      = [linode_instance.cheddar.ip_address]
+  ttl          = 300
+}
+
+resource "google_dns_record_set" "bergmans_aaaa_smtp" {
+  managed_zone = google_dns_managed_zone.bergmans.name
+  name         = "smtp.bergmans.us."
+  type         = "AAAA"
+  rrdatas      = [split("/", linode_instance.cheddar.ipv6)[0]]
+  ttl          = 300
+}
+
+resource "google_dns_record_set" "bergmans_a_pop" {
+  managed_zone = google_dns_managed_zone.bergmans.name
+  name         = "pop.bergmans.us."
+  type         = "A"
+  rrdatas      = [linode_instance.cheddar.ip_address]
+  ttl          = 300
+}
+
+resource "google_dns_record_set" "bergmans_aaaa_pop" {
+  managed_zone = google_dns_managed_zone.bergmans.name
+  name         = "pop.bergmans.us."
+  type         = "AAAA"
+  rrdatas      = [split("/", linode_instance.cheddar.ipv6)[0]]
+  ttl          = 300
+}
+
 # Create an instance-level GCP service account and make it a member of
 # IAM roles to enable DNS writes for ACME-generated certificates, log
 # shipping, and writing backups.
