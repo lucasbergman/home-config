@@ -1,13 +1,11 @@
+#
+# bergmans.us
+#
+
 resource "google_dns_managed_zone" "bergmans" {
   name        = "bergmans"
   dns_name    = "bergmans.us."
   description = "bergmans.us"
-}
-
-resource "google_dns_managed_zone" "bergmanhouse" {
-  name        = "bergmanhouse"
-  dns_name    = "bergman.house."
-  description = "bergman.house"
 }
 
 resource "google_dns_record_set" "bergmans_ns" {
@@ -29,6 +27,16 @@ resource "google_dns_record_set" "bergmans_soa" {
   type         = "SOA"
   rrdatas      = ["ns-cloud-c1.googledomains.com. cloud-dns-hostmaster.google.com. 2 21600 3600 259200 300"]
   ttl          = 21600
+}
+
+#
+# bergman.house
+#
+
+resource "google_dns_managed_zone" "bergmanhouse" {
+  name        = "bergmanhouse"
+  dns_name    = "bergman.house."
+  description = "bergman.house"
 }
 
 resource "google_dns_record_set" "bergmanhouse_ns" {
@@ -58,4 +66,35 @@ resource "google_dns_record_set" "bergmanhouse_srv_matrix" {
   type         = "SRV"
   rrdatas      = ["10 0 443 matrix.bergman.house."]
   ttl          = 300
+}
+
+#
+# blurt.chat
+#
+
+resource "google_dns_managed_zone" "blurt" {
+  name        = "blurt"
+  dns_name    = "blurt.chat."
+  description = "blurt.chat"
+}
+
+resource "google_dns_record_set" "blurt_ns" {
+  managed_zone = google_dns_managed_zone.blurt.name
+  name         = google_dns_managed_zone.blurt.dns_name
+  type         = "NS"
+  rrdatas = [
+    "ns-cloud-a1.googledomains.com.",
+    "ns-cloud-a2.googledomains.com.",
+    "ns-cloud-a3.googledomains.com.",
+    "ns-cloud-a4.googledomains.com.",
+  ]
+  ttl = 21600
+}
+
+resource "google_dns_record_set" "blurt_soa" {
+  managed_zone = google_dns_managed_zone.blurt.name
+  name         = google_dns_managed_zone.blurt.dns_name
+  type         = "SOA"
+  rrdatas      = ["ns-cloud-a1.googledomains.com. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300"]
+  ttl          = 21600
 }
