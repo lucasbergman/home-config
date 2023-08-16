@@ -7,6 +7,7 @@
   promcfg = config.services.prometheus;
   alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
+  grafanaDataDirectory = "/data/grafana";
 in {
   systemd.services."pagerduty-key" = {
     description = "decrypt PagerDuty key";
@@ -138,6 +139,32 @@ in {
           }
         ];
       };
+    };
+  };
+
+  services.grafana = {
+    enable = true;
+    dataDir = grafanaDataDirectory;
+    settings = {
+      server = {
+        http_addr = "[::1]";
+        domain = "dash.bergmans.us";
+        enforce_domain = true;
+        root_url = "https://%(domain)s/";
+      };
+      smtp = {
+        enabled = true;
+        from_address = "grafana@bergmans.us";
+      };
+    };
+  };
+
+  services.nginx.virtualHosts.${config.services.grafana.settings.server.domain} = {
+    addSSL = true;
+    enableACME = true;
+    locations."/" = {
+      proxyPass = "http://[::1]:${toString config.services.grafana.settings.server.http_port}";
+      proxyWebsockets = true;
     };
   };
 }
