@@ -191,23 +191,11 @@ resource "google_secret_manager_secret" "restic_password_cheddar" {
   }
 }
 
-resource "google_secret_manager_secret_iam_member" "restic_password_cheddar" {
-  secret_id = google_secret_manager_secret.restic_password_cheddar.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
-}
-
 resource "google_secret_manager_secret" "mumble_password" {
   secret_id = "mumble-password"
   replication {
     automatic = true
   }
-}
-
-resource "google_secret_manager_secret_iam_member" "mumble_password_cheddar" {
-  secret_id = google_secret_manager_secret.mumble_password.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
 }
 
 resource "google_secret_manager_secret" "pagerduty_key" {
@@ -217,20 +205,15 @@ resource "google_secret_manager_secret" "pagerduty_key" {
   }
 }
 
-resource "google_secret_manager_secret_iam_member" "pagerduty_key_cheddar" {
-  secret_id = google_secret_manager_secret.pagerduty_key.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
-}
-
-resource "google_secret_manager_secret_iam_member" "mail_ses_password_cheddar" {
-  secret_id = google_secret_manager_secret.mail_ses_password.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
-}
-
-resource "google_secret_manager_secret_iam_member" "mail_userdb_cheddar" {
-  secret_id = google_secret_manager_secret.mail_userdb.secret_id
+resource "google_secret_manager_secret_iam_member" "cheddar" {
+  for_each = toset([
+    google_secret_manager_secret.restic_password_cheddar.secret_id,
+    google_secret_manager_secret.mumble_password.secret_id,
+    google_secret_manager_secret.pagerduty_key.secret_id,
+    google_secret_manager_secret.mail_ses_password.secret_id,
+    google_secret_manager_secret.mail_userdb.secret_id,
+  ])
+  secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
 }
