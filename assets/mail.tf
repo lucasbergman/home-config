@@ -67,3 +67,41 @@ resource "google_dns_record_set" "blurt_ses_dkim" {
   rrdatas      = ["${aws_ses_domain_dkim.blurt.dkim_tokens[count.index]}.dkim.amazonses.com."]
   ttl          = 3600
 }
+
+# Inbound mail delivery for smartmousetravel.com
+resource "google_dns_record_set" "smartmouse_a_mail" {
+  managed_zone = "smartmouse"
+  project      = "smartmouse-web"
+  name         = "mail.smartmousetravel.com."
+  type         = "A"
+  rrdatas      = [var.slb_greywind_ipv4]
+  ttl          = 300
+}
+
+resource "google_dns_record_set" "smartmouse_mx" {
+  managed_zone = "smartmouse"
+  project      = "smartmouse-web"
+  name         = "smartmousetravel.com."
+  type         = "MX"
+  rrdatas      = ["10 mail.smartmousetravel.com."]
+  ttl          = 300
+}
+
+# SES for smartmousetravel.com
+resource "aws_ses_domain_identity" "smartmouse" {
+  domain = "smartmousetravel.com"
+}
+
+resource "aws_ses_domain_dkim" "smartmouse" {
+  domain = aws_ses_domain_identity.smartmouse.domain
+}
+
+resource "google_dns_record_set" "smartmouse_ses_dkim" {
+  count        = 3
+  managed_zone = "smartmouse"
+  project      = "smartmouse-web"
+  name         = "${aws_ses_domain_dkim.smartmouse.dkim_tokens[count.index]}._domainkey.smartmousetravel.com."
+  type         = "CNAME"
+  rrdatas      = ["${aws_ses_domain_dkim.smartmouse.dkim_tokens[count.index]}.dkim.amazonses.com."]
+  ttl          = 3600
+}
