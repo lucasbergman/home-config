@@ -1,3 +1,20 @@
+# SES password for mail submission
+resource "google_secret_manager_secret" "mail_ses_password" {
+  secret_id = "mail-ses-password"
+  replication {
+    automatic = true
+  }
+}
+
+# User names and (hashed) passwords for mail server users
+resource "google_secret_manager_secret" "mail_userdb" {
+  secret_id = "mail-userdb"
+  replication {
+    automatic = true
+  }
+}
+
+# SES for bergman.house
 resource "aws_ses_domain_identity" "bergmanhouse" {
   domain = "bergman.house"
 }
@@ -15,6 +32,7 @@ resource "google_dns_record_set" "bergmanhouse_ses_dkim" {
   ttl          = 3600
 }
 
+# SES for bergmans.us
 resource "aws_ses_domain_identity" "bergmans" {
   domain = "bergmans.us"
 }
@@ -32,6 +50,7 @@ resource "google_dns_record_set" "bergmans_ses_dkim" {
   ttl          = 3600
 }
 
+# SES for blurt.chat
 resource "aws_ses_domain_identity" "blurt" {
   domain = "blurt.chat"
 }
@@ -47,18 +66,4 @@ resource "google_dns_record_set" "blurt_ses_dkim" {
   type         = "CNAME"
   rrdatas      = ["${aws_ses_domain_dkim.blurt.dkim_tokens[count.index]}.dkim.amazonses.com."]
   ttl          = 3600
-}
-
-resource "google_secret_manager_secret" "mail_ses_password" {
-  secret_id = "mail-ses-password"
-  replication {
-    automatic = true
-  }
-}
-
-resource "google_secret_manager_secret" "mail_userdb" {
-  secret_id = "mail-userdb"
-  replication {
-    automatic = true
-  }
 }
