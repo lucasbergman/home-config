@@ -59,8 +59,10 @@ in
 
     services.openssh = {
       enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = "yes";
+      settings = {
+        PermitRootLogin = "yes";
+        PasswordAuthentication = false;
+      };
     };
 
     users.groups = {
