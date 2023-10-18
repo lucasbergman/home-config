@@ -56,6 +56,15 @@
           ./nixos/hosts/cheddar/configuration.nix
         ];
       };
+      hedwig = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          mypkgs = outputs.packages."x86_64-linux";
+        };
+        modules = [
+          ./nixos/hosts/hedwig/configuration.nix
+        ];
+      };
     };
 
     homeConfigurations = {
