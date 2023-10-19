@@ -52,18 +52,14 @@
           inherit inputs outputs;
           mypkgs = outputs.packages."x86_64-linux";
         };
-        modules = [
-          ./nixos/hosts/cheddar/configuration.nix
-        ];
+        modules = [./nixos/hosts/cheddar];
       };
       hedwig = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
           mypkgs = outputs.packages."x86_64-linux";
         };
-        modules = [
-          ./nixos/hosts/hedwig/configuration.nix
-        ];
+        modules = [./nixos/hosts/hedwig];
       };
     };
 

@@ -14,8 +14,9 @@ in
     ...
   }: {
     imports = [
-      ./../../common
-      ./../../linode
+      ../../common/cloudbackup.nix
+      ../../common/nginx.nix
+      ../../linode
       ./hardware-configuration.nix
       ./services
     ];
