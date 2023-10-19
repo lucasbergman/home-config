@@ -19,6 +19,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     home-manager,
     gomod2nix,
     ...
@@ -43,6 +44,7 @@
         import ./shell.nix {
           inherit inputs system;
           pkgs = nixpkgs.legacyPackages.${system};
+          pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
         }
     );
 
