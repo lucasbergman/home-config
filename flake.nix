@@ -25,9 +25,8 @@
   } @ inputs: let
     inherit (self) outputs;
     forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux"];
-    pkgsFor = nixpkgs.legacyPackages;
   in {
-    formatter = forAllSystems (system: pkgsFor.${system}.alejandra);
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
     packages = forAllSystems (
       system: let
@@ -40,24 +39,25 @@
     );
 
     devShells = forAllSystems (
-      system: let
-        pkgs = pkgsFor.${system};
-      in
-        import ./shell.nix {inherit inputs pkgs system;}
+      system:
+        import ./shell.nix {
+          inherit inputs system;
+          pkgs = nixpkgs.legacyPackages.${system};
+        }
     );
 
     nixosConfigurations = {
       cheddar = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          mypkgs = outputs.packages."x86_64-linux";
+          mypkgs = outputs.packages.x86_64-linux;
         };
         modules = [./nixos/hosts/cheddar];
       };
       hedwig = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          mypkgs = outputs.packages."x86_64-linux";
+          mypkgs = outputs.packages.x86_64-linux;
         };
         modules = [./nixos/hosts/hedwig];
       };
@@ -65,7 +65,7 @@
 
     homeConfigurations = {
       "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [./home];
       };
     };
