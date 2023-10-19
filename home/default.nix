@@ -42,10 +42,5 @@
       st = "status";
       staged = "diff --staged";
     };
-
-    difftastic = {
-      enable = true;
-      display = "inline";
-    };
   };
 }

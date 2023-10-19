@@ -66,7 +66,7 @@
     homeConfigurations = {
       "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor.x86_64-linux;
-        modules = [./home/home.nix];
+        modules = [./home];
       };
     };
   };
