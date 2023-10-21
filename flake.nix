@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.05";
@@ -12,6 +13,13 @@
 
     gomod2nix = {
       url = "github:tweag/gomod2nix";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -22,6 +30,7 @@
     nixpkgs-unstable,
     home-manager,
     gomod2nix,
+    vscode-server,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -68,7 +77,10 @@
     homeConfigurations = {
       "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        modules = [./home];
+        modules = [
+          ./home
+          vscode-server.homeModules.default
+        ];
       };
     };
   };
