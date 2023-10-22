@@ -13,6 +13,8 @@
       pkgs.home-manager
       pkgs.jq
       pkgs.nix
+      pkgs.sops
+      pkgs.ssh-to-age
       pkgs.vim
 
       # These packages have actively packaging and otherwise fast-moving
