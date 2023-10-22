@@ -35,16 +35,17 @@ resource "linode_instance_config" "cheddar_install" {
   kernel    = "linode/direct-disk"
 
   root_device = "/dev/sdc"
-  devices {
-    sda {
-      disk_id = linode_instance_disk.cheddar_boot.id
-    }
-    sdb {
-      disk_id = linode_instance_disk.cheddar_swap.id
-    }
-    sdc {
-      disk_id = linode_instance_disk.cheddar_install.id
-    }
+  device {
+    device_name = "sda"
+    disk_id     = linode_instance_disk.cheddar_boot.id
+  }
+  device {
+    device_name = "sdb"
+    disk_id     = linode_instance_disk.cheddar_swap.id
+  }
+  device {
+    device_name = "sdc"
+    disk_id     = linode_instance_disk.cheddar_install.id
   }
 }
 
@@ -54,16 +55,17 @@ resource "linode_instance_config" "cheddar" {
   kernel    = "linode/grub2" # use the distro kernel, not Linode's
 
   root_device = "/dev/sda"
-  devices {
-    sda {
-      disk_id = linode_instance_disk.cheddar_boot.id
-    }
-    sdb {
-      disk_id = linode_instance_disk.cheddar_swap.id
-    }
-    sdc {
-      volume_id = linode_volume.cheddar_data.id
-    }
+  device {
+    device_name = "sda"
+    disk_id     = linode_instance_disk.cheddar_boot.id
+  }
+  device {
+    device_name = "sdb"
+    disk_id     = linode_instance_disk.cheddar_swap.id
+  }
+  device {
+    device_name = "sdc"
+    volume_id   = linode_volume.cheddar_data.id
   }
 }
 
@@ -203,21 +205,21 @@ resource "local_sensitive_file" "instance_cheddar" {
 resource "google_secret_manager_secret" "restic_password_cheddar" {
   secret_id = "restic-password-cheddar"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 resource "google_secret_manager_secret" "mumble_password" {
   secret_id = "mumble-password"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 resource "google_secret_manager_secret" "pagerduty_key" {
   secret_id = "pagerduty-key"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
