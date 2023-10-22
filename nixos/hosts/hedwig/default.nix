@@ -90,12 +90,7 @@
     }
   ];
 
-  users.groups = {
-    gcpinstance = {
-      name = "gcp-instance-users";
-      members = ["acme"];
-    };
-  };
+  slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
