@@ -8,7 +8,7 @@
 }: {
   imports = [
     ../../common/global
-    ../../common/users/lucas
+    ../../common/users
     ./hardware-configuration.nix
   ];
 
@@ -71,12 +71,6 @@
 
   time.timeZone = "Etc/UTC";
   i18n.defaultLocale = "en_US.UTF-8";
-
-  security.sudo.wheelNeedsPassword = false;
-  users = {
-    # Users can only be made declaratively
-    mutableUsers = false;
-  };
 
   services.openssh.hostKeys = [
     {

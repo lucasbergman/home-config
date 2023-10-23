@@ -10,7 +10,7 @@
     ../../common/cloudbackup.nix
     ../../common/nginx.nix
     ../../common/global
-    ../../common/users/lucas
+    ../../common/users
     ../../linode
     ./hardware-configuration.nix
     ./services
@@ -39,12 +39,6 @@
   };
 
   time.timeZone = "Etc/UTC";
-
-  security.sudo.wheelNeedsPassword = false;
-  users = {
-    # Users can only be made declaratively
-    mutableUsers = false;
-  };
 
   slb.backups = {
     gcsPath = "/cheddar";
