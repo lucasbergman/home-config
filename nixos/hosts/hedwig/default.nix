@@ -10,6 +10,7 @@
     ../../common/global
     ../../common/users
     ./hardware-configuration.nix
+    ./services
   ];
 
   nix = {
@@ -21,6 +22,8 @@
       auto-optimise-store = true;
     };
   };
+
+  nixpkgs.config.allowUnfree = true;
 
   fileSystems = {
     "/nix" = {

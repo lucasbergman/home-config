@@ -69,6 +69,10 @@
         specialArgs = {
           inherit inputs outputs;
           mypkgs = outputs.packages.x86_64-linux;
+          nixpkgs-unstable = import inputs.nixpkgs-unstable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
         };
         modules = [./nixos/hosts/hedwig];
       };
