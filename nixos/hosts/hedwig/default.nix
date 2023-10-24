@@ -13,16 +13,6 @@
     ./services
   ];
 
-  nix = {
-    # Add each flake input as a registry to make nix3 commands consistent with the flake
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
-
-    settings = {
-      experimental-features = "nix-command flakes";
-      auto-optimise-store = true;
-    };
-  };
-
   nixpkgs.config.allowUnfree = true;
 
   fileSystems = {
@@ -51,19 +41,11 @@
     hostName = "hedwig";
     domain = "bergman.house";
 
-    firewall.enable = false;
     wireless.enable = false;
 
     # Required for ZFS because reasons
     hostId = "f7b88e11";
   };
-
-  # Use systemd-networkd for address configuration
-  networking = {
-    useDHCP = false;
-    networkmanager.enable = false;
-  };
-  systemd.network.enable = true;
 
   systemd.network.networks."10-wan" = {
     matchConfig.Name = "enp3s0";
@@ -71,9 +53,6 @@
     routes = [{routeConfig.Gateway = "192.168.101.1";}];
     linkConfig.RequiredForOnline = "routable";
   };
-
-  time.timeZone = "Etc/UTC";
-  i18n.defaultLocale = "en_US.UTF-8";
 
   services.openssh.hostKeys = [
     {

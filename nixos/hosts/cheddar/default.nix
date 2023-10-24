@@ -16,29 +16,15 @@
     ./services
   ];
 
-  nix = {
-    # Add each flake input as a registry to make nix3 commands consistent with the flake
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
-
-    settings = {
-      experimental-features = "nix-command flakes";
-      auto-optimise-store = true;
-    };
-  };
-
   fileSystems."/data" = {
     device = "/dev/disk/by-label/data";
     fsType = "ext4";
   };
 
   networking = {
-    firewall.enable = false;
-
     hostName = "cheddar";
     domain = "bergmans.us";
   };
-
-  time.timeZone = "Etc/UTC";
 
   slb.backups = {
     gcsPath = "/cheddar";

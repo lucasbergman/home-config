@@ -1,14 +1,6 @@
 {...}: {
   imports = [./boot.nix];
 
-  # Use systemd-networkd for address configuration
-  # TODO: Move this to a common file; it's not Linode-specific
-  networking = {
-    useDHCP = false;
-    networkmanager.enable = false;
-  };
-  systemd.network.enable = true;
-
   networking = {
     usePredictableInterfaceNames = false;
     enableIPv6 = true;
