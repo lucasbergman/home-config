@@ -50,6 +50,10 @@
         environmentFile = resticEnvFile.outPath;
         passwordFile = myPasswordFile;
         exclude = cfg.exclude;
+
+        # Create the repo if it doesn't already exist. I guess this is
+        # slightly dangerous, but doing without it is a hassle.
+        initialize = true;
       };
     };
 
