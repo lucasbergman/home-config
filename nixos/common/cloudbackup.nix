@@ -24,6 +24,12 @@
         description = "Google Cloud Secrets Manager resource ID of Restic password secret";
         example = "projects/myproject/secrets/secret-name/versions/123";
       };
+
+      exclude = mkOption {
+        type = with types; listOf str;
+        description = "List of patterns to exclude from backup";
+        default = [];
+      };
     };
   };
 
@@ -43,6 +49,7 @@
         paths = cfg.backupPaths;
         environmentFile = resticEnvFile.outPath;
         passwordFile = myPasswordFile;
+        exclude = cfg.exclude;
       };
     };
 

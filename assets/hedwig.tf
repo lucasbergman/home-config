@@ -34,3 +34,16 @@ resource "local_sensitive_file" "instance_hedwig" {
   content_base64  = google_service_account_key.instance_hedwig.private_key
   filename        = "${path.module}/hedwig-instance-private-key.json"
 }
+
+resource "google_secret_manager_secret" "restic_password_hedwig" {
+  secret_id = "restic-password-hedwig"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "restic_password_hedwig" {
+  secret_id = google_secret_manager_secret.restic_password_hedwig.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.instance_hedwig.email}"
+}

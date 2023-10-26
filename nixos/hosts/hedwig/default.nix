@@ -9,6 +9,7 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/cloudbackup.nix
     ./hardware-configuration.nix
     ./services
   ];
@@ -67,6 +68,21 @@
   ];
 
   slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
+
+  slb.backups = {
+    gcsPath = "/hedwig";
+    backupPaths = [
+      "/persist"
+      "/home/lucas"
+
+      "/var/lib/unifi" # tragically hard-coded
+    ];
+    passwordSecretID = "projects/bergmans-services/secrets/restic-password-hedwig/versions/1";
+    exclude = [
+      ".terraform"
+      "node_modules"
+    ];
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
