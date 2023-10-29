@@ -65,13 +65,29 @@
         };
         modules = [./nixos/hosts/cheddar];
       };
+
       hedwig = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
           mypkgs = outputs.packages.x86_64-linux;
+          nixpkgs = import inputs.nixpkgs {system = "x86_64-linux";};
           nixpkgs-unstable = import inputs.nixpkgs-unstable {
             system = "x86_64-linux";
             config.allowUnfree = true;
+            overlays = [
+              (final: prev: let
+                ver = "7.2.97";
+                sha = "5e3aea128c633860b6b71577adc61866a346fc213892989842011edd5ab79dff";
+              in {
+                unifiCustomPackage = prev.unifi.overrideAttrs (attrs: {
+                  name = "unifi-controller-${ver}";
+                  src = final.fetchurl {
+                    url = "https://dl.ubnt.com/unifi/${ver}/unifi_sysvinit_all.deb";
+                    sha256 = sha;
+                  };
+                });
+              })
+            ];
           };
         };
         modules = [./nixos/hosts/hedwig];
