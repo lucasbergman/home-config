@@ -75,7 +75,9 @@
       "/persist"
       "/home/lucas"
 
-      "/var/lib/unifi" # tragically hard-coded
+      # Department of tragically hard-coded systemd service data directories
+      "/var/lib/prometheus2"
+      "/var/lib/unifi"
     ];
     passwordSecretID = "projects/bergmans-services/secrets/restic-password-hedwig/versions/1";
     exclude = [

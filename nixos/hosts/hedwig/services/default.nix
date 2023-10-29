@@ -3,6 +3,8 @@
   nixpkgs-unstable,
   ...
 }: {
+  imports = [./monitoring.nix];
+
   services.unifi = {
     enable = true;
     unifiPackage = nixpkgs-unstable.unifiCustomPackage;
