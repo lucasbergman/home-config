@@ -54,6 +54,9 @@
         # Create the repo if it doesn't already exist. I guess this is
         # slightly dangerous, but doing without it is a hassle.
         initialize = true;
+
+        # Limit to 2 Google Cloud Storage connections concurrently
+        extraOptions = ["gs.connections=2"];
       };
     };
 
