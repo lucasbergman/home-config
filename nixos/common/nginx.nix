@@ -6,4 +6,6 @@
     recommendedGzipSettings = true;
     recommendedProxySettings = true;
   };
+
+  users.groups.acme.members = ["nginx"];
 }
