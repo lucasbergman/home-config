@@ -49,12 +49,26 @@ resource "google_secret_manager_secret" "unpoller_password_hedwig" {
   }
 }
 
-resource "google_secret_manager_secret_iam_member" "restic_password_hedwig" {
+resource "google_secret_manager_secret" "prometheus_password_hedwig" {
+  secret_id = "prometheus-password-hedwig"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "password_hedwig" {
   for_each = toset([
     google_secret_manager_secret.restic_password_hedwig.secret_id,
-    google_secret_manager_secret.unpoller_password_hedwig.secret_id
+    google_secret_manager_secret.unpoller_password_hedwig.secret_id,
+    google_secret_manager_secret.prometheus_password_hedwig.secret_id
   ])
   secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.instance_hedwig.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "prometheus_password_hedwig_cheddar" {
+  secret_id = google_secret_manager_secret.prometheus_password_hedwig.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.instance_cheddar.email}"
 }

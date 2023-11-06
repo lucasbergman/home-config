@@ -10,6 +10,7 @@
     ../../common/global
     ../../common/users
     ../../common/cloudbackup.nix
+    ../../common/nginx.nix
     ./hardware-configuration.nix
     ./services
   ];
