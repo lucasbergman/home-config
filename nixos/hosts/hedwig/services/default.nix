@@ -3,7 +3,10 @@
   nixpkgs-unstable,
   ...
 }: {
-  imports = [./monitoring.nix];
+  imports = [
+    ./monitoring.nix
+    ./plex.nix
+  ];
 
   services.unifi = {
     enable = true;
