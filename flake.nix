@@ -76,8 +76,8 @@
             config.allowUnfree = true;
             overlays = [
               (final: prev: let
-                ver = "7.4.156";
-                sha = "5098f3482daa2a2d800701f9a74b3fe5f5df0773557d805bdf005f13ff0d94ae";
+                ver = "7.4.162";
+                sha = "069652f793498124468c985537a569f3fe1d8dd404be3fb69df6b2d18b153c4c";
               in {
                 unifiCustomPackage = prev.unifi.overrideAttrs (attrs: {
                   name = "unifi-controller-${ver}";
