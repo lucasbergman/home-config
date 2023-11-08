@@ -1,6 +1,6 @@
 {
+  mypkgs,
   nixpkgs,
-  nixpkgs-unstable,
   ...
 }: {
   imports = [
@@ -10,7 +10,7 @@
 
   services.unifi = {
     enable = true;
-    unifiPackage = nixpkgs-unstable.unifiCustomPackage;
+    unifiPackage = mypkgs.unifi;
     jrePackage = nixpkgs.jdk11;
     # TODO: Consider setting initialJavaHeapSize and/or maximumJavaHeapSize
     # after doing some measurement
