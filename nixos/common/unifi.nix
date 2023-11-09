@@ -18,6 +18,7 @@ with lib; let
       "--add-opens=java.base/java.io=ALL-UNNAMED"
       "--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED"
     ]
+    ++ cfg.extraJvmOptions
     ++ (optional (cfg.initialJavaHeapSize != null) "-Xms${(toString cfg.initialJavaHeapSize)}m")
     ++ (optional (cfg.maximumJavaHeapSize != null) "-Xmx${(toString cfg.maximumJavaHeapSize)}m")
     ++ ["-jar" "${stateDir}/lib/ace.jar"]
@@ -82,6 +83,15 @@ in {
       description = mdDoc ''
         Set the maximum heap size for the JVM in MB. If this option isn't set, the
         JVM will decide this value at runtime.
+      '';
+    };
+
+    slb.unifi.extraJvmOptions = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      example = literalExpression ''["-Xlog:gc"]'';
+      description = mdDoc ''
+        Set extra options to pass to the JVM.
       '';
     };
   };
