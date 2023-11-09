@@ -13,7 +13,7 @@
   slb.unifi = {
     enable = true;
     unifiPackage = mypkgs.unifi;
-    jrePackage = nixpkgs.jdk11;
+    jrePackage = nixpkgs.jdk17_headless;
     # TODO: Consider setting initialJavaHeapSize and/or maximumJavaHeapSize
     # after doing some measurement
   };

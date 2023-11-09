@@ -6,8 +6,8 @@
   gcp-secret-subst = pkgs.callPackage ./gcp-secret-subst {};
 
   unifi = let
-    ver = "7.4.162";
-    sha = "069652f793498124468c985537a569f3fe1d8dd404be3fb69df6b2d18b153c4c";
+    ver = "7.5.187";
+    sha = "6b9925f2065b467852fe9d6298f97bb28334fd04851dd334fb66cd9837dcd666";
   in
     pkgs-unstable.unifi.overrideAttrs {
       name = "unifi-controller-${ver}";
