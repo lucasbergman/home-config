@@ -4,11 +4,13 @@
   ...
 }: {
   imports = [
+    ../../../common/unifi.nix
+
     ./monitoring.nix
     ./plex.nix
   ];
 
-  services.unifi = {
+  slb.unifi = {
     enable = true;
     unifiPackage = mypkgs.unifi;
     jrePackage = nixpkgs.jdk11;
