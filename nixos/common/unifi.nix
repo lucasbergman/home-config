@@ -9,16 +9,19 @@
 with lib; let
   cfg = config.slb.unifi;
   stateDir = "/var/lib/unifi";
-  cmd = ''
-    @${cfg.jrePackage}/bin/java java \
-        ${optionalString (versionAtLeast (getVersion cfg.jrePackage) "16")
-      ("--add-opens java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED "
-        + "--add-opens java.base/sun.security.util=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED "
-        + "--add-opens java.rmi/sun.rmi.transport=ALL-UNNAMED")} \
-        ${optionalString (cfg.initialJavaHeapSize != null) "-Xms${(toString cfg.initialJavaHeapSize)}m"} \
-        ${optionalString (cfg.maximumJavaHeapSize != null) "-Xmx${(toString cfg.maximumJavaHeapSize)}m"} \
-        -jar ${stateDir}/lib/ace.jar
-  '';
+  cmd = escapeShellArgs (
+    ["@${cfg.jrePackage}/bin/java" "java"]
+    ++ optionals (versionAtLeast (getVersion cfg.jrePackage) "16") [
+      "--add-opens=java.base/java.lang=ALL-UNNAMED"
+      "--add-opens=java.base/java.time=ALL-UNNAMED"
+      "--add-opens=java.base/sun.security.util=ALL-UNNAMED"
+      "--add-opens=java.base/java.io=ALL-UNNAMED"
+      "--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED"
+    ]
+    ++ (optional (cfg.initialJavaHeapSize != null) "-Xms${(toString cfg.initialJavaHeapSize)}m")
+    ++ (optional (cfg.maximumJavaHeapSize != null) "-Xmx${(toString cfg.maximumJavaHeapSize)}m")
+    ++ ["-jar" "${stateDir}/lib/ace.jar"]
+  );
 in {
   # TODO: Remove this once changes land in the NixOS release
   options = {
@@ -104,8 +107,8 @@ in {
 
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${(removeSuffix "\n" cmd)} start";
-        ExecStop = "${(removeSuffix "\n" cmd)} stop";
+        ExecStart = "${cmd} start";
+        ExecStop = "${cmd} stop";
         Restart = "on-failure";
         TimeoutSec = "5min";
         User = "unifi";
