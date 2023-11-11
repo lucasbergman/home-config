@@ -13,6 +13,7 @@
       pkgs.home-manager
       pkgs.jq
       pkgs.nix
+      pkgs.nvd
       pkgs.sops
       pkgs.ssh-to-age
       pkgs.vim
