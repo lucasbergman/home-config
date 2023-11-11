@@ -53,12 +53,14 @@
     );
 
     devShells = forAllSystems (
-      system:
-        import ./shell.nix {
-          inherit inputs system;
-          pkgs = nixpkgs.legacyPackages.${system};
-          pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
-        }
+      system: let
+        pkgs = import nixpkgs {inherit system;};
+        pkgs-unstable = import inputs.nixpkgs-unstable {
+          inherit system;
+          config.allowUnfree = true;
+        };
+      in
+        import ./shell.nix {inherit inputs system pkgs pkgs-unstable;}
     );
 
     nixosConfigurations = {
