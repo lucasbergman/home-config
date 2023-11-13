@@ -1,0 +1,66 @@
+groups:
+  - name: unifi_controller
+    rules:
+      - record: unifi_controller:jvm_memory_pool_bytes_used
+        expr: jvm_memory_pool_bytes_used{job="unifi_jvm"}
+      - record: unifi_controller:jvm_memory_bytes_used
+        expr: jvm_memory_bytes_used{job="unifi_jvm"}
+
+  - name: unifi
+    rules:
+      - record: unifi:wan:receive_bytes
+        expr: unpoller_device_wan_receive_bytes_total{job="unifi"}
+      - record: unifi:wan:transmit_bytes
+        expr: unpoller_device_wan_transmit_bytes_total{job="unifi"}
+      - record: unifi:wan:receive_bytes:rate5m
+        expr: rate(unifi:wan:receive_bytes[5m])
+      - record: unifi:wan:transmit_bytes:rate5m
+        expr: rate(unifi:wan:transmit_bytes[5m])
+      - record: unifi:wan:receive_bytes:rate1m
+        expr: rate(unifi:wan:receive_bytes[1m])
+      - record: unifi:wan:transmit_bytes:rate1m
+        expr: rate(unifi:wan:transmit_bytes[1m])
+
+      - record: unifi:device:receive_bytes
+        expr: unpoller_device_receive_bytes_total{job="unifi"}
+      - record: unifi:device:transmit_bytes
+        expr: unpoller_device_transmit_bytes_total{job="unifi"}
+      - record: unifi:device:receive_bytes:rate5m
+        expr: rate(unifi:device:receive_bytes[5m])
+      - record: unifi:device:transmit_bytes:rate5m
+        expr: rate(unifi:device:transmit_bytes[5m])
+      - record: unifi:device:receive_bytes:rate1m
+        expr: rate(unifi:device:receive_bytes[1m])
+      - record: unifi:device:transmit_bytes:rate1m
+        expr: rate(unifi:device:transmit_bytes[1m])
+
+  - name: node_net
+    rules:
+      - record: node:receive_bytes
+        expr: node_network_receive_bytes_total{device=~"^(en|eth).*"}
+      - record: node:transmit_bytes
+        expr: node_network_transmit_bytes_total{device=~"^(en|eth).*"}
+      - record: node:receive_bytes:rate5m
+        expr: rate(node:receive_bytes[5m])
+      - record: node:transmit_bytes:rate5m
+        expr: rate(node:transmit_bytes[5m])
+
+  - name: node_fs
+    rules:
+      - record: node:filesystem_avail_bytes
+        expr: node_filesystem_avail_bytes{job="node",fstype!~"(tmpfs|ramfs)"}
+      - record: node:disk_write_seconds:rate5m
+        expr: rate(node_disk_write_time_seconds_total[5m])
+      - record: node:disk_read_seconds:rate5m
+        expr: rate(node_disk_read_time_seconds_total[5m])
+      - record: node:disk_write_seconds:rate1m
+        expr: rate(node_disk_write_time_seconds_total[1m])
+      - record: node:disk_read_seconds:rate1m
+        expr: rate(node_disk_read_time_seconds_total[1m])
+
+  - name: node_cpu
+    rules:
+      - record: node:cpu:rate5m
+        expr: sum(rate(node_cpu_seconds_total[5m])) by (instance, mode)
+      - record: node:cpu:rate1m
+        expr: sum(rate(node_cpu_seconds_total[1m])) by (instance, mode)

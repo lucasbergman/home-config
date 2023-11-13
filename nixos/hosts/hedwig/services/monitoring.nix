@@ -12,7 +12,9 @@
   in {
     enable = true;
     listenAddress = "[::1]";
-    ruleFiles = [];
+    ruleFiles = [
+      ../conf/prometheus/hedwig.yml
+    ];
 
     scrapeConfigs = [
       {
