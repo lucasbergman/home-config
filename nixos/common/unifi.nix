@@ -128,6 +128,8 @@ in {
         # wants to manage its own child processes. this means we have to set KillSignal
         # to something the main process ignores, otherwise every stop will have unifi.service
         # fail with SIGTERM status.
+        #
+        # TODO: Installing the Prometheus JMX monitoring agent hinders the stop command?
         KillSignal = "SIGCONT";
 
         # Hardening

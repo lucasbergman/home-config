@@ -39,6 +39,18 @@
           }
         ];
       }
+      {
+        job_name = "unifi_jvm";
+        static_configs = [{targets = ["[::1]:8444"];}];
+        relabel_configs = [
+          {
+            source_labels = ["__address__"];
+            regex = "(.+):(.*)$";
+            target_label = "instance";
+            replacement = "hedwig:$2";
+          }
+        ];
+      }
     ];
 
     exporters = {
