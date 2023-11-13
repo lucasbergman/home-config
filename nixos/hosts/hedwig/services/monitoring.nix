@@ -30,6 +30,18 @@
         ];
       }
       {
+        job_name = "smart";
+        static_configs = [{targets = ["[::1]:${toString promcfg.exporters.smartctl.port}"];}];
+        relabel_configs = [
+          {
+            source_labels = ["__address__"];
+            regex = "(.+):(.*)$";
+            target_label = "instance";
+            replacement = "hedwig:$2";
+          }
+        ];
+      }
+      {
         job_name = "unifi";
         static_configs = [{targets = [unpollercfg.prometheusListenAddr];}];
         relabel_configs = [
@@ -61,8 +73,15 @@
         listenAddress = "[::1]";
         enabledCollectors = ["systemd"];
       };
+      smartctl = {
+        enable = true;
+        listenAddress = "[::1]";
+        devices = ["/dev/nvme0n1"];
+      };
     };
   };
+
+  users.groups.disk.members = ["smartctl-exporter"];
 
   slb.unpoller = {
     unifiUser = "unifipoller";
