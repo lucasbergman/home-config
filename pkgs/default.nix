@@ -4,6 +4,7 @@
 }: {
   cat-gcp-secret = pkgs.callPackage ./cat-gcp-secret {};
   gcp-secret-subst = pkgs.callPackage ./gcp-secret-subst {};
+  prometheus-jmx = pkgs.callPackage ./prometheus-jmx.nix {};
 
   unifi = let
     ver = "7.5.187";
