@@ -21,8 +21,7 @@
     enable = true;
     unifiPackage = mypkgs.unifi;
     jrePackage = nixpkgs.jdk17_headless;
-    # TODO: Consider setting initialJavaHeapSize and/or maximumJavaHeapSize
-    # after doing some measurement
+    maximumJavaHeapSize = 1024; # TODO: Might be possible to decrease this
     extraJvmOptions = [
       "-javaagent:${mypkgs.prometheus-jmx}/libexec/jmx_prometheus_javaagent.jar=[::1]:8444:${jmxPrometheusConfig}"
     ];
