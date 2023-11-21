@@ -10,6 +10,7 @@
     ../../common/global
     ../../common/users
     ../../common/cloudbackup.nix
+    ../../common/gcplogs.nix
     ../../common/nginx.nix
     ./hardware-configuration.nix
     ./services
@@ -84,6 +85,23 @@
     exclude = [
       ".terraform"
       "node_modules"
+    ];
+  };
+
+  slb.gcplogs = {
+    location = "home:chateau";
+    included-units = [
+      "prometheus.service"
+      "sshd.service"
+      "systemd-journald.service"
+      "systemd-logind.service"
+      "systemd-networkd.service"
+      "systemd-oomd.service"
+      "systemd-resolved.service"
+      "systemd-timesyncd.service"
+      "systemd-udevd.service"
+      "unifi.service"
+      "zfs-zed.service"
     ];
   };
 
