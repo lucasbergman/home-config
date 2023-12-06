@@ -4,13 +4,11 @@
   ...
 }: {
   imports = [
-    ../../../common/unifi.nix
-
     ./monitoring.nix
     ./plex.nix
   ];
 
-  slb.unifi = let
+  services.unifi = let
     # TODO: The excludeObjectNames config isn't working
     jmxPrometheusConfig = nixpkgs.writeText "jmx-prometheus.yml" (builtins.toJSON {
       excludeObjectNames = ["Tomcat:*"];
