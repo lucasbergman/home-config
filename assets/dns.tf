@@ -45,14 +45,6 @@ resource "google_dns_record_set" "bergmans_a_mail" {
   ttl          = 300
 }
 
-resource "google_dns_record_set" "bergmans_spf" {
-  managed_zone = google_dns_managed_zone.bergmans.name
-  name         = google_dns_managed_zone.bergmans.dns_name
-  type         = "SPF"
-  rrdatas      = ["\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\""]
-  ttl          = 3600
-}
-
 resource "google_dns_record_set" "bergmans_txt" {
   managed_zone = google_dns_managed_zone.bergmans.name
   name         = google_dns_managed_zone.bergmans.dns_name
@@ -61,6 +53,7 @@ resource "google_dns_record_set" "bergmans_txt" {
     "\"google-site-verification=DYzhaKYuvnbDIayaFdYl9m9OfzEZsMOWQggj0jujG38\"",
     "\"google-site-verification=euMnMSULQKzf2y2fKSF-3N3DpJaY8QjgNO_4ItxgG9M\"",
     "\"keybase-site-verification=oh8jpluTkVNxsrqj2A90qoKDhPY3SOCJjQJhkp6v9Tc\"",
+    "\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\"",
   ]
   ttl = 3600
 }
@@ -120,14 +113,6 @@ resource "google_dns_record_set" "bergmanhouse_a_mail" {
   ttl          = 1800
 }
 
-resource "google_dns_record_set" "bergmanhouse_spf" {
-  managed_zone = google_dns_managed_zone.bergmanhouse.name
-  name         = google_dns_managed_zone.bergmanhouse.dns_name
-  type         = "SPF"
-  rrdatas      = ["\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\""]
-  ttl          = 3600
-}
-
 resource "google_dns_record_set" "bergmanhouse_srv_matrix" {
   managed_zone = google_dns_managed_zone.bergmanhouse.name
   name         = "_matrix._tcp.bergman.house."
@@ -148,8 +133,11 @@ resource "google_dns_record_set" "bergmanhouse_txt" {
   managed_zone = google_dns_managed_zone.bergmanhouse.name
   name         = google_dns_managed_zone.bergmanhouse.dns_name
   type         = "TXT"
-  rrdatas      = ["\"keybase-site-verification=yqOuTyKp0FzHtSIG_9dMEEzaibRJWvhqATJhZTOlYuU\""]
-  ttl          = 300
+  rrdatas = [
+    "\"keybase-site-verification=yqOuTyKp0FzHtSIG_9dMEEzaibRJWvhqATJhZTOlYuU\"",
+    "\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\"",
+  ]
+  ttl = 300
 }
 
 resource "google_dns_record_set" "bergmanhouse_cname" {
@@ -216,10 +204,12 @@ resource "google_dns_record_set" "blurt_a_mail" {
   ttl          = 1800
 }
 
-resource "google_dns_record_set" "blurt_spf" {
+resource "google_dns_record_set" "blurt_txt" {
   managed_zone = google_dns_managed_zone.blurt.name
   name         = google_dns_managed_zone.blurt.dns_name
-  type         = "SPF"
-  rrdatas      = ["\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\""]
-  ttl          = 3600
+  type         = "TXT"
+  rrdatas = [
+    "\"v=spf1 mx include:amazonses.com include:_spf.google.com ~all\"",
+  ]
+  ttl = 300
 }
