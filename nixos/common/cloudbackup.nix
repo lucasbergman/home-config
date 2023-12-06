@@ -60,12 +60,22 @@
       };
     };
 
-    systemd.services.restic-backups-gcsbackup.preStart = ''
-      [[ -f ${myPasswordFile} ]] && exit 0
-      install -m 0400 /dev/null ${myPasswordFile}
-      env GOOGLE_APPLICATION_CREDENTIALS=/run/gcp-instance-creds.json \
+    systemd.services.restic-backup-password = {
+      description = "populate the GCS backups password file";
+      wantedBy = ["multi-user.target"];
+      before = ["restic-backups-gcsbackup.service"];
+      after = ["instance-key.service"];
+      serviceConfig.Type = "oneshot";
+      environment = {
+        GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
+      };
+
+      script = ''
+        [[ -f ${myPasswordFile} ]] && exit 0
+        install -m 0400 /dev/null ${myPasswordFile}
         "${mypkgs.cat-gcp-secret}"/bin/cat-gcp-secret \
-        "${cfg.passwordSecretID}" > ${myPasswordFile}
-    '';
+          "${cfg.passwordSecretID}" > ${myPasswordFile}
+      '';
+    };
   };
 }
