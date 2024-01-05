@@ -31,6 +31,14 @@
       device = "rpool/safe/persist";
       fsType = "zfs";
     };
+    "/storage/media" = {
+      device = "storage/media";
+      fsType = "zfs";
+    };
+    "/storage/users" = {
+      device = "storage/users";
+      fsType = "zfs";
+    };
   };
 
   # Use the systemd-boot EFI boot loader.
