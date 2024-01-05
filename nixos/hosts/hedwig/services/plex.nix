@@ -1,8 +1,8 @@
 {nixpkgs-unstable, ...}: {
   services.plex = {
-    enable = false;
+    enable = true;
     package = nixpkgs-unstable.plex;
-    # TODO: Set dataDir to a better place
+    dataDir = "/storage/media/plex-data";
   };
 
   services.nginx.virtualHosts."plex.bergman.house" = {
@@ -28,7 +28,7 @@
       proxy_set_header X-Plex-Device-Vendor $http_x_plex_device_vendor;
       proxy_set_header X-Plex-Model $http_x_plex_model;
 
-      # Buffering off send to the client as soon as the data is received from Plex.
+      # Buffering off: send to the client as soon as the data is received from Plex
       proxy_redirect off;
       proxy_buffering off;
     '';

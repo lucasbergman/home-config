@@ -79,7 +79,10 @@
           inherit inputs outputs;
           mypkgs = outputs.packages.${system};
           nixpkgs = import inputs.nixpkgs {inherit system;};
-          nixpkgs-unstable = import inputs.nixpkgs-unstable {inherit system;};
+          nixpkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
         };
         modules = [./nixos/hosts/hedwig];
       };

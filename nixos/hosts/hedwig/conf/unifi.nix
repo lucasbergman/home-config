@@ -1,7 +1,7 @@
 let
   outsideAddr = "73.36.209.143";
   insideInterface = "eth1";
-  insideAddr = "192.168.101.2";
+  insideAddr = "192.168.101.3";
   insideCIDR = "192.168.101.0/24";
 in {
   service = {
