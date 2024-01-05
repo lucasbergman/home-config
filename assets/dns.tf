@@ -141,7 +141,7 @@ resource "google_dns_record_set" "bergmanhouse_txt" {
 }
 
 resource "google_dns_record_set" "bergmanhouse_cname" {
-  for_each     = toset(["grafana", "hass", "hedwig", "mon", "plex", "unifi"])
+  for_each     = toset(["hass", "hedwig", "metrics", "plex"])
   managed_zone = google_dns_managed_zone.bergmanhouse.name
   name         = "${each.value}.bergman.house."
   type         = "CNAME"
