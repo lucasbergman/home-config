@@ -110,13 +110,9 @@
     '';
   };
 
-  # TODO: After hedwig is exposed to the Internet, we can remove this (and the
-  # acme/nginx group hack) and just use enableACME in the nginx module
-  security.acme.certs."metrics.bergman.house" = {};
-
   services.nginx.virtualHosts."metrics.bergman.house" = {
     forceSSL = true;
-    useACMEHost = "metrics.bergman.house";
+    enableACME = true;
     locations."/" = {
       basicAuthFile = "/run/prometheus.htpasswd";
       proxyPass = "http://[::1]:${toString config.services.prometheus.port}";

@@ -5,13 +5,9 @@
     # TODO: Set dataDir to a better place
   };
 
-  # TODO: After hedwig is exposed to the Internet, we can remove this (and the
-  # acme/nginx group hack) and just use enableACME in the nginx module
-  security.acme.certs."plex.bergman.house" = {};
-
   services.nginx.virtualHosts."plex.bergman.house" = {
     forceSSL = true;
-    useACMEHost = "plex.bergman.house";
+    enableACME = true;
 
     extraConfig = ''
       # https://blog.cloudflare.com/ocsp-stapling-how-cloudflare-just-made-ssl-30/
