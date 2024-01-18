@@ -4,17 +4,17 @@
   pkgs,
   ...
 }: {
-  options = with lib; {
+  options = {
     slb.security = {
-      acmeHostName = mkOption {
-        type = types.str;
+      acmeHostName = lib.mkOption {
+        type = lib.types.str;
         description = "Host name (FQDN) for this host's main ACME certificate";
         default = let n = config.networking; in "${n.hostName}.${n.domain}";
       };
 
       # TODO: Add checks to make sure this is defined
-      gcpInstanceKeyPath = mkOption {
-        type = types.path;
+      gcpInstanceKeyPath = lib.mkOption {
+        type = lib.types.path;
         description = "Google Cloud service account encrypted private key path";
       };
     };

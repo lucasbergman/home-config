@@ -4,21 +4,20 @@
   mypkgs,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   options.slb.unpoller = {
-    unifiUser = mkOption {
-      type = types.str;
+    unifiUser = lib.mkOption {
+      type = lib.types.str;
       description = "The UniFi user name to use for polling";
     };
 
-    unifiPasswordSecretID = mkOption {
-      type = types.str;
+    unifiPasswordSecretID = lib.mkOption {
+      type = lib.types.str;
       description = "GCP secret ID with the UniFi password for polling";
     };
 
-    prometheusListenAddr = mkOption {
-      type = types.str;
+    prometheusListenAddr = lib.mkOption {
+      type = lib.types.str;
       description = "Address/port to export Prometheus-compatible metrics";
       default = "[::1]:9130";
     };

@@ -5,28 +5,28 @@
   mypkgs,
   ...
 }: {
-  options = with lib; {
+  options = {
     slb.backups = {
-      gcsPath = mkOption {
-        type = types.str;
+      gcsPath = lib.mkOption {
+        type = lib.types.str;
         description = "Google Cloud Storage path for backup storage";
         example = "/myhostname";
       };
 
-      backupPaths = mkOption {
-        type = with types; listOf str;
+      backupPaths = lib.mkOption {
+        type = with lib.types; listOf str;
         description = "List of local paths to back up";
         example = ["/data" "/otherdata"];
       };
 
-      passwordSecretID = mkOption {
-        type = types.str;
+      passwordSecretID = lib.mkOption {
+        type = lib.types.str;
         description = "Google Cloud Secrets Manager resource ID of Restic password secret";
         example = "projects/myproject/secrets/secret-name/versions/123";
       };
 
-      exclude = mkOption {
-        type = with types; listOf str;
+      exclude = lib.mkOption {
+        type = with lib.types; listOf str;
         description = "List of patterns to exclude from backup";
         default = [];
       };
