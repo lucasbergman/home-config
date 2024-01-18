@@ -58,6 +58,19 @@ groups:
       - record: node:disk_read_seconds:rate1m
         expr: rate(node_disk_read_time_seconds_total[1m])
 
+  - name: node_disk
+    rules:
+      - record: node:disk:reallocated_sector_ct:raw
+        expr: smartctl_device_attribute{attribute_id="5",attribute_value_type="raw"}
+      - record: node:disk:reported_uncorrect:raw
+        expr: smartctl_device_attribute{attribute_id="187",attribute_value_type="raw"}
+      - record: node:disk:command_timeout:raw
+        expr: smartctl_device_attribute{attribute_id="188",attribute_value_type="raw"}
+      - record: node:disk:current_pending_sector:raw
+        expr: smartctl_device_attribute{attribute_id="197",attribute_value_type="raw"}
+      - record: node:disk:offline_uncorrectable:raw
+        expr: smartctl_device_attribute{attribute_id="198",attribute_value_type="raw"}
+
   - name: node_cpu
     rules:
       - record: node:cpu:rate5m

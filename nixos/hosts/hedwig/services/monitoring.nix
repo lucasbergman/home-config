@@ -76,7 +76,7 @@
       smartctl = {
         enable = true;
         listenAddress = "[::1]";
-        devices = ["/dev/nvme0n1"];
+        devices = ["/dev/nvme0n1" "/dev/sda" "/dev/sdb" "/dev/sdc"];
       };
     };
   };
