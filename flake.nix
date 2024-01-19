@@ -86,6 +86,24 @@
         };
         modules = [./nixos/hosts/hedwig];
       };
+
+      snowball = nixpkgs.lib.nixosSystem {
+        specialArgs = let
+          system = "x86_64-linux";
+        in {
+          inherit inputs outputs;
+          mypkgs = outputs.packages.${system};
+          nixpkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          nixpkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        };
+        modules = [./nixos/hosts/snowball];
+      };
     };
 
     homeConfigurations = {
