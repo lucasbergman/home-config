@@ -92,7 +92,7 @@
       "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [
-          ./home
+          ./home/hedwig.nix
           vscode-server.homeModules.default
         ];
       };
