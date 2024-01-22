@@ -1,4 +1,6 @@
 {pkgs, ...}: {
+  imports = [./emacs.nix];
+
   home = {
     username = "lucas";
     homeDirectory = "/home/lucas";

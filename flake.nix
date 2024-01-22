@@ -114,6 +114,17 @@
           vscode-server.homeModules.default
         ];
       };
+
+      "lucas@snowball" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {
+          nixpkgs-unstable = import inputs.nixpkgs-unstable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+        };
+        modules = [./home/snowball.nix];
+      };
     };
   };
 }
