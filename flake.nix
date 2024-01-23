@@ -123,6 +123,7 @@
             system = "x86_64-linux";
             config.allowUnfree = true;
           };
+          mypkgs = outputs.packages."x86_64-linux";
         };
         modules = [./home/snowball.nix];
       };
