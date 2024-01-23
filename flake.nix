@@ -42,6 +42,7 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
+          config.allowUnfree = true;
           overlays = [gomod2nix.overlays.default];
         };
         pkgs-unstable = import inputs.nixpkgs-unstable {
