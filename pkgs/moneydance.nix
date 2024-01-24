@@ -7,7 +7,7 @@
   openjdk21, # OpenJDK
   openjfx21, # OpenJFX
 }: let
-  version = "5064-2023.3";
+  version = "2023.3_5064";
   hash = "sha256-t1jBZJ2sL0YDx9915UWgpCzKnpNq1Qz5i7ygGXDI5dk=";
 in
   stdenv.mkDerivation rec {
@@ -15,8 +15,7 @@ in
     inherit version;
 
     src = fetchurl {
-      # TODO: Find a stable URL per version
-      url = "https://infinitekind.com/stabledl/current/moneydance_linux_amd64.deb";
+      url = "https://infinitekind.com/stabledl/${version}/moneydance_linux_amd64.deb";
       inherit hash;
     };
 
