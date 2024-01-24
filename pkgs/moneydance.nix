@@ -4,12 +4,13 @@
   fetchurl,
   makeWrapper,
   dpkg, # to unpack the deb file
-  jdk17, # OpenJDK
+  openjdk21, # OpenJDK
+  openjfx21, # OpenJFX
 }: let
   version = "5064-2023.3";
   hash = "sha256-t1jBZJ2sL0YDx9915UWgpCzKnpNq1Qz5i7ygGXDI5dk=";
 in
-  stdenv.mkDerivation {
+  stdenv.mkDerivation rec {
     pname = "moneydance";
     inherit version;
 
@@ -19,8 +20,14 @@ in
       inherit hash;
     };
 
+    jdk = openjdk21.override {
+      headless = false;
+      enableJavaFX = true;
+      openjfx = openjfx21;
+    };
+
     nativeBuildInputs = [dpkg];
-    buildInputs = [jdk17 makeWrapper];
+    buildInputs = [jdk makeWrapper];
 
     dontConfigure = true;
     dontUnpack = true;
@@ -30,6 +37,8 @@ in
     installPhase = let
       flags = lib.strings.escapeShellArgs [
         "-client"
+        "--add-modules"
+        "javafx.swing,javafx.controls,javafx.graphics"
         "-classpath"
         "${placeholder "out"}/libexec/*"
         "Moneydance"
@@ -41,7 +50,7 @@ in
       dpkg -x $src $out
       mv $out/opt/Moneydance/lib $out/libexec
       rm -rf $out/opt
-      makeWrapper ${jdk17}/bin/java $out/bin/moneydance --add-flags "${flags}"
+      makeWrapper ${jdk}/bin/java $out/bin/moneydance --add-flags "${flags}"
 
       runHook postInstall
     '';
