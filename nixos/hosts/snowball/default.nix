@@ -9,6 +9,7 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/desktop.nix
     ./hardware-configuration.nix
   ];
 

@@ -1,24 +1,47 @@
-{
-  pkgs,
-  nixpkgs-unstable,
-  ...
-}: {
-  home.packages = with pkgs; [
-    alacritty
-    corefonts
-    dejavu_fonts
-    google-fonts
-    kitty
-    mesa
-    noto-fonts
-    waypipe
-
+{nixpkgs-unstable, ...}: {
+  home.packages = [
     nixpkgs-unstable.google-chrome
   ];
 
-  programs.kitty = {
+  wayland.windowManager.sway = {
     enable = true;
-    font.name = "Noto Sans Mono";
-    font.size = 18;
+    wrapperFeatures.gtk = true;
+    extraSessionCommands = ''
+      export _JAVA_AWT_WM_NONREPARENTING=1
+    '';
+    config = let
+      fonts = {
+        names = ["DejaVu Sans"];
+        size = 16.0;
+      };
+    in {
+      inherit fonts;
+      modifier = "Mod4";
+      terminal = "alacritty";
+      startup = [{command = "alacritty";}];
+      bars = [
+        {
+          inherit fonts;
+          position = "top";
+          statusCommand = "while date +'%a %F %H:%M'; do sleep 5; done";
+        }
+      ];
+    };
+  };
+
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font.size = 18;
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = nixpkgs-unstable.vscode;
+    extensions = with nixpkgs-unstable.vscode-extensions; [
+      bbenoist.nix
+      kamadorueda.alejandra
+    ];
   };
 }
