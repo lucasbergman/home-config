@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  nixpkgs-unstable,
+  ...
+}: {
   imports = [./emacs.nix];
 
   home = {
@@ -8,6 +12,11 @@
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     stateVersion = "23.05";
   };
+
+  home.packages = [
+    pkgs.vim
+    nixpkgs-unstable.bitwarden-cli
+  ];
 
   nixpkgs.config.allowUnfree = true;
 

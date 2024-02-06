@@ -16,11 +16,9 @@
       pkgs.nvd
       pkgs.sops
       pkgs.ssh-to-age
-      pkgs.vim
 
       # These packages have actively packaging and otherwise fast-moving
       # upstreams, so pulling from nixpkgs-unstable seems wise
-      pkgs-unstable.bitwarden-cli
       pkgs-unstable.google-cloud-sdk
       pkgs-unstable.terraform
 

@@ -109,7 +109,10 @@
 
     homeConfigurations = {
       "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = import inputs.nixpkgs {system = "x86_64-linux";};
+        extraSpecialArgs = {
+          nixpkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
+        };
         modules = [
           ./home/hedwig.nix
           vscode-server.homeModules.default
