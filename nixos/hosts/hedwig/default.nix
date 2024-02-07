@@ -9,6 +9,7 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/users/augie.nix
     ../../common/cloudbackup.nix
     ../../common/gcplogs.nix
     ../../common/nginx.nix
