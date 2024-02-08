@@ -6,6 +6,11 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
+    idiotbox = {
+      url = "/home/lucas/hack/idiotbox";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +33,7 @@
     self,
     nixpkgs,
     nixpkgs-unstable,
+    idiotbox,
     home-manager,
     gomod2nix,
     vscode-server,
@@ -98,7 +104,7 @@
 
     nixosConfigurations = {
       cheddar = mkHost "x86_64-linux" [./nixos/hosts/cheddar];
-      hedwig = mkHost "x86_64-linux" [./nixos/hosts/hedwig];
+      hedwig = mkHost "x86_64-linux" [./nixos/hosts/hedwig idiotbox.nixosModules.default];
       snowball = mkHost "x86_64-linux" [./nixos/hosts/snowball];
     };
 
