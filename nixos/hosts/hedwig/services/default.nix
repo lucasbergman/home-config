@@ -1,9 +1,12 @@
 {...}: {
   imports = [
     ./monitoring.nix
+    ./mullvad.nix
     ./plex.nix
     ./unifi.nix
   ];
+
+  virtualisation.oci-containers.backend = "podman";
 
   users.users.idiotbox = {
     group = "idiotbox";
@@ -20,6 +23,8 @@
     enable = true;
     user = "idiotbox";
     group = "idiotbox";
-    networkNamespaceUnit = "netns@vpn.service";
+    pod = "idiotbox";
+    after = ["podman-idiotbox-vpn.service"];
+    mediaDirectory = "/storage/media";
   };
 }
