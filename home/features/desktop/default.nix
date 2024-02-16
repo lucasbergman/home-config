@@ -1,6 +1,6 @@
-{nixpkgs-unstable, ...}: {
+{pkgs-unstable, ...}: {
   home.packages = [
-    nixpkgs-unstable.google-chrome
+    pkgs-unstable.google-chrome
   ];
 
   wayland.windowManager.sway = {
@@ -38,8 +38,8 @@
 
   programs.vscode = {
     enable = true;
-    package = nixpkgs-unstable.vscode;
-    extensions = with nixpkgs-unstable.vscode-extensions; [
+    package = pkgs-unstable.vscode;
+    extensions = with pkgs-unstable.vscode-extensions; [
       bbenoist.nix
       kamadorueda.alejandra
     ];

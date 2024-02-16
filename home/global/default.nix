@@ -1,6 +1,6 @@
 {
   pkgs,
-  nixpkgs-unstable,
+  pkgs-unstable,
   ...
 }: {
   imports = [./emacs.nix];
@@ -15,7 +15,7 @@
 
   home.packages = [
     pkgs.vim
-    nixpkgs-unstable.bitwarden-cli
+    pkgs-unstable.bitwarden-cli
   ];
 
   nixpkgs.config.allowUnfree = true;

@@ -1,7 +1,7 @@
-{nixpkgs-unstable, ...}: {
+{pkgs-unstable, ...}: {
   services.plex = {
     enable = true;
-    package = nixpkgs-unstable.plex;
+    package = pkgs-unstable.plex;
     dataDir = "/storage/media/plex-data";
   };
 

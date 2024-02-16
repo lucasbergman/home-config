@@ -35,6 +35,37 @@
   } @ inputs: let
     inherit (self) outputs;
     forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux"];
+
+    mkHome = system: modules:
+      home-manager.lib.homeManagerConfiguration {
+        inherit modules;
+        pkgs = import nixpkgs {inherit system;};
+        extraSpecialArgs = {
+          inherit inputs;
+          pkgs-unstable = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          mypkgs = outputs.packages.${system};
+        };
+      };
+
+    mkHost = system: modules:
+      nixpkgs.lib.nixosSystem {
+        inherit modules;
+        specialArgs = {
+          inherit inputs outputs;
+          mypkgs = outputs.packages.${system};
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        };
+      };
   in {
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
@@ -54,82 +85,26 @@
     );
 
     devShells = forAllSystems (
-      system: let
-        pkgs = import nixpkgs {inherit system;};
-        pkgs-unstable = import inputs.nixpkgs-unstable {
-          inherit system;
-          config.allowUnfree = true;
-        };
-      in
-        import ./shell.nix {inherit inputs system pkgs pkgs-unstable;}
+      system:
+        import ./shell.nix {
+          inherit inputs system;
+          pkgs = import nixpkgs {inherit system;};
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        }
     );
 
     nixosConfigurations = {
-      cheddar = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
-          mypkgs = outputs.packages.x86_64-linux;
-        };
-        modules = [./nixos/hosts/cheddar];
-      };
-
-      hedwig = nixpkgs.lib.nixosSystem {
-        specialArgs = let
-          system = "x86_64-linux";
-        in {
-          inherit inputs outputs;
-          mypkgs = outputs.packages.${system};
-          nixpkgs = import inputs.nixpkgs {inherit system;};
-          nixpkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        };
-        modules = [./nixos/hosts/hedwig];
-      };
-
-      snowball = nixpkgs.lib.nixosSystem {
-        specialArgs = let
-          system = "x86_64-linux";
-        in {
-          inherit inputs outputs;
-          mypkgs = outputs.packages.${system};
-          nixpkgs = import inputs.nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          nixpkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        };
-        modules = [./nixos/hosts/snowball];
-      };
+      cheddar = mkHost "x86_64-linux" [./nixos/hosts/cheddar];
+      hedwig = mkHost "x86_64-linux" [./nixos/hosts/hedwig];
+      snowball = mkHost "x86_64-linux" [./nixos/hosts/snowball];
     };
 
     homeConfigurations = {
-      "lucas@hedwig" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import inputs.nixpkgs {system = "x86_64-linux";};
-        extraSpecialArgs = {
-          nixpkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
-        };
-        modules = [
-          ./home/hedwig.nix
-          vscode-server.homeModules.default
-        ];
-      };
-
-      "lucas@snowball" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          nixpkgs-unstable = import inputs.nixpkgs-unstable {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          mypkgs = outputs.packages."x86_64-linux";
-        };
-        modules = [./home/snowball.nix];
-      };
+      "lucas@hedwig" = mkHome "x86_64-linux" [./home/hedwig.nix];
+      "lucas@snowball" = mkHome "x86_64-linux" [./home/snowball.nix];
     };
   };
 }
