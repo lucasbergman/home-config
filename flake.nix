@@ -42,16 +42,29 @@
     inherit (self) outputs;
     forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux"];
 
-    mkHome = system: modules:
+    allPkgsOf = {
+      system,
+      overlays ? [],
+    }: {
+      pkgs = import nixpkgs {
+        inherit system overlays;
+        config.allowUnfree = true;
+      };
+      pkgs-unstable = import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    };
+
+    mkHome = system: modules: let
+      allPkgs = allPkgsOf {inherit system;};
+    in
       home-manager.lib.homeManagerConfiguration {
         inherit modules;
-        pkgs = import nixpkgs {inherit system;};
+        inherit (allPkgs) pkgs;
         extraSpecialArgs = {
           inherit inputs;
-          pkgs-unstable = import nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
+          inherit (allPkgs) pkgs-unstable;
           mypkgs = outputs.packages.${system};
         };
       };
@@ -59,48 +72,27 @@
     mkHost = system: modules:
       nixpkgs.lib.nixosSystem {
         inherit modules;
-        specialArgs = {
-          inherit inputs outputs;
-          mypkgs = outputs.packages.${system};
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          pkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        };
+        specialArgs =
+          {
+            inherit inputs outputs;
+            mypkgs = outputs.packages.${system};
+          }
+          // (allPkgsOf {inherit system;});
       };
   in {
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
-
-    packages = forAllSystems (
-      system: let
-        pkgs = import nixpkgs {
+    packages = forAllSystems (system:
+      import ./pkgs (
+        allPkgsOf {
           inherit system;
-          config.allowUnfree = true;
           overlays = [gomod2nix.overlays.default];
-        };
-        pkgs-unstable = import inputs.nixpkgs-unstable {
-          inherit system;
-          config.allowUnfree = true;
-        };
-      in
-        import ./pkgs {inherit pkgs pkgs-unstable;}
-    );
-
-    devShells = forAllSystems (
-      system:
-        import ./shell.nix {
-          inherit inputs system;
-          pkgs = import nixpkgs {inherit system;};
-          pkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
         }
-    );
+      ));
+
+    devShells = forAllSystems (system:
+      import ./shell.nix (
+        {inherit inputs system;} // (allPkgsOf {inherit system;})
+      ));
 
     nixosConfigurations = {
       cheddar = mkHost "x86_64-linux" [./nixos/hosts/cheddar];
