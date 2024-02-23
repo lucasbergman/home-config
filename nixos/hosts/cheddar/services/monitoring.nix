@@ -9,24 +9,11 @@
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
 in {
-  systemd.services."pagerduty-key" = {
-    description = "decrypt PagerDuty key";
-    wantedBy = ["multi-user.target"];
+  slb.security.secrets."pagerduty-key" = {
+    outPath = alertmanagerEnvFile;
+    template = ./../conf/prometheus/alertmanager.env;
     before = ["alertmanager.service"];
-    after = ["instance-key.service"];
-    serviceConfig.Type = "oneshot";
-    environment = {
-      GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-    };
-
-    script = ''
-      if [[ ! -f ${alertmanagerEnvFile} ]]; then
-        install -m 0640 -g prometheus /dev/null ${alertmanagerEnvFile}
-        ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst \
-          ${./../conf/prometheus/alertmanager.env}      \
-          > ${alertmanagerEnvFile}
-      fi
-    '';
+    group = "prometheus";
   };
 
   services.prometheus = {

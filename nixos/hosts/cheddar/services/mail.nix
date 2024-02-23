@@ -43,24 +43,11 @@ in {
     '';
   };
 
-  systemd.services."postfix-ses-password" = {
-    description = "decrypt SES SMTP password";
-    wantedBy = ["multi-user.target"];
+  slb.security.secrets."postfix-ses-password" = {
     before = ["postfix.service" "postfix-setup.service"];
-    after = ["instance-key.service"];
-    serviceConfig.Type = "oneshot";
-    environment = {
-      GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-    };
-
-    script = ''
-      if [[ ! -f ${saslPasswordFile} ]]; then
-        install -m 0640 -g postfix /dev/null ${saslPasswordFile}
-        ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst \
-          ${./../conf/postfix/sasl_passwd}              \
-          > ${saslPasswordFile}
-      fi
-    '';
+    outPath = saslPasswordFile;
+    group = "postfix";
+    template = ../conf/postfix/sasl_passwd;
   };
 
   services.postfix = {
