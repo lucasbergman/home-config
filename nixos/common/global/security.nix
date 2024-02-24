@@ -51,6 +51,7 @@
               group = lib.mkOption {
                 description = "Group that will own the output file; if null, output file is not group-readable";
                 type = nullOr str;
+                default = null;
               };
             };
           });

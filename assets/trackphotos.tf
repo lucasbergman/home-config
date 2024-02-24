@@ -29,3 +29,19 @@ resource "local_sensitive_file" "instance_trackphotos" {
   content_base64  = google_service_account_key.instance_trackphotos.private_key
   filename        = "${path.module}/trackphotos-instance-private-key.json"
 }
+
+resource "google_secret_manager_secret" "trackphotos_root_password" {
+  secret_id = "trackphotos-root-password"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "trackphotos" {
+  for_each = toset([
+    google_secret_manager_secret.trackphotos_root_password.secret_id,
+  ])
+  secret_id = each.value
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.instance_trackphotos.email}"
+}
