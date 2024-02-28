@@ -37,6 +37,22 @@ variable "linode_type" {
   default     = "g6-standard-2"
 }
 
+variable "digitalocean_token" {
+  description = "DigitalOcean API token"
+  type        = string
+}
+
+variable "digitalocean_spaces_access_id" {
+  description = "DigitalOcean spaces access ID"
+  type        = string
+  default     = "DO00QEXQY7XNM68YHJXV"
+}
+
+variable "digitalocean_spaces_secret_key" {
+  description = "DigitalOcean spaces secret key"
+  type        = string
+}
+
 variable "slb_greywind_ipv4" {
   description = "IPv4 address of the legacy mail server, greywind.bergmans.us"
   type        = string

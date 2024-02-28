@@ -1,8 +1,12 @@
+data "digitalocean_droplet" "trackphotos" {
+  name = "trackphotos"
+}
+
 resource "google_dns_record_set" "bergmans_a_trackphotos" {
   managed_zone = google_dns_managed_zone.bergmans.name
   name         = "trackphotos.bergmans.us."
   type         = "A"
-  rrdatas      = ["157.230.186.237"]
+  rrdatas      = [data.digitalocean_droplet.trackphotos.ipv4_address]
   ttl          = 300
 }
 
@@ -30,8 +34,21 @@ resource "local_sensitive_file" "instance_trackphotos" {
   filename        = "${path.module}/trackphotos-instance-private-key.json"
 }
 
+resource "digitalocean_spaces_bucket" "trackphotos" {
+  name   = "trackphotos"
+  region = "nyc3"
+  acl    = "private"
+}
+
 resource "google_secret_manager_secret" "trackphotos_root_password" {
   secret_id = "trackphotos-root-password"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret" "trackphotos_storage_secret" {
+  secret_id = "trackphotos-storage-secret"
   replication {
     auto {}
   }
@@ -40,6 +57,8 @@ resource "google_secret_manager_secret" "trackphotos_root_password" {
 resource "google_secret_manager_secret_iam_member" "trackphotos" {
   for_each = toset([
     google_secret_manager_secret.trackphotos_root_password.secret_id,
+    google_secret_manager_secret.mail_ses_password.secret_id,
+    google_secret_manager_secret.trackphotos_storage_secret.secret_id,
   ])
   secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
