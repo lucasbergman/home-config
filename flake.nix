@@ -100,7 +100,6 @@
       cheddar = mkHost "x86_64-linux" [./nixos/hosts/cheddar];
       hedwig = mkHost "x86_64-linux" [./nixos/hosts/hedwig];
       snowball = mkHost "x86_64-linux" [./nixos/hosts/snowball];
-      trackphotos = mkHost "x86_64-linux" [./nixos/hosts/trackphotos];
     };
 
     homeConfigurations = {
