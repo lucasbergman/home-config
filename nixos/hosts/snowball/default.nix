@@ -34,6 +34,12 @@
   time.timeZone = "America/Chicago";
   slb.security.enable = false;
 
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+  };
+
   security.polkit.enable = true;
   hardware.opengl.enable = true;
 
