@@ -46,5 +46,5 @@ variable "slb_greywind_ipv4" {
 variable "slb_house_ipv4" {
   description = "IPv4 address of the legacy house server"
   type        = string
-  default     = "73.36.209.143"
+  default     = "67.162.80.40"
 }
