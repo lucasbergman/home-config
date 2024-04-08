@@ -19,6 +19,7 @@
       if [[ ! -d ${targetDir} ]]; then
         install -d -m 0500 -o unifi -g unifi ${targetDir}
       fi
+      rm -f ${targetDir}/config.gateway.json
       ln -f -s ${configFile} ${targetDir}/config.gateway.json
     '';
   };
