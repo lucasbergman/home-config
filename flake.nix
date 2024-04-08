@@ -7,7 +7,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     idiotbox = {
-      url = "/home/lucas/hack/idiotbox";
+      url = "git+ssh://git@github.com/lucasbergman/idiotbox.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
