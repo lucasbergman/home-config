@@ -11,11 +11,11 @@
 in
   stdenv.mkDerivation (finalAttrs: {
     pname = "moneydance";
-    version = "2023.3_5064";
+    version = "2024.1_5118";
 
     src = fetchzip {
-      url = "https://infinitekind.com/stabledl/${finalAttrs.version}/moneydance-linux.tar.gz";
-      hash = "sha256-jHr1V/gV1seenw2Q0/G405lTiabEYEsOS8p/XyByrtM=";
+      url = "https://infinitekind.com/stabledl/2024_5118/moneydance-linux.tar.gz";
+      hash = "sha256-wwSb3CuhuXB4I9jq+TpLPbd1k9UzqQbAaZkGKgi+nns=";
     };
 
     nativeBuildInputs = [makeWrapper];
