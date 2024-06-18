@@ -14,6 +14,7 @@
   };
 
   home.packages = [
+    pkgs.jq
     pkgs.vim
     pkgs-unstable.bitwarden-cli
   ];
