@@ -7,6 +7,7 @@
   postfixTLSHost = "smtp.bergmans.us";
   postfixDomain = "bergmans.us";
   dovecotTLSHost = "pop.bergmans.us";
+  dovecotLegacyTLSHost = "greywind.bergmans.us";
   mailDirectory = "/data/mail";
   saslPasswordFile = "/run/sasl_passwd";
   dovecotUserFile = "/run/dovecot_users";
@@ -150,6 +151,10 @@ in {
     reloadServices = ["dovecot2.service"];
   };
 
+  security.acme.certs.${dovecotLegacyTLSHost} = {
+    reloadServices = ["dovecot2.service"];
+  };
+
   systemd.services."dovecot-userdb" = {
     description = "download the Dovecot user DB file";
     wantedBy = ["multi-user.target"];
@@ -204,6 +209,11 @@ in {
 
       namespace inbox {
         inbox = yes
+      }
+
+      local_name ${dovecotLegacyTLSHost} {
+        ssl_cert = </var/lib/acme/${dovecotLegacyTLSHost}/cert.pem
+        ssl_key = </var/lib/acme/${dovecotLegacyTLSHost}/key.pem
       }
 
       ssl_min_protocol = TLSv1.2
