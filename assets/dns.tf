@@ -41,7 +41,7 @@ resource "google_dns_record_set" "bergmans_a_mail" {
   managed_zone = google_dns_managed_zone.bergmans.name
   name         = "mail.bergmans.us."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 300
 }
 
@@ -109,7 +109,7 @@ resource "google_dns_record_set" "bergmanhouse_a_mail" {
   managed_zone = google_dns_managed_zone.bergmanhouse.name
   name         = "mail.bergman.house."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 1800
 }
 
@@ -184,7 +184,7 @@ resource "google_dns_record_set" "blurt_a" {
   managed_zone = google_dns_managed_zone.blurt.name
   name         = "blurt.chat."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 1800
 }
 
@@ -200,7 +200,7 @@ resource "google_dns_record_set" "blurt_a_mail" {
   managed_zone = google_dns_managed_zone.blurt.name
   name         = "mail.blurt.chat."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 1800
 }
 

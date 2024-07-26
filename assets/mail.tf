@@ -74,7 +74,7 @@ resource "google_dns_record_set" "smartmouse_a_mail" {
   project      = "smartmouse-web"
   name         = "mail.smartmousetravel.com."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 300
 }
 
