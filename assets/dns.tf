@@ -58,11 +58,12 @@ resource "google_dns_record_set" "bergmans_txt" {
   ttl = 3600
 }
 
+# TODO: Delete this when POP3 clients are moved to pop.bergmans.us
 resource "google_dns_record_set" "bergmans_a_greywind" {
   managed_zone = google_dns_managed_zone.bergmans.name
   name         = "greywind.bergmans.us."
   type         = "A"
-  rrdatas      = [var.slb_greywind_ipv4]
+  rrdatas      = [linode_instance.cheddar.ip_address]
   ttl          = 300
 }
 
