@@ -35,7 +35,7 @@ in {
   };
 
   virtualisation.oci-containers.containers.idiotbox-vpn = {
-    image = "docker.io/qmcgaw/gluetun:v3.37";
+    image = "docker.io/qmcgaw/gluetun:v3.39";
     extraOptions = [
       "--cap-add=NET_ADMIN"
       "--privileged"
