@@ -5,6 +5,9 @@
     dataDir = "/storage/media/plex-data";
   };
 
+  # Plex serves its data from /storage
+  systemd.services.plex.wants = ["zfs.target"];
+
   services.nginx.virtualHosts."plex.bergman.house" = {
     forceSSL = true;
     enableACME = true;
