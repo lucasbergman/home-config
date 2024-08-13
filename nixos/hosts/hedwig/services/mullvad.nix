@@ -14,18 +14,33 @@ in {
     '';
   };
 
+  systemd.services.idiotbox-pod = let
+    name = "idiotbox";
+    podScript = pkgs.writeShellScript "pod-${name}" ''
+      podid=$(${pkgs.podman}/bin/podman pod create \
+        -p 9091:9091 -p 51413:51413 \
+        --name ${name} \
+        --replace)
+      sleep infinity
+      ${pkgs.podman}/bin/podman pod rm $podid
+    '';
+  in {
+    wantedBy = ["multi-user.target"];
+    after = ["network-online.target"];
+    wants = ["network-online.target"];
+    serviceConfig = {
+      Restart = "on-failure";
+      ExecStart = "${podScript}";
+    };
+  };
+
   virtualisation.oci-containers.containers.idiotbox-vpn = {
     image = "docker.io/qmcgaw/gluetun:v3.37";
     extraOptions = [
       "--cap-add=NET_ADMIN"
       "--privileged"
       "--sysctl=net.ipv6.conf.all.disable_ipv6=1"
-      "--pod=new:idiotbox"
-    ];
-
-    ports = [
-      "9091:9091"
-      "51413:51413"
+      "--pod=idiotbox"
     ];
 
     # TODO: Make sure state directory exists
@@ -46,5 +61,14 @@ in {
     };
 
     environmentFiles = [mullvadSecretsEnvFile];
+  };
+
+  # Make sure the VPN comes up after the pod exists, and take it down if the
+  # pod is going away. N.B. containers have a `dependsOn` option, but that
+  # doesn't work here; it assumes that all podman container services are
+  # depending only on other containers.
+  systemd.services.podman-idiotbox-vpn = {
+    after = ["idiotbox-pod.service"];
+    requires = ["idiotbox-pod.service"];
   };
 }
