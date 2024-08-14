@@ -24,7 +24,7 @@
     user = "idiotbox";
     group = "idiotbox";
     pod = "idiotbox";
-    after = ["podman-idiotbox-vpn.service"];
+    dependsOn = ["idiotbox-vpn"];
     mediaDirectory = "/storage/media";
   };
 }
