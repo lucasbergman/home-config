@@ -6,7 +6,7 @@ let
 in
   {
     lib,
-    mypkgs,
+    pkgs,
     ...
   }: {
     security.acme.certs."${mumbleHost}" = {
@@ -14,25 +14,12 @@ in
       group = "murmur";
     };
 
-    # TODO: This doesn't re-run if the value of passwordSecretID changes.
-    # The solution is likely to put that in a derivation.
-    systemd.services."murmur-password" = {
-      description = "decrypt murmur server password";
-      wantedBy = ["multi-user.target"];
+    slb.security.secrets.murmur-password = {
       before = ["murmur.service"];
-      after = ["instance-key.service"];
-      serviceConfig.Type = "oneshot";
-      environment = {
-        GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-      };
-
-      script = ''
-        if [[ ! -f ${passwordEnvFile} ]]; then
-          install -m 0440 -g murmur /dev/null ${passwordEnvFile}
-          ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret \
-            -e SERVER_PASSWORD                        \
-            ${passwordSecretID} > ${passwordEnvFile}
-        fi
+      outPath = passwordEnvFile;
+      group = "murmur";
+      template = pkgs.writeText "murmur-password-tmpl" ''
+        SERVER_PASSWORD={{gcpSecret "${passwordSecretID}"}}
       '';
     };
 

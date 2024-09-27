@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  mypkgs,
   ...
 }: {
   options = {
@@ -60,22 +59,10 @@
       };
     };
 
-    systemd.services.restic-backup-password = {
-      description = "populate the GCS backups password file";
-      wantedBy = ["multi-user.target"];
+    slb.security.secrets.restic-password = {
       before = ["restic-backups-gcsbackup.service"];
-      after = ["instance-key.service"];
-      serviceConfig.Type = "oneshot";
-      environment = {
-        GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-      };
-
-      script = ''
-        [[ -f ${myPasswordFile} ]] && exit 0
-        install -m 0400 /dev/null ${myPasswordFile}
-        "${mypkgs.cat-gcp-secret}"/bin/cat-gcp-secret \
-          "${cfg.passwordSecretID}" > ${myPasswordFile}
-      '';
+      outPath = myPasswordFile;
+      secretPath = cfg.passwordSecretID;
     };
   };
 }

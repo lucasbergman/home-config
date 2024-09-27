@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  mypkgs,
   ...
 }: let
   postfixTLSHost = "smtp.bergmans.us";
@@ -155,23 +154,11 @@ in {
     reloadServices = ["dovecot2.service"];
   };
 
-  systemd.services."dovecot-userdb" = {
-    description = "download the Dovecot user DB file";
-    wantedBy = ["multi-user.target"];
+  slb.security.secrets.dovecot-userdb = {
     before = ["dovecot2.service"];
-    after = ["instance-key.service"];
-    serviceConfig.Type = "oneshot";
-    environment = {
-      GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-    };
-
-    script = ''
-      if [[ ! -f ${dovecotUserFile} ]]; then
-        install -m 0640 -g dovecot2 /dev/null ${dovecotUserFile}
-        ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret  \
-          ${dovecotUserFileSecret} > ${dovecotUserFile}
-      fi
-    '';
+    outPath = dovecotUserFile;
+    group = "dovecot2";
+    secretPath = dovecotUserFileSecret;
   };
 
   services.dovecot2 = {
