@@ -34,9 +34,15 @@
                 description = "Output path for secret material";
                 type = path;
               };
+              secretPath = lib.mkOption {
+                description = "Path to secret to write; cannot be set with template";
+                type = nullOr str;
+                default = null;
+              };
               template = lib.mkOption {
-                description = "Input template that is processed to substitute secret material";
-                type = path;
+                description = "Input template that is processed to substitute secret material; cannot be set with secretPath";
+                type = nullOr path;
+                default = null;
               };
               before = lib.mkOption {
                 description = "List of systemd units that should be delayed until after secrets are written";
@@ -72,6 +78,10 @@
         if conf.group == null
         then "root"
         else conf.group;
+      tmpl =
+        if conf.template == null
+        then assert conf.secretPath != null; pkgs.writeText "secret-${name}-tmpl" "{{gcpSecret \"${conf.secretPath}\"}}"
+        else assert conf.secretPath == null; conf.template;
     in {
       description = "Fetch secret ${name}";
       wantedBy = ["multi-user.target"];
@@ -84,7 +94,7 @@
         [[ -f ${conf.outPath} ]] || install -m 0600 /dev/null ${conf.outPath}
         chown ${conf.owner}:${group} ${conf.outPath}
         chmod ${mode} ${conf.outPath}
-        ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${conf.template} > ${conf.outPath}
+        ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${tmpl} > ${conf.outPath}
       '';
     };
   in
