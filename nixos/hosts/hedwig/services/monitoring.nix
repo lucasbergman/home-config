@@ -102,11 +102,11 @@
       htpasswdFile = "/run/prometheus.htpasswd";
       passwdSecret = "projects/bergmans-services/secrets/prometheus-password-hedwig/versions/1";
     in ''
-      if [[ ! -f ${htpasswdFile} ]]; then
-        install -m 0400 -o nginx -g nginx /dev/null ${htpasswdFile}
-        ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret ${passwdSecret} | \
-          ${pkgs.apacheHttpd}/bin/htpasswd -ic ${htpasswdFile} metrics
-      fi
+      [[ -f ${htpasswdFile} ]] || install -m 0400 -o nginx -g nginx /dev/null ${htpasswdFile}
+      chown nginx:nginx ${htpasswdFile}
+      chmod 0400 ${htpasswdFile}
+      ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret ${passwdSecret} | \
+        ${pkgs.apacheHttpd}/bin/htpasswd -i ${htpasswdFile} metrics
     '';
   };
 
