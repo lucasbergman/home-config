@@ -1,5 +1,6 @@
 {...}: {
   imports = [
+    ./home-vpn.nix
     ./monitoring.nix
     ./mullvad.nix
     ./plex.nix
