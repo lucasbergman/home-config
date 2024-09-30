@@ -2,7 +2,6 @@
   pkgs,
   pkgs-unstable,
 }: {
-  cat-gcp-secret = pkgs.callPackage ./cat-gcp-secret {};
   gcp-secret-subst = pkgs.callPackage ./gcp-secret-subst {};
   moneydance = pkgs.callPackage ./moneydance.nix {};
   prometheus-jmx = pkgs.callPackage ./prometheus-jmx.nix {};
