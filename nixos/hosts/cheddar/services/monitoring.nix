@@ -18,12 +18,12 @@ in {
 
   services.prometheus = {
     enable = true;
-    listenAddress = "[::1]";
+    listenAddress = "10.6.0.1";
     ruleFiles = [./../conf/prometheus/prober_smartmouse.rules];
 
     alertmanagers = [
       {
-        static_configs = [{targets = ["[::1]:${toString promcfg.alertmanager.port}"];}];
+        static_configs = [{targets = ["10.6.0.1:${toString promcfg.alertmanager.port}"];}];
       }
     ];
 
@@ -82,7 +82,7 @@ in {
 
     alertmanager = {
       enable = true;
-      listenAddress = "[::1]";
+      listenAddress = "10.6.0.1";
       environmentFile = alertmanagerEnvFile;
       logLevel = "debug";
 

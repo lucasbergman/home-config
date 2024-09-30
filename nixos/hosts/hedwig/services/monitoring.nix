@@ -11,7 +11,7 @@
     unpollercfg = config.slb.unpoller;
   in {
     enable = true;
-    listenAddress = "[::1]";
+    listenAddress = "10.6.0.2";
     ruleFiles = [
       ../conf/prometheus/hedwig.yml
     ];
@@ -86,37 +86,5 @@
   slb.unpoller = {
     unifiUser = "unifipoller";
     unifiPasswordSecretID = "projects/bergmans-services/secrets/unpoller-password-hedwig/versions/1";
-  };
-
-  systemd.services."prometheus-htpasswd" = {
-    description = "write Prometheus htpasswd file";
-    wantedBy = ["multi-user.target"];
-    before = ["nginx.service"];
-    after = ["instance-key.service"];
-    serviceConfig.Type = "oneshot";
-    environment = {
-      GOOGLE_APPLICATION_CREDENTIALS = "/run/gcp-instance-creds.json";
-    };
-
-    script = let
-      htpasswdFile = "/run/prometheus.htpasswd";
-      passwdSecret = "projects/bergmans-services/secrets/prometheus-password-hedwig/versions/1";
-    in ''
-      [[ -f ${htpasswdFile} ]] || install -m 0400 -o nginx -g nginx /dev/null ${htpasswdFile}
-      chown nginx:nginx ${htpasswdFile}
-      chmod 0400 ${htpasswdFile}
-      ${mypkgs.cat-gcp-secret}/bin/cat-gcp-secret ${passwdSecret} | \
-        ${pkgs.apacheHttpd}/bin/htpasswd -i ${htpasswdFile} metrics
-    '';
-  };
-
-  services.nginx.virtualHosts."metrics.bergman.house" = {
-    forceSSL = true;
-    enableACME = true;
-    locations."/" = {
-      basicAuthFile = "/run/prometheus.htpasswd";
-      proxyPass = "http://[::1]:${toString config.services.prometheus.port}";
-      proxyWebsockets = true;
-    };
   };
 }
