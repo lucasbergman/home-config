@@ -20,6 +20,13 @@
             PersistentKeepalive = 20;
           };
         }
+        {
+          wireguardPeerConfig = {
+            # snowball
+            PublicKey = "fjA9ariWkWqJ+v4NtfROXIqLmm0KsjS7mrkA9ULgLAE=";
+            AllowedIPs = ["10.6.0.3"];
+          };
+        }
       ];
     };
     networks.bergnet0 = {

@@ -11,6 +11,7 @@
     ../../common/users
     ../../common/desktop.nix
     ./hardware-configuration.nix
+    ./home-vpn.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
