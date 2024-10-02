@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   postfixTLSHost = "smtp.bergmans.us";
   postfixDomain = "bergmans.us";
   dovecotTLSHost = "pop.bergmans.us";
@@ -13,9 +14,10 @@
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/1";
   vmail_uid = 2000;
   vmail_gid = 2000;
-in {
+in
+{
   security.acme.certs.${postfixTLSHost} = {
-    reloadServices = ["postfix.service"];
+    reloadServices = [ "postfix.service" ];
   };
 
   users = {
@@ -30,21 +32,29 @@ in {
   };
 
   system.activationScripts."mail-storage" = {
-    deps = ["users" "groups"];
-    text = let
-      dir = lib.escapeShellArg "${mailDirectory}/users";
-    in ''
-      if [[ ! -e ${dir} ]]; then
-        install -d -m 750 -o vmail -g vmail ${dir}
-      else
-        chmod 750 ${dir}
-        chown --recursive vmail:vmail ${dir}
-      fi
-    '';
+    deps = [
+      "users"
+      "groups"
+    ];
+    text =
+      let
+        dir = lib.escapeShellArg "${mailDirectory}/users";
+      in
+      ''
+        if [[ ! -e ${dir} ]]; then
+          install -d -m 750 -o vmail -g vmail ${dir}
+        else
+          chmod 750 ${dir}
+          chown --recursive vmail:vmail ${dir}
+        fi
+      '';
   };
 
   slb.security.secrets."postfix-ses-password" = {
-    before = ["postfix.service" "postfix-setup.service"];
+    before = [
+      "postfix.service"
+      "postfix-setup.service"
+    ];
     outPath = saslPasswordFile;
     group = "postfix";
     template = ../conf/postfix/sasl_passwd;
@@ -121,7 +131,7 @@ in {
       # Enable authentication for outgoing SMTP
       smtp_sasl_auth_enable = true;
       smtp_sasl_password_maps = "hash:/var/lib/postfix/conf/sasl_passwd";
-      smtp_sasl_security_options = ["noanonymous"];
+      smtp_sasl_security_options = [ "noanonymous" ];
 
       # Virtual mailbox domains are for when Postfix does "final delivery for
       # hosted domains where each recipient address can have its own mailbox."
@@ -147,15 +157,15 @@ in {
   };
 
   security.acme.certs.${dovecotTLSHost} = {
-    reloadServices = ["dovecot2.service"];
+    reloadServices = [ "dovecot2.service" ];
   };
 
   security.acme.certs.${dovecotLegacyTLSHost} = {
-    reloadServices = ["dovecot2.service"];
+    reloadServices = [ "dovecot2.service" ];
   };
 
   slb.security.secrets.dovecot-userdb = {
-    before = ["dovecot2.service"];
+    before = [ "dovecot2.service" ];
     outPath = dovecotUserFile;
     group = "dovecot2";
     secretPath = dovecotUserFileSecret;

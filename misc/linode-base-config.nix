@@ -2,7 +2,8 @@
 # See also <https://www.linode.com/docs/guides/install-nixos-on-linode/>,
 # but note that when you boot the installer image, you have to smack <tab>
 # and add `console=ttyS0` on the end of the kernel params.
-{...}: {
+{ ... }:
+{
   imports = [
     ./hardware-configuration.nix
   ];
@@ -21,7 +22,7 @@
     '';
   };
   boot.loader.timeout = 10;
-  boot.kernelParams = ["console=ttyS0,19200n8"];
+  boot.kernelParams = [ "console=ttyS0,19200n8" ];
 
   networking.usePredictableInterfaceNames = false;
   networking.useDHCP = false;

@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./home-vpn.nix
     ./monitoring.nix
@@ -25,7 +26,7 @@
     user = "idiotbox";
     group = "idiotbox";
     pod = "idiotbox";
-    dependsOn = ["idiotbox-vpn"];
+    dependsOn = [ "idiotbox-vpn" ];
     mediaDirectory = "/storage/media";
   };
 }

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   options = {
     slb.backups = {
       gcsPath = lib.mkOption {
@@ -15,7 +16,10 @@
       backupPaths = lib.mkOption {
         type = with lib.types; listOf str;
         description = "List of local paths to back up";
-        example = ["/data" "/otherdata"];
+        example = [
+          "/data"
+          "/otherdata"
+        ];
       };
 
       passwordSecretID = lib.mkOption {
@@ -27,42 +31,44 @@
       exclude = lib.mkOption {
         type = with lib.types; listOf str;
         description = "List of patterns to exclude from backup";
-        default = [];
+        default = [ ];
       };
     };
   };
 
-  config = let
-    resticEnvFile =
-      pkgs.writeText "restic.env"
-      ''
+  config =
+    let
+      resticEnvFile = pkgs.writeText "restic.env" ''
         GOOGLE_APPLICATION_CREDENTIALS=/run/gcp-instance-creds.json
       '';
-    cfg = config.slb.backups;
-    myPasswordFile = "/run/restic-password";
-  in {
-    services.restic.backups = {
-      gcsbackup = {
-        timerConfig = {OnCalendar = "daily";};
-        repository = "gs:bergmans-services-backup:${cfg.gcsPath}";
-        paths = cfg.backupPaths;
-        environmentFile = resticEnvFile.outPath;
-        passwordFile = myPasswordFile;
-        exclude = cfg.exclude;
+      cfg = config.slb.backups;
+      myPasswordFile = "/run/restic-password";
+    in
+    {
+      services.restic.backups = {
+        gcsbackup = {
+          timerConfig = {
+            OnCalendar = "daily";
+          };
+          repository = "gs:bergmans-services-backup:${cfg.gcsPath}";
+          paths = cfg.backupPaths;
+          environmentFile = resticEnvFile.outPath;
+          passwordFile = myPasswordFile;
+          exclude = cfg.exclude;
 
-        # Create the repo if it doesn't already exist. I guess this is
-        # slightly dangerous, but doing without it is a hassle.
-        initialize = true;
+          # Create the repo if it doesn't already exist. I guess this is
+          # slightly dangerous, but doing without it is a hassle.
+          initialize = true;
 
-        # Limit to 2 Google Cloud Storage connections concurrently
-        extraOptions = ["gs.connections=2"];
+          # Limit to 2 Google Cloud Storage connections concurrently
+          extraOptions = [ "gs.connections=2" ];
+        };
+      };
+
+      slb.security.secrets.restic-password = {
+        before = [ "restic-backups-gcsbackup.service" ];
+        outPath = myPasswordFile;
+        secretPath = cfg.passwordSecretID;
       };
     };
-
-    slb.security.secrets.restic-password = {
-      before = ["restic-backups-gcsbackup.service"];
-      outPath = myPasswordFile;
-      secretPath = cfg.passwordSecretID;
-    };
-  };
 }

@@ -1,10 +1,11 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-gtk;
 
-    extraPackages = epkgs:
-      with epkgs; [
+    extraPackages =
+      epkgs: with epkgs; [
         lsp-mode
         magit
         nix-mode

@@ -1,4 +1,5 @@
-{pkgs-unstable, ...}: {
+{ pkgs-unstable, ... }:
+{
   services.plex = {
     enable = true;
     package = pkgs-unstable.plex;
@@ -6,7 +7,7 @@
   };
 
   # Plex serves its data from /storage
-  systemd.services.plex.wants = ["zfs.target"];
+  systemd.services.plex.wants = [ "zfs.target" ];
 
   services.nginx.virtualHosts."plex.bergman.house" = {
     forceSSL = true;

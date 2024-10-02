@@ -1,5 +1,6 @@
-{...}: {
-  imports = [./boot.nix];
+{ ... }:
+{
+  imports = [ ./boot.nix ];
 
   networking = {
     usePredictableInterfaceNames = false;

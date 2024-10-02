@@ -2,8 +2,9 @@
   pkgs,
   pkgs-unstable,
   ...
-}: {
-  imports = [./emacs.nix];
+}:
+{
+  imports = [ ./emacs.nix ];
 
   home = {
     username = "lucas";
@@ -26,7 +27,7 @@
   programs.bash = {
     enable = true; # LOL
     historyFileSize = 200000;
-    historyControl = ["erasedups"];
+    historyControl = [ "erasedups" ];
   };
 
   editorconfig = {

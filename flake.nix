@@ -29,80 +29,88 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    idiotbox,
-    home-manager,
-    gomod2nix,
-    vscode-server,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
-    forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux"];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      idiotbox,
+      home-manager,
+      gomod2nix,
+      vscode-server,
+      ...
+    }@inputs:
+    let
+      inherit (self) outputs;
+      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
 
-    allPkgsOf = {
-      system,
-      overlays ? [],
-    }: {
-      pkgs = import nixpkgs {
-        inherit system overlays;
-        config.allowUnfree = true;
-      };
-      pkgs-unstable = import inputs.nixpkgs-unstable {
-        inherit system;
-        config.allowUnfree = true;
-      };
-    };
-
-    mkHome = system: modules: let
-      allPkgs = allPkgsOf {inherit system;};
-    in
-      home-manager.lib.homeManagerConfiguration {
-        inherit modules;
-        inherit (allPkgs) pkgs;
-        extraSpecialArgs = {
-          inherit inputs;
-          inherit (allPkgs) pkgs-unstable;
-          mypkgs = outputs.packages.${system};
+      allPkgsOf =
+        {
+          system,
+          overlays ? [ ],
+        }:
+        {
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
         };
-      };
 
-    mkHost = system: modules:
-      nixpkgs.lib.nixosSystem {
-        inherit modules;
-        specialArgs =
-          {
+      mkHome =
+        system: modules:
+        let
+          allPkgs = allPkgsOf { inherit system; };
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit modules;
+          inherit (allPkgs) pkgs;
+          extraSpecialArgs = {
+            inherit inputs;
+            inherit (allPkgs) pkgs-unstable;
+            mypkgs = outputs.packages.${system};
+          };
+        };
+
+      mkHost =
+        system: modules:
+        nixpkgs.lib.nixosSystem {
+          inherit modules;
+          specialArgs = {
             inherit inputs outputs;
             mypkgs = outputs.packages.${system};
-          }
-          // (allPkgsOf {inherit system;});
-      };
-  in {
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
-    packages = forAllSystems (system:
-      import ./pkgs (
-        allPkgsOf {
+          } // (allPkgsOf { inherit system; });
+        };
+    in
+    {
+      formatter = forAllSystems (system: nixpkgs-unstable.legacyPackages.${system}.nixfmt-rfc-style);
+      packages = forAllSystems (
+        system:
+        import ./pkgs (allPkgsOf {
           inherit system;
-          overlays = [gomod2nix.overlays.default];
-        }
-      ));
+          overlays = [ gomod2nix.overlays.default ];
+        })
+      );
 
-    devShells = forAllSystems (system:
-      import ./shell.nix (
-        {inherit inputs system;} // (allPkgsOf {inherit system;})
-      ));
+      devShells = forAllSystems (
+        system: import ./shell.nix ({ inherit inputs system; } // (allPkgsOf { inherit system; }))
+      );
 
-    nixosConfigurations = {
-      cheddar = mkHost "x86_64-linux" [./nixos/hosts/cheddar];
-      hedwig = mkHost "x86_64-linux" [./nixos/hosts/hedwig idiotbox.nixosModules.default];
-      snowball = mkHost "x86_64-linux" [./nixos/hosts/snowball];
+      nixosConfigurations = {
+        cheddar = mkHost "x86_64-linux" [ ./nixos/hosts/cheddar ];
+        hedwig = mkHost "x86_64-linux" [
+          ./nixos/hosts/hedwig
+          idiotbox.nixosModules.default
+        ];
+        snowball = mkHost "x86_64-linux" [ ./nixos/hosts/snowball ];
+      };
+
+      homeConfigurations = {
+        "lucas@hedwig" = mkHome "x86_64-linux" [ ./home/hedwig.nix ];
+        "lucas@snowball" = mkHome "x86_64-linux" [ ./home/snowball.nix ];
+      };
     };
-
-    homeConfigurations = {
-      "lucas@hedwig" = mkHome "x86_64-linux" [./home/hedwig.nix];
-      "lucas@snowball" = mkHome "x86_64-linux" [./home/snowball.nix];
-    };
-  };
 }

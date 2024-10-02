@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 pkgs.buildGoApplication {
   pname = "gcp-secret-subst";
   version = "0.1";

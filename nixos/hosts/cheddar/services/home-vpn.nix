@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   systemd.network = {
     netdevs."50-bergnet0" = {
       netdevConfig = {
@@ -15,21 +16,21 @@
           wireguardPeerConfig = {
             # hedwig
             PublicKey = "/IYLz0gQbphUwzcZJyCacfe9EhuQNfd+37p6yOJSK2M=";
-            AllowedIPs = ["10.6.0.2"];
+            AllowedIPs = [ "10.6.0.2" ];
           };
         }
         {
           wireguardPeerConfig = {
             # snowball
             PublicKey = "fjA9ariWkWqJ+v4NtfROXIqLmm0KsjS7mrkA9ULgLAE=";
-            AllowedIPs = ["10.6.0.3"];
+            AllowedIPs = [ "10.6.0.3" ];
           };
         }
       ];
     };
     networks.bergnet0 = {
       matchConfig.Name = "bergnet0";
-      address = ["10.6.0.1/24"];
+      address = [ "10.6.0.1/24" ];
       DHCP = "no";
       networkConfig.IPv6AcceptRA = false;
     };

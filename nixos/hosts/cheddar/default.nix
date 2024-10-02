@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ../../common/cloudbackup.nix
     ../../common/gcplogs.nix
@@ -29,7 +30,7 @@
 
   slb.backups = {
     gcsPath = "/cheddar";
-    backupPaths = ["/data"];
+    backupPaths = [ "/data" ];
     passwordSecretID = "projects/bergmans-services/secrets/restic-password-cheddar/versions/1";
   };
 

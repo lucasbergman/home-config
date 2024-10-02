@@ -1,4 +1,5 @@
-{pkgs-unstable, ...}: {
+{ pkgs-unstable, ... }:
+{
   home.packages = [
     pkgs-unstable.google-chrome
   ];
@@ -9,24 +10,26 @@
     extraSessionCommands = ''
       export _JAVA_AWT_WM_NONREPARENTING=1
     '';
-    config = let
-      fonts = {
-        names = ["DejaVu Sans"];
-        size = 16.0;
+    config =
+      let
+        fonts = {
+          names = [ "DejaVu Sans" ];
+          size = 16.0;
+        };
+      in
+      {
+        inherit fonts;
+        modifier = "Mod4";
+        terminal = "alacritty";
+        startup = [ { command = "alacritty"; } ];
+        bars = [
+          {
+            inherit fonts;
+            position = "top";
+            statusCommand = "while date +'%a %F %H:%M'; do sleep 5; done";
+          }
+        ];
       };
-    in {
-      inherit fonts;
-      modifier = "Mod4";
-      terminal = "alacritty";
-      startup = [{command = "alacritty";}];
-      bars = [
-        {
-          inherit fonts;
-          position = "top";
-          statusCommand = "while date +'%a %F %H:%M'; do sleep 5; done";
-        }
-      ];
-    };
   };
 
   programs.alacritty = {

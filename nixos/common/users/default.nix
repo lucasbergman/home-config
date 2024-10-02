@@ -1,5 +1,6 @@
-{...}: {
-  imports = [./lucas];
+{ ... }:
+{
+  imports = [ ./lucas ];
 
   security.sudo.wheelNeedsPassword = false;
   users = {

@@ -3,7 +3,8 @@
   pkgs,
   pkgs-unstable,
   system,
-}: {
+}:
+{
   default = pkgs.mkShell {
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
 

@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   users.users.augie = {
     isNormalUser = true;
     openssh.authorizedKeys.keys = [

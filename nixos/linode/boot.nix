@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   boot = {
     loader.grub = {
       enable = true;
@@ -13,6 +14,6 @@
       '';
     };
     loader.timeout = 10;
-    kernelParams = ["console=ttyS0,19200n8"];
+    kernelParams = [ "console=ttyS0,19200n8" ];
   };
 }

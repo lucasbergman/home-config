@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ../../common/global
     ../../common/users
@@ -34,14 +35,14 @@
     };
   };
 
-  boot.zfs.extraPools = ["storage"];
+  boot.zfs.extraPools = [ "storage" ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # https://grahamc.com/blog/nixos-on-zfs/
-  boot.kernelParams = ["elevator=none"];
+  boot.kernelParams = [ "elevator=none" ];
 
   networking = {
     hostName = "hedwig";
@@ -55,8 +56,8 @@
 
   systemd.network.networks."10-wan" = {
     matchConfig.Name = "enp3s0";
-    address = ["192.168.101.3/24"];
-    routes = [{routeConfig.Gateway = "192.168.101.1";}];
+    address = [ "192.168.101.3/24" ];
+    routes = [ { routeConfig.Gateway = "192.168.101.1"; } ];
     linkConfig.RequiredForOnline = "routable";
   };
 

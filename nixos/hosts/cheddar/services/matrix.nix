@@ -1,4 +1,5 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   matrixServerName = "bergman.house";
   matrixTLSHost = "matrix.bergman.house";
   dataDirectory = "/data/matrix-synapse";
@@ -12,10 +13,14 @@
     locations."/_synapse/client".proxyPass = "http://[::1]:8008";
   };
   acmeConfig = {
-    reloadServices = ["matrix-synapse.service" "nginx.service"];
+    reloadServices = [
+      "matrix-synapse.service"
+      "nginx.service"
+    ];
     group = "nginx";
   };
-in {
+in
+{
   security.acme.certs."${matrixServerName}" = acmeConfig;
   security.acme.certs."${matrixTLSHost}" = acmeConfig;
   services.nginx.virtualHosts = {
@@ -27,17 +32,22 @@ in {
   # in particular, this helps if a block storage volume moves between VM
   # instances and the user/group ID for matrix-synapse changes is different.
   system.activationScripts."synapse-storage" = {
-    deps = ["users" "groups"];
-    text = let
-      dir = lib.escapeShellArg dataDirectory;
-    in ''
-      if [[ ! -e ${dir} ]]; then
-        install -d -m 750 -o matrix-synapse -g matrix-synapse ${dir}
-      else
-        chmod 750 ${dir}
-        chown --recursive matrix-synapse:matrix-synapse ${dir}
-      fi
-    '';
+    deps = [
+      "users"
+      "groups"
+    ];
+    text =
+      let
+        dir = lib.escapeShellArg dataDirectory;
+      in
+      ''
+        if [[ ! -e ${dir} ]]; then
+          install -d -m 750 -o matrix-synapse -g matrix-synapse ${dir}
+        else
+          chmod 750 ${dir}
+          chown --recursive matrix-synapse:matrix-synapse ${dir}
+        fi
+      '';
   };
 
   services.matrix-synapse = {
@@ -52,12 +62,15 @@ in {
       listeners = [
         {
           port = 8008;
-          bind_addresses = ["::1"];
+          bind_addresses = [ "::1" ];
           tls = false;
           x_forwarded = true;
           resources = [
             {
-              names = ["client" "federation"];
+              names = [
+                "client"
+                "federation"
+              ];
               compress = false;
             }
           ];

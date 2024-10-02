@@ -3,7 +3,8 @@ let
   insideInterface = "eth1";
   insideAddr = "192.168.101.3";
   insideCIDR = "192.168.101.0/24";
-in {
+in
+{
   service = {
     nat = {
       rule = {

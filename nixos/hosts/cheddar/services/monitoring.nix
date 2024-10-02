@@ -3,37 +3,39 @@
   lib,
   mypkgs,
   ...
-}: let
+}:
+let
   promcfg = config.services.prometheus;
   alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
-in {
+in
+{
   slb.security.secrets."pagerduty-key" = {
     outPath = alertmanagerEnvFile;
     template = ./../conf/prometheus/alertmanager.env;
-    before = ["alertmanager.service"];
+    before = [ "alertmanager.service" ];
     group = "prometheus";
   };
 
   services.prometheus = {
     enable = true;
     listenAddress = "10.6.0.1";
-    ruleFiles = [./../conf/prometheus/prober_smartmouse.rules];
+    ruleFiles = [ ./../conf/prometheus/prober_smartmouse.rules ];
 
     alertmanagers = [
       {
-        static_configs = [{targets = ["10.6.0.1:${toString promcfg.alertmanager.port}"];}];
+        static_configs = [ { targets = [ "10.6.0.1:${toString promcfg.alertmanager.port}" ]; } ];
       }
     ];
 
     scrapeConfigs = [
       {
         job_name = "node";
-        static_configs = [{targets = ["[::1]:${toString promcfg.exporters.node.port}"];}];
+        static_configs = [ { targets = [ "[::1]:${toString promcfg.exporters.node.port}" ]; } ];
         relabel_configs = [
           {
-            source_labels = ["__address__"];
+            source_labels = [ "__address__" ];
             regex = "(.+):(.*)$";
             target_label = "instance";
             replacement = "cheddar:$2";
@@ -43,15 +45,17 @@ in {
       {
         job_name = "smartmouse";
         metrics_path = "/probe";
-        params = {module = ["http_head_fast_2xx"];};
-        static_configs = [{targets = ["https://smartmousetravel.com"];}];
+        params = {
+          module = [ "http_head_fast_2xx" ];
+        };
+        static_configs = [ { targets = [ "https://smartmousetravel.com" ]; } ];
         relabel_configs = [
           {
-            source_labels = ["__address__"];
+            source_labels = [ "__address__" ];
             target_label = "__param_target";
           }
           {
-            source_labels = ["__param_target"];
+            source_labels = [ "__param_target" ];
             target_label = "instance";
           }
           {
@@ -76,7 +80,7 @@ in {
       node = {
         enable = true;
         listenAddress = "[::1]";
-        enabledCollectors = ["systemd"];
+        enabledCollectors = [ "systemd" ];
       };
     };
 
@@ -103,14 +107,20 @@ in {
           smtp_require_tls = false;
         };
         route = {
-          group_by = ["alertname" "cluster" "service"];
+          group_by = [
+            "alertname"
+            "cluster"
+            "service"
+          ];
           group_wait = "30s";
           group_interval = "5m";
           repeat_interval = "4h";
           receiver = "me-mail"; # default receiver
           routes = [
             {
-              match = {severity = "page";};
+              match = {
+                severity = "page";
+              };
               receiver = "pagerduty";
             }
           ];
@@ -118,11 +128,11 @@ in {
         receivers = [
           {
             name = "me-mail";
-            email_configs = [{to = "lucas+alerts@bergmans.us";}];
+            email_configs = [ { to = "lucas+alerts@bergmans.us"; } ];
           }
           {
             name = "pagerduty";
-            pagerduty_configs = [{service_key = "$PAGERDUTY_SERVICE_KEY";}];
+            pagerduty_configs = [ { service_key = "$PAGERDUTY_SERVICE_KEY"; } ];
           }
         ];
       };

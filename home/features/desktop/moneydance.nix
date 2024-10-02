@@ -1,4 +1,5 @@
-{mypkgs, ...}: {
+{ mypkgs, ... }:
+{
   home.packages = [
     (mypkgs.moneydance.override {
       jvmFlags = [
