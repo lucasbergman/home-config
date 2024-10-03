@@ -1,8 +1,17 @@
 # About This
 
-This is a Terraform plan for managing assets in public cloud services.
+This is a Terraform plan for managing assets in public cloud services. The
+Terraform configuration is written in the Nix language and translated to JSON
+by [Terranix](https://terranix.org/).
 
-# First-time State Storage Setup
+Minimum survival commands:
+
+```shell
+$ nix run .#terraform-plan
+$ nix run .#terraform-apply
+```
+
+## First-time State Storage Setup
 
 Terraform state is stored in a Google Cloud Storage bucket. Minimum survival
 commands:

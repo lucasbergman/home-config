@@ -22,6 +22,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    terranix = {
+      url = "github:terranix/terranix";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.flake-utils.follows = "flake-utils";
@@ -37,6 +43,7 @@
       idiotbox,
       home-manager,
       gomod2nix,
+      terranix,
       vscode-server,
       ...
     }@inputs:
@@ -93,6 +100,18 @@
           inherit system;
           overlays = [ gomod2nix.overlays.default ];
         })
+      );
+
+      apps = forAllSystems (
+        system:
+        let
+          allPkgs = allPkgsOf { inherit system; };
+        in
+        import ./lib/terraform-apps.nix {
+          pkgs = allPkgs.pkgs;
+          terraform = allPkgs.pkgs-unstable.terraform;
+          inherit terranix;
+        }
       );
 
       devShells = forAllSystems (

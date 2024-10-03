@@ -17,6 +17,7 @@
       pkgs.nvd
       pkgs.sops
       pkgs.ssh-to-age
+      pkgs.terranix
 
       # These packages have actively packaging and otherwise fast-moving
       # upstreams, so pulling from nixpkgs-unstable seems wise
