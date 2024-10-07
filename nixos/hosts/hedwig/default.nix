@@ -54,6 +54,12 @@
     hostId = "f7b88e11";
   };
 
+  slb.securenet = {
+    enable = true;
+    network = "bergnet";
+    privateKeyPath = "/persist/etc/bergmans-wg-key";
+  };
+
   systemd.network.networks."10-wan" = {
     matchConfig.Name = "enp3s0";
     address = [ "192.168.101.3/24" ];

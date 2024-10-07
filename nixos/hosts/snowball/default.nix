@@ -12,11 +12,16 @@
     ../../common/users
     ../../common/desktop.nix
     ./hardware-configuration.nix
-    ./home-vpn.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  slb.securenet = {
+    enable = true;
+    network = "bergnet";
+    privateKeyPath = "/etc/bergmans-wg-key";
+  };
 
   systemd.network.networks."10-lan" = {
     matchConfig.Name = "enp3s0";

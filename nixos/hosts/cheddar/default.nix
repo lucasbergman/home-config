@@ -28,6 +28,12 @@
     domain = "bergmans.us";
   };
 
+  slb.securenet = {
+    enable = true;
+    network = "bergnet";
+    privateKeyPath = "/etc/bergmans-wg-key";
+  };
+
   slb.backups = {
     gcsPath = "/cheddar";
     backupPaths = [ "/data" ];
