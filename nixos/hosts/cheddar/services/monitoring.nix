@@ -25,7 +25,9 @@ in
 
     alertmanagers = [
       {
-        static_configs = [ { targets = [ "10.6.0.1:${toString promcfg.alertmanager.port}" ]; } ];
+        static_configs = [
+          { targets = [ "${promcfg.alertmanager.listenAddress}:${toString promcfg.alertmanager.port}" ]; }
+        ];
       }
     ];
 
