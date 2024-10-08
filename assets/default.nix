@@ -11,5 +11,8 @@
     ./mail.nix
     ./secrets.nix
     ./variables.nix
+
+    # Pull in our WireGuard mesh network(s) spec
+    ../nixos/common/global/securenets.nix
   ];
 }
