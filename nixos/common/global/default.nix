@@ -5,7 +5,6 @@
 }:
 {
   imports = [
-    ./security.nix
     ./securenets.nix
     ./ssh.nix
   ];

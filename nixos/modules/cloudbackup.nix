@@ -7,6 +7,13 @@
 {
   options = {
     slb.backups = {
+      # Deliberately set to true by default to shame machines with it off
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        description = "Whether to enable cloud backups";
+        default = true;
+      };
+
       gcsPath = lib.mkOption {
         type = lib.types.str;
         description = "Google Cloud Storage path for backup storage";
@@ -44,7 +51,7 @@
       cfg = config.slb.backups;
       myPasswordFile = "/run/restic-password";
     in
-    {
+    lib.mkIf cfg.enable {
       services.restic.backups = {
         gcsbackup = {
           timerConfig = {

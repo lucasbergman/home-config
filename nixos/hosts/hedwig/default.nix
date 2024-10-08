@@ -11,9 +11,6 @@
     ../../common/global
     ../../common/users
     ../../common/users/augie.nix
-    ../../common/cloudbackup.nix
-    ../../common/gcplogs.nix
-    ../../common/nginx.nix
     ./hardware-configuration.nix
     ./services
   ];
@@ -98,7 +95,10 @@
     ];
   };
 
+  slb.nginx.enable = true;
+
   slb.gcplogs = {
+    enable = true;
     location = "home:chateau";
     included-units = [
       "prometheus.service"

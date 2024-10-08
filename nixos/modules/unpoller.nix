@@ -6,6 +6,12 @@
 }:
 {
   options.slb.unpoller = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      description = "Whether to enable unifi-poller";
+      default = false;
+    };
+
     unifiUser = lib.mkOption {
       type = lib.types.str;
       description = "The UniFi user name to use for polling";
@@ -28,7 +34,7 @@
       cfg = config.slb.unpoller;
       unpollerPassFile = "/run/unpoller-password";
     in
-    {
+    lib.mkIf cfg.enable {
       users.groups.unifi-poller = { };
       users.users.unifi-poller = {
         description = "unifi-poller Service User";

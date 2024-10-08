@@ -5,8 +5,6 @@
   ...
 }:
 {
-  imports = [ ../../../common/unpoller.nix ];
-
   services.prometheus =
     let
       promcfg = config.services.prometheus;
@@ -92,6 +90,7 @@
   users.groups.disk.members = [ "smartctl-exporter" ];
 
   slb.unpoller = {
+    enable = true;
     unifiUser = "unifipoller";
     unifiPasswordSecretID = "projects/bergmans-services/secrets/unpoller-password-hedwig/versions/1";
   };

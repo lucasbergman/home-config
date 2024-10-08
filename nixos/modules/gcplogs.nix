@@ -7,6 +7,12 @@
 }:
 {
   options.slb.gcplogs = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      description = "Whether to enable log shipping to GCP";
+      default = false;
+    };
+
     location = lib.mkOption {
       type = lib.types.str;
       description = "Location string to use when shipping logs";
@@ -28,7 +34,7 @@
     let
       cfg = config.slb.gcplogs;
     in
-    {
+    lib.mkIf cfg.enable {
       systemd.services.fluentbit-gcplogs =
         let
           # This config format is a bummer, but I can't figure out how to use

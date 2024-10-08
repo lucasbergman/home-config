@@ -82,10 +82,11 @@
           };
         };
 
+      defaultNixOSModules = [ ./nixos/modules ];
       mkHost =
-        system: modules:
+        system: hostModules:
         nixpkgs.lib.nixosSystem {
-          inherit modules;
+          modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
             inherit inputs outputs;
             mypkgs = outputs.packages.${system};

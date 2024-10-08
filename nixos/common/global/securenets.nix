@@ -1,9 +1,5 @@
 { ... }:
 {
-  imports = [
-    ../../modules/securenets.nix
-  ];
-
   slb.securenets.bergnet = {
     domain = "internal.bergman.house";
     gcpDNSZone = "bergmanhouse";

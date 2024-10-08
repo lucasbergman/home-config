@@ -8,9 +8,6 @@
 }:
 {
   imports = [
-    ../../common/cloudbackup.nix
-    ../../common/gcplogs.nix
-    ../../common/nginx.nix
     ../../common/global
     ../../common/users
     ../../linode
@@ -42,7 +39,10 @@
 
   slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
 
+  slb.nginx.enable = true;
+
   slb.gcplogs = {
+    enable = true;
     location = "linode";
     included-units = [
       "alertmanager.service"

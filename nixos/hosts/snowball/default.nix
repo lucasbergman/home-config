@@ -40,6 +40,7 @@
   # This is a desktop
   time.timeZone = "America/Chicago";
   slb.security.enable = false;
+  slb.backups.enable = false;
 
   services.printing.enable = true;
   services.avahi = {
