@@ -64,6 +64,10 @@
           pkgs-unstable = import inputs.nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
+            config.permittedInsecurePackages = [
+              # TODO: https://nvd.nist.gov/vuln/detail/CVE-2024-42025
+              "unifi-controller-7.5.187"
+            ];
           };
         };
 

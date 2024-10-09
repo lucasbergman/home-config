@@ -15,8 +15,6 @@
     ./services
   ];
 
-  nixpkgs.config.allowUnfree = true;
-
   fileSystems = {
     "/nix" = {
       device = "rpool/ephemeral/nix";
