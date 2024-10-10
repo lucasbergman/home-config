@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   mypkgs,
   pkgs,
   ...
@@ -14,7 +15,7 @@
       enable = true;
       listenAddress = "10.6.0.2";
       ruleFiles = [
-        ../conf/prometheus/hedwig.yml
+        (builtins.toString (pkgs.writeText "rules.json" (builtins.toJSON (import ./monitoring_rules.nix))))
       ];
 
       scrapeConfigs = [
