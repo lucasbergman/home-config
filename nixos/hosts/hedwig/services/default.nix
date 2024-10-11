@@ -4,6 +4,7 @@
     ./monitoring.nix
     ./mullvad.nix
     ./plex.nix
+    ./unbound.nix
     ./unifi.nix
   ];
 
