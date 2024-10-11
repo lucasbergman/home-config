@@ -27,5 +27,6 @@
     pod = "idiotbox";
     dependsOn = [ "idiotbox-vpn" ];
     mediaDirectory = "/storage/media";
+    transmission.bindIPv4 = "10.6.0.2";
   };
 }
