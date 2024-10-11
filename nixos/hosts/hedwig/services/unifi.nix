@@ -38,8 +38,7 @@
     in
     {
       enable = true;
-      unifiPackage = mypkgs.unifi;
-      jrePackage = pkgs.jdk17_headless;
+      unifiPackage = pkgs.unifi8;
       maximumJavaHeapSize = 1024; # TODO: Might be possible to decrease this
       extraJvmOptions = [
         "-javaagent:${mypkgs.prometheus-jmx}/libexec/jmx_prometheus_javaagent.jar=[::1]:8444:${jmxPrometheusConfig}"
