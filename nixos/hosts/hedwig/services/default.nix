@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./home_assistant.nix
     ./monitoring.nix
     ./mullvad.nix
     ./plex.nix
