@@ -33,6 +33,10 @@
         use_x_forwarded_for = true;
         trusted_proxies = [ "::1" ];
       };
+      prometheus = {
+        namespace = "hass";
+        requires_auth = false;
+      };
 
       homeassistant = {
         name = "Home";
@@ -70,5 +74,8 @@
       proxyPass = "http://[::1]:8123";
       proxyWebsockets = true;
     };
+    locations."/api/prometheus".extraConfig = ''
+      return 403;
+    '';
   };
 }

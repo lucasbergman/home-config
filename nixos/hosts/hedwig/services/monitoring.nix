@@ -10,6 +10,7 @@
     let
       promcfg = config.services.prometheus;
       unpollercfg = config.slb.unpoller;
+      hasscfg = config.services.home-assistant.config;
     in
     {
       enable = true;
@@ -64,6 +65,17 @@
               regex = "(.+):(.*)$";
               target_label = "instance";
               replacement = "hedwig:$2";
+            }
+          ];
+        }
+        {
+          job_name = "hass";
+          static_configs = [ { targets = [ "[::1]:${toString hasscfg.http.server_port}" ]; } ];
+          metrics_path = "/api/prometheus";
+          relabel_configs = [
+            {
+              target_label = "instance";
+              replacement = "hedwig:hass";
             }
           ];
         }
