@@ -4,7 +4,7 @@
     before = [ "home-assistant.service" ];
     outPath = "/var/lib/hass/secrets.yaml";
     owner = "hass";
-    secretPath = "projects/bergmans-services/secrets/home-assistant-secrets-file/versions/2";
+    secretPath = "projects/bergmans-services/secrets/home-assistant-secrets-file/versions/3";
   };
 
   services.home-assistant = {
@@ -59,6 +59,8 @@
           name = "High School";
           latitude = "!secret hs_lat";
           longitude = "!secret hs_long";
+          icon = "mdi:school";
+          radius = 220;
         }
       ];
     };
