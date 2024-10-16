@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   slb.security.secrets."home-assistant-secrets" = {
     before = [ "home-assistant.service" ];
@@ -9,6 +9,7 @@
 
   services.home-assistant = {
     enable = true;
+    package = (pkgs.home-assistant.override { extraPackages = ps: [ ps.grpcio ]; });
     extraComponents = [
       "apple_tv"
       "brother"
@@ -24,6 +25,7 @@
       "samsungtv"
       "spotify"
       "unifi"
+      "unifiprotect"
     ];
     config = {
       # Includes dependencies for a basic setup
