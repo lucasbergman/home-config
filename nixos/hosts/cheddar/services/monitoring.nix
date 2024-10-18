@@ -70,6 +70,19 @@ in
           }
         ];
       }
+      {
+        job_name = "synapse";
+        metrics_path = "/_synapse/metrics";
+        static_configs = [ { targets = [ "[::1]:8009" ]; } ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            regex = "(.+):(.*)$";
+            target_label = "instance";
+            replacement = "cheddar:$2";
+          }
+        ];
+      }
     ];
 
     exporters = {

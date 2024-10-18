@@ -75,6 +75,13 @@ in
             }
           ];
         }
+        {
+          port = 8009;
+          bind_addresses = [ "::1" ];
+          tls = false;
+          type = "metrics";
+          resources = [ ];
+        }
       ];
     };
   };
