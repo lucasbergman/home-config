@@ -101,11 +101,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1728679800,
-        "narHash": "sha256-vPWjpfM0JvyE71wEgjStaZHYj7fG0TV8XGcy+ky/46Q=",
+        "lastModified": 1729282757,
+        "narHash": "sha256-yyIn4h80FX4V+5Y2U8kGy5q1VJ8ovU8E44A0BXqkvag=",
         "ref": "refs/heads/main",
-        "rev": "8e0f272355f51e2092345a45f19d75b77914c54b",
-        "revCount": 7,
+        "rev": "21d0bf08f27de10575c430ff00290408c6ffd865",
+        "revCount": 8,
         "type": "git",
         "url": "ssh://git@github.com/lucasbergman/idiotbox.git"
       },

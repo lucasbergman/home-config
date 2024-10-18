@@ -21,7 +21,7 @@ in
       name = "idiotbox";
       podScript = pkgs.writeShellScript "pod-${name}" ''
         podid=$(${pkgs.podman}/bin/podman pod create \
-          -p 9091:9091 -p 51413:51413 \
+          -p 10.6.0.2:9091:9091 -p 51413:51413 \
           --name ${name} \
           --replace)
         sleep infinity
