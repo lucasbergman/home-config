@@ -1,5 +1,5 @@
 let
-  outsideAddr = "67.162.80.40";
+  outsideAddr = "98.227.21.195";
   insideInterface = "eth1";
   insideAddr = "192.168.101.3";
   insideCIDR = "192.168.101.0/24";
