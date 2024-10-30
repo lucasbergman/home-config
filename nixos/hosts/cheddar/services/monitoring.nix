@@ -28,6 +28,7 @@ in
     enable = true;
     listenAddress = "10.6.0.1";
     ruleFiles = [
+      (mkYAML "prober_home_dns.rules" ./monitoring_prober_home_dns.nix { })
       (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix { })
     ];
 
