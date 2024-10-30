@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -57,7 +58,9 @@ in
     ];
     outPath = saslPasswordFile;
     group = "postfix";
-    template = ../conf/postfix/sasl_passwd;
+    template = pkgs.writeText "sasl_passwd" ''
+      [email-smtp.us-east-2.amazonaws.com]:587 {{gcpSecret "projects/bergmans-services/secrets/mail-ses-password/versions/1"}}
+    '';
   };
 
   services.postfix = {

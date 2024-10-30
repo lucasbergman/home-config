@@ -14,7 +14,9 @@ in
 {
   slb.security.secrets."pagerduty-key" = {
     outPath = alertmanagerEnvFile;
-    template = ./../conf/prometheus/alertmanager.env;
+    template = pkgs.writeText "alertmanager.env" ''
+      PAGERDUTY_SERVICE_KEY={{gcpSecret "projects/bergmans-services/secrets/pagerduty-key/versions/1"}}
+    '';
     before = [ "alertmanager.service" ];
     group = "prometheus";
   };
