@@ -1,5 +1,6 @@
+{ cfg }:
 let
-  outsideAddr = "98.227.21.195";
+  outsideAddr = cfg.addrIPv4;
   insideInterface = "eth1";
   insideAddr = "192.168.101.3";
   insideCIDR = "192.168.101.0/24";

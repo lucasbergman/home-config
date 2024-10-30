@@ -6,10 +6,13 @@
 }:
 let
   promcfg = config.services.prometheus;
+  homeNetworkCfg = config.slb.homeNetwork;
   alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
-  mkYAML = name: path: pkgs.writeText name (builtins.toJSON (import path));
+  mkYAML =
+    name: path: attrs:
+    pkgs.writeText name (builtins.toJSON (import path attrs));
 in
 {
   slb.security.secrets."pagerduty-key" = {
@@ -25,7 +28,7 @@ in
     enable = true;
     listenAddress = "10.6.0.1";
     ruleFiles = [
-      (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix)
+      (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix { })
     ];
 
     alertmanagers = [
@@ -121,7 +124,10 @@ in
       blackbox = {
         enable = true;
         listenAddress = "[::1]";
-        configFile = mkYAML "blackbox.yml" ./monitoring_blackbox.nix;
+        configFile = mkYAML "blackbox.yml" ./monitoring_blackbox.nix {
+          cfg = homeNetworkCfg;
+          inherit lib;
+        };
       };
 
       node = {

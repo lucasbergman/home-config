@@ -1,3 +1,4 @@
+{ cfg, lib }:
 {
   modules = {
     http_head_fast_2xx = {
@@ -17,7 +18,7 @@
         query_name = "bergman.house";
         query_type = "A";
         validate_answer_rrs = {
-          fail_if_not_matches_regexp = [ "98\\.227\\.21\\.195" ];
+          fail_if_not_matches_regexp = [ (lib.strings.escapeRegex cfg.addrIPv4) ];
         };
       };
     };

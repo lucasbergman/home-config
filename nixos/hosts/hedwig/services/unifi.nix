@@ -1,8 +1,12 @@
 {
+  config,
   mypkgs,
   pkgs,
   ...
 }:
+let
+  networkCfg = config.slb.homeNetwork;
+in
 {
   systemd.services."unifi-usg-config" = {
     description = "write UniFi USG config file";
@@ -12,7 +16,9 @@
 
     script =
       let
-        configFile = pkgs.writeText "config.gateway.json" (builtins.toJSON (import ../conf/unifi.nix));
+        configFile = pkgs.writeText "config.gateway.json" (
+          builtins.toJSON (import ../conf/unifi.nix { cfg = networkCfg; })
+        );
         siteName = "default";
         targetDir = "/var/lib/unifi/data/sites/${siteName}";
       in
