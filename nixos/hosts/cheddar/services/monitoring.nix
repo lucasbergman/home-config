@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  mypkgs,
+  pkgs,
   ...
 }:
 let
@@ -116,7 +116,9 @@ in
       blackbox = {
         enable = true;
         listenAddress = "[::1]";
-        configFile = ./../conf/prometheus/blackbox.yml;
+        configFile =
+          with builtins;
+          toString (pkgs.writeText "blackbox.yml" (toJSON (import ./monitoring_blackbox.nix)));
       };
 
       node = {
