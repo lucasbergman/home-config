@@ -9,6 +9,7 @@ let
   alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
+  mkYAML = name: path: pkgs.writeText name (builtins.toJSON (import path));
 in
 {
   slb.security.secrets."pagerduty-key" = {
@@ -21,7 +22,9 @@ in
   services.prometheus = {
     enable = true;
     listenAddress = "10.6.0.1";
-    ruleFiles = [ ./../conf/prometheus/prober_smartmouse.rules ];
+    ruleFiles = [
+      (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix)
+    ];
 
     alertmanagers = [
       {
@@ -116,9 +119,7 @@ in
       blackbox = {
         enable = true;
         listenAddress = "[::1]";
-        configFile =
-          with builtins;
-          toString (pkgs.writeText "blackbox.yml" (toJSON (import ./monitoring_blackbox.nix)));
+        configFile = mkYAML "blackbox.yml" ./monitoring_blackbox.nix;
       };
 
       node = {
