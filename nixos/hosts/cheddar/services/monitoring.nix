@@ -45,6 +45,33 @@ in
         ];
       }
       {
+        job_name = "home_dns";
+        metrics_path = "/probe";
+        scrape_interval = "5m";
+        params = {
+          module = [ "home_dns" ];
+        };
+        static_configs = [ { targets = [ "8.8.8.8:53" ]; } ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            target_label = "__param_target";
+          }
+          {
+            source_labels = [ "__param_target" ];
+            target_label = "instance";
+          }
+          {
+            target_label = "__address__";
+            replacement = "[::1]:${toString promcfg.exporters.blackbox.port}";
+          }
+          {
+            target_label = "instance";
+            replacement = "cheddar:${toString promcfg.exporters.blackbox.port}";
+          }
+        ];
+      }
+      {
         job_name = "smartmouse";
         metrics_path = "/probe";
         params = {
