@@ -15,8 +15,11 @@
   };
 
   home.packages = [
+    pkgs.inetutils
     pkgs.jq
+    pkgs.netcat-gnu
     pkgs.vim
+
     pkgs-unstable.bitwarden-cli
   ];
 
