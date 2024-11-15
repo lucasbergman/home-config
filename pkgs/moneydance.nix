@@ -3,12 +3,13 @@
   stdenv,
   fetchzip,
   makeWrapper,
-  openjdk21,
-  openjfx21,
+  openjdk23,
   jvmFlags ? [ ],
 }:
 let
-  jdk = openjdk21.override { enableJavaFX = true; };
+  jdk = openjdk23.override {
+    enableJavaFX = true;
+  };
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "moneydance";
@@ -20,15 +21,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   nativeBuildInputs = [ makeWrapper ];
-  buildInputs = [
-    jdk
-    openjfx21
-  ];
-
-  dontConfigure = true;
-  dontUnpack = true;
-  dontBuild = true;
-  dontFixup = true;
+  buildInputs = [ jdk ];
 
   # Note the double escaping in the call to makeWrapper. The escapeShellArgs
   # call quotes each element of the flags list as a word[1] and returns a
@@ -65,9 +58,15 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = {
     homepage = "https://infinitekind.com/moneydance";
-    description = "An easy to use and full-featured personal finance app that doesn't compromise your privacy";
+    changelog = "https://infinitekind.com/stabledl/2024_5118/changelog.txt";
+    description = "Easy to use and full-featured personal finance app that doesn't compromise your privacy";
     sourceProvenance = [ lib.sourceTypes.binaryBytecode ];
     license = lib.licenses.unfree;
-    platforms = jdk.meta.platforms;
+    # Darwin refers to Zulu Java, which breaks the evaluation of this derivation
+    # for some reason
+    #
+    # https://github.com/NixOS/nixpkgs/pull/306372#issuecomment-2111688236
+    platforms = lib.platforms.linux;
+    maintainers = [ lib.maintainers.lucasbergman ];
   };
 })
