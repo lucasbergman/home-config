@@ -45,6 +45,25 @@
   services.mako.enable = true;
   services.swayidle.enable = true;
 
+  xdg.portal = {
+    enable = true;
+
+    # TODO: This is needlessly blunt
+    #
+    # I wonder if we can get away with just using the GTK backend for everything
+    # except (say) GNOME for screencasting with Google Chrome, etc.
+    config.common.default = [
+      "gnome"
+      "gtk"
+      "wlr"
+    ];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-wlr
+    ];
+  };
+
   programs.alacritty = {
     enable = true;
     settings = {
