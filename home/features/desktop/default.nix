@@ -1,6 +1,15 @@
-{ pkgs-unstable, ... }:
+{ pkgs, pkgs-unstable, ... }:
 {
   home.packages = [
+    pkgs.dejavu_fonts
+    pkgs.google-fonts
+    pkgs.noto-fonts
+
+    pkgs.grim
+    pkgs.slurp
+    pkgs.wf-recorder
+    pkgs.wl-clipboard
+
     pkgs-unstable.google-chrome
   ];
 
@@ -31,6 +40,10 @@
         ];
       };
   };
+
+  programs.swaylock.enable = true;
+  services.mako.enable = true;
+  services.swayidle.enable = true;
 
   programs.alacritty = {
     enable = true;
