@@ -10,4 +10,5 @@
     alsa.enable = true;
     pulse.enable = true;
   };
+  security.pam.services.swaylock = { };
 }
