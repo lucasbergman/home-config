@@ -41,9 +41,26 @@
       };
   };
 
-  programs.swaylock.enable = true;
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      ignore-empty-password = true;
+      show-failed-attempts = true;
+      color = "111111";
+    };
+  };
+
   services.mako.enable = true;
-  services.swayidle.enable = true;
+
+  services.swayidle = {
+    enable = true;
+    timeouts = [
+      {
+        timeout = 180;
+        command = "${pkgs.swaylock}/bin/swaylock --daemonize";
+      }
+    ];
+  };
 
   xdg.portal = {
     enable = true;
