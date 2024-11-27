@@ -1,6 +1,7 @@
 {
   lib,
   stdenv,
+  buildPackages,
   fetchzip,
   makeWrapper,
   openjdk23,
@@ -21,9 +22,13 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-wwSb3CuhuXB4I9jq+TpLPbd1k9UzqQbAaZkGKgi+nns=";
   };
 
+  # We must use wrapGAppsHook (since Java GUIs on Linux use GTK), but by
+  # default that uses makeBinaryWrapper which doesn't support flags that need
+  # quoting: <https://github.com/NixOS/nixpkgs/issues/330471>. Thanks to
+  # @Artturin for the tip to override the wrapper generator.
   nativeBuildInputs = [
     makeWrapper
-    wrapGAppsHook3
+    (buildPackages.wrapGAppsHook3.override { makeWrapper = buildPackages.makeShellWrapper; })
   ];
   buildInputs = [ jdk ];
   dontWrapGApps = true;
@@ -37,32 +42,29 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
+  # Note the double escaping in the call to makeWrapper. The escapeShellArgs
+  # call quotes each element of the flags list as a word[1] and returns a
+  # space-separated result; the escapeShellArg call quotes that result as a
+  # single word to pass to --add-flags. The --add-flags implementation[2]
+  # loops over the words in its argument.
+  #
+  # 1. https://www.gnu.org/software/bash/manual/html_node/Word-Splitting.html
+  # 2. https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/setup-hooks/make-wrapper.sh
   postFixup =
     let
-      shellSafe = s: (builtins.match "[[:alnum:],._+:@%/=-]+" s) != null;
-      finalJvmFlags =
-        [
-          "-client"
-          "--add-modules"
-          "javafx.swing,javafx.controls,javafx.graphics"
-          "-classpath"
-          "${placeholder "out"}/libexec/*"
-        ]
-        ++ (
-          # We must use wrapGAppsHook (since Java GUIs on Linux use GTK), but that
-          # uses makeBinaryWrapper, which doesn't support flags that need quoting:
-          # <https://github.com/NixOS/nixpkgs/issues/330471>.
-          assert lib.assertMsg (lib.all shellSafe jvmFlags)
-            "JVM flags that need shell quoting are not supported";
-          jvmFlags
-        )
-        ++ [ "Moneydance" ];
+      finalJvmFlags = [
+        "-client"
+        "--add-modules"
+        "javafx.swing,javafx.controls,javafx.graphics"
+        "-classpath"
+        "${placeholder "out"}/libexec/*"
+      ] ++ jvmFlags ++ [ "Moneydance" ];
     in
     ''
       # This is in postFixup because gappsWrapperArgs is generated in preFixup
       makeWrapper ${jdk}/bin/java $out/bin/moneydance \
         "''${gappsWrapperArgs[@]}" \
-        --add-flags ${lib.escapeShellArg (lib.strings.concatStringsSep " " finalJvmFlags)}
+        --add-flags ${lib.escapeShellArg (lib.escapeShellArgs finalJvmFlags)}
     '';
 
   passthru = {
