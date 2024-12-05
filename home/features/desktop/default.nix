@@ -1,4 +1,9 @@
 { pkgs, pkgs-unstable, ... }:
+let
+  # TODO: Add some Sway stuff to the NixOS config instead of Home Manager, and
+  # if this switch is still needed, make a proper module out of it
+  enableSway = false;
+in
 {
   home.packages = [
     pkgs.dejavu_fonts
@@ -10,11 +15,12 @@
     pkgs.wf-recorder
     pkgs.wl-clipboard
 
+    pkgs-unstable.discord
     pkgs-unstable.google-chrome
   ];
 
   wayland.windowManager.sway = {
-    enable = true;
+    enable = enableSway;
     wrapperFeatures.gtk = true;
     extraSessionCommands = ''
       export _JAVA_AWT_WM_NONREPARENTING=1
@@ -42,7 +48,7 @@
   };
 
   programs.swaylock = {
-    enable = true;
+    enable = enableSway;
     settings = {
       ignore-empty-password = true;
       show-failed-attempts = true;
@@ -50,10 +56,10 @@
     };
   };
 
-  services.mako.enable = true;
+  services.mako.enable = enableSway;
 
   services.swayidle = {
-    enable = true;
+    enable = enableSway;
     timeouts = [
       {
         timeout = 180;
@@ -63,7 +69,7 @@
   };
 
   xdg.portal = {
-    enable = true;
+    enable = enableSway;
 
     # TODO: This is needlessly blunt
     #
