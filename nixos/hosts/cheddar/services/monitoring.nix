@@ -198,7 +198,7 @@ in
     dataDir = grafanaDataDirectory;
     settings = {
       server = {
-        http_addr = "[::1]";
+        http_addr = "::1";
         domain = "dash.bergmans.us";
         enforce_domain = true;
         root_url = "https://%(domain)s/";
