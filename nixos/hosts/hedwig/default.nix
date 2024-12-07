@@ -58,7 +58,7 @@
   systemd.network.networks."10-wan" = {
     matchConfig.Name = "enp3s0";
     address = [ "192.168.101.3/24" ];
-    routes = [ { routeConfig.Gateway = "192.168.101.1"; } ];
+    routes = [ { Gateway = "192.168.101.1"; } ];
     linkConfig.RequiredForOnline = "routable";
   };
 
