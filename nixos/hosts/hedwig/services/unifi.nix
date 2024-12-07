@@ -45,6 +45,7 @@ in
     {
       enable = true;
       unifiPackage = pkgs.unifi8;
+      mongodbPackage = pkgs.mongodb-6_0;
       maximumJavaHeapSize = 1024; # TODO: Might be possible to decrease this
       extraJvmOptions = [
         "-javaagent:${mypkgs.prometheus-jmx}/libexec/jmx_prometheus_javaagent.jar=[::1]:8444:${jmxPrometheusConfig}"
