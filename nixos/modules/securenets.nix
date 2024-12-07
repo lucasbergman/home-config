@@ -66,18 +66,19 @@ in
           || (p.site != myHost.site && myHost.globalEndpoint == null)
         );
 
-      mkPeer = peerHost: {
-        wireguardPeerConfig =
+      mkPeer =
+        peerHost:
+        lib.attrsets.filterAttrs (_: v: v != null) (
           let
             peerAddr = peerAddrOf peerHost;
           in
-          lib.attrsets.filterAttrs (_: v: v != null) {
+          {
             PublicKey = peerHost.pubkey;
             AllowedIPs = [ peerHost.addr ];
             Endpoint = if peerAddr != null then "${peerAddr}:51820" else null;
             PersistentKeepalive = if peerAddr != null && (shouldKeepaliveTo peerHost) then 20 else null;
-          };
-      };
+          }
+        );
     in
     lib.mkIf cfg.enable {
       systemd.network = {
