@@ -55,6 +55,9 @@
     privateKeyPath = "/persist/etc/bergmans-wg-key";
   };
 
+  # The WireGuard key file is on ZFS rpool/safe/persist
+  systemd.services.systemd-networkd.after = [ "zfs.target" ];
+
   systemd.network.networks."10-wan" = {
     matchConfig.Name = "enp3s0";
     address = [ "192.168.101.3/24" ];
