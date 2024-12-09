@@ -6,6 +6,7 @@
       epkgs: with epkgs; [
         bazel
         crux
+        fireplace
         lsp-mode
         magit
         nix-mode
