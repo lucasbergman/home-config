@@ -36,7 +36,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
       name = lib.tfRef "google_dns_managed_zone.bergmans.dns_name";
       type = "MX";
-      rrdatas = [ "10 mail.bergmans.us." ];
+      rrdatas = [ "10 smtp.bergmans.us." ];
       ttl = 300;
     };
 
@@ -98,7 +98,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = lib.tfRef "google_dns_managed_zone.bergmanhouse.dns_name";
       type = "MX";
-      rrdatas = [ "10 mail.bergman.house." ];
+      rrdatas = [ "10 smtp.bergmans.us." ];
       ttl = 1800;
     };
 
@@ -224,7 +224,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.blurt.name";
       name = lib.tfRef "google_dns_managed_zone.blurt.dns_name";
       type = "MX";
-      rrdatas = [ "10 mail.blurt.chat." ];
+      rrdatas = [ "10 smtp.bergmans.us." ];
       ttl = 300;
     };
 

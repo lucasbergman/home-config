@@ -98,7 +98,7 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         project = "smartmouse-web";
         name = "smartmousetravel.com.";
         type = "MX";
-        rrdatas = [ "10 mail.smartmousetravel.com." ];
+        rrdatas = [ "10 smtp.bergmans.us." ];
         ttl = 300;
       };
     };
