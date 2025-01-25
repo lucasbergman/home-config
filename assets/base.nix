@@ -4,6 +4,7 @@
     required_providers = {
       aws.source = "hashicorp/aws";
       google.source = "hashicorp/google";
+      hcloud.source = "hetznercloud/hcloud";
       linode.source = "linode/linode";
       local.source = "hashicorp/local";
     };
@@ -21,12 +22,10 @@
       secret_key = lib.tfRef "var.aws_secret_key";
     };
 
-    google = {
-      project = lib.tfRef "var.gcp_project";
-    };
+    google.project = lib.tfRef "var.gcp_project";
 
-    linode = {
-      token = lib.tfRef "var.linode_token";
-    };
+    hcloud.token = lib.tfRef "var.hcloud_token";
+
+    linode.token = lib.tfRef "var.linode_token";
   };
 }

@@ -15,6 +15,7 @@
     aws_secret_key = {
       description = "AWS secret key";
       type = "string";
+      sensitive = true;
     };
 
     gcp_project = {
@@ -23,9 +24,16 @@
       default = "bergmans-services";
     };
 
+    hcloud_token = {
+      description = "Hetzner Cloud API token";
+      type = "string";
+      sensitive = true;
+    };
+
     linode_token = {
       description = "Linode API token";
       type = "string";
+      sensitive = true;
     };
 
     linode_region = {
