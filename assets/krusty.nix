@@ -24,4 +24,27 @@
       ipv6_enabled = true;
     };
   };
+
+  resource.google_dns_record_set =
+    let
+      zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
+      mkip4 = name: {
+        managed_zone = zone;
+        name = "${name}.bergmans.us.";
+        type = "A";
+        rrdatas = lib.tfRef "[hcloud_server.krusty.ipv4_address]";
+        ttl = 300;
+      };
+      mkip6 = name: {
+        managed_zone = zone;
+        name = "${name}.bergmans.us.";
+        type = "AAAA";
+        rrdatas = lib.tfRef "[hcloud_server.krusty.ipv6_address]";
+        ttl = 300;
+      };
+    in
+    {
+      bergmans_a_krusty = mkip4 "krusty";
+      bergmans_aaaa_krusty = mkip6 "krusty";
+    };
 }
