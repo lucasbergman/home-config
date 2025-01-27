@@ -11,6 +11,7 @@
     ./krusty.nix
     ./mail.nix
     ./secrets.nix
+    ./snowball.nix
     ./variables.nix
 
     # Pull in our WireGuard mesh network(s) spec
