@@ -24,9 +24,10 @@
           "${n.hostName}.${n.domain}";
       };
 
-      # TODO: Add checks to make sure this is defined
       gcpInstanceKeyPath = lib.mkOption {
-        type = lib.types.path;
+        # Setting this to null means that an operator put a hand-installed key at
+        # /etc/gcp-instance-creds.json
+        type = with lib.types; nullOr path;
         description = "Google Cloud service account encrypted private key path";
       };
 
@@ -74,6 +75,7 @@
   config =
     let
       cfg = config.slb.security;
+      installedCredsPath = "/etc/gcp-instance-creds.json";
       credsPath = "/run/gcp-instance-creds.json";
       infoPath = "/run/gcp-instance-info.env";
       mkSecretService =
@@ -133,12 +135,24 @@
                 sopsKeyPath =
                   assert edDSAKey != "";
                   edDSAKey;
+                keyPath = if cfg.gcpInstanceKeyPath == null then "" else cfg.gcpInstanceKeyPath;
               in
               ''
-                install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-                env SOPS_AGE_KEY=$(${pkgs.ssh-to-age}/bin/ssh-to-age -private-key < "${sopsKeyPath}") \
-                  ${pkgs.sops}/bin/sops --decrypt ${cfg.gcpInstanceKeyPath} > ${credsPath}
+                if [ -n "${keyPath}" ]; then
+                  # Decrypt a SOPS-encrypted instance key
+                  install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
+                  env SOPS_AGE_KEY=$(${pkgs.ssh-to-age}/bin/ssh-to-age -private-key < "${sopsKeyPath}") \
+                    ${pkgs.sops}/bin/sops --decrypt ${keyPath} > ${credsPath}
+                elif [ -f "${installedCredsPath}" ]; then
+                  # Install a hand-installed instance key
+                  install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
+                  cat ${installedCredsPath} > ${credsPath}
+                else
+                  echo "No GCP instance key found at ${installedCredsPath}" >&2
+                  exit 1
+                fi
 
+                # Make a handy file with GCP project and service account info
                 install -m 0444 /dev/null ${infoPath}
                 cat >${infoPath} <<EOF
                 GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
