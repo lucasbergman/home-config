@@ -18,6 +18,7 @@ let
 in
 {
   security.acme.certs.${postfixTLSHost} = {
+    keyType = "rsa4096";
     reloadServices = [ "postfix.service" ];
   };
 
