@@ -122,7 +122,7 @@
         cheddar = mkHost "x86_64-linux" [ ./nixos/hosts/cheddar ];
         hedwig = mkHost "x86_64-linux" [
           ./nixos/hosts/hedwig
-          idiotbox.nixosModules.default
+          idiotbox.nixosModules."x86_64-linux".default
         ];
         snowball = mkHost "x86_64-linux" [ ./nixos/hosts/snowball ];
       };
