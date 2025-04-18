@@ -2,13 +2,14 @@
 {
   programs.emacs = {
     enable = true;
-    package = (pkgs.emacsPackagesFor pkgs.emacs29-pgtk).emacsWithPackages (
+    package = (pkgs.emacsPackagesFor pkgs.emacs30-pgtk).emacsWithPackages (
       epkgs: with epkgs; [
         bazel
         crux
         fireplace
         lsp-mode
         magit
+        mu4e
         nix-mode
         smex
         use-package
