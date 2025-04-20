@@ -10,21 +10,21 @@
   imports = [
     ../../common/global
     ../../common/users
-    ../../common/desktop.nix
-    ./hardware-configuration.nix
+
+    inputs.nixos-wsl.nixosModules.wsl
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   slb.securenet = {
-    enable = true;
+    enable = false;
     network = "bergnet";
     privateKeyPath = "/etc/bergmans-wg-key";
   };
 
   systemd.network.networks."10-lan" = {
-    matchConfig.Name = "enp3s0";
+    matchConfig.Name = "eth0";
     networkConfig = {
       DHCP = "ipv4";
       IPv6AcceptRA = true;
@@ -32,7 +32,7 @@
   };
 
   networking = {
-    hostName = "snowball";
+    hostName = "snowball-wsl";
     domain = "bergman.house";
     wireless.enable = false;
   };
@@ -42,11 +42,9 @@
   slb.security.enable = false;
   slb.backups.enable = false;
 
-  services.printing.enable = true;
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-  };
+  # This is running under WSL
+  wsl.enable = true;
+  nixpkgs.hostPlatform = "x86_64-linux";
 
   security.polkit.enable = true;
   hardware.opengl.enable = true;
