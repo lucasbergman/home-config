@@ -172,6 +172,33 @@
         "url": "ssh://git@github.com/lucasbergman/idiotbox.git"
       }
     },
+    "nixos-securenets": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "terranix": [
+          "terranix"
+        ],
+        "treefmt-nix": "treefmt-nix_2"
+      },
+      "locked": {
+        "lastModified": 1745268331,
+        "narHash": "sha256-jYcnlVxo3kLU0RX6ZDrRWyVZ483S1w1lUzABn8FTd10=",
+        "owner": "lucasbergman",
+        "repo": "nixos-securenets",
+        "rev": "612aa8cf2d946fec4cfe90d1c2661af60a2051d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lucasbergman",
+        "repo": "nixos-securenets",
+        "type": "github"
+      }
+    },
     "nixos-wsl": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -248,6 +275,7 @@
         "gomod2nix": "gomod2nix",
         "home-manager": "home-manager",
         "idiotbox": "idiotbox",
+        "nixos-securenets": "nixos-securenets",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable_2",
@@ -353,6 +381,27 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "rev": "0ce9d149d99bc383d1f2d85f31f6ebd146e46085",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "nixos-securenets",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1744961264,
+        "narHash": "sha256-aRmUh0AMwcbdjJHnytg1e5h5ECcaWtIFQa6d9gI85AI=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "8d404a69efe76146368885110f29a2ca3700bee6",
         "type": "github"
       },
       "original": {

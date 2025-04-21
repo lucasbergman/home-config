@@ -1,7 +1,6 @@
 { ... }:
 {
   imports = [
-    ./modules
     ./backup.nix
     ./base.nix
     ./cheddar.nix

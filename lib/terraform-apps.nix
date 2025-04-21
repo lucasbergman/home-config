@@ -2,11 +2,12 @@
   pkgs,
   terraform,
   terranix,
+  extraModules ? [ ],
 }:
 let
   terraformConfig = terranix.lib.terranixConfiguration {
     inherit pkgs;
-    modules = [ ../assets ];
+    modules = [ ../assets ] ++ extraModules;
   };
   plan = pkgs.writeShellApplication {
     name = "terraform-plan";

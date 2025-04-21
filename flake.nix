@@ -22,6 +22,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-securenets = {
+      url = "github:lucasbergman/nixos-securenets";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.terranix.follows = "terranix";
+    };
+
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -47,6 +54,7 @@
       idiotbox,
       home-manager,
       gomod2nix,
+      nixos-securenets,
       terranix,
       vscode-server,
       ...
@@ -86,9 +94,14 @@
           };
         };
 
-      defaultNixOSModules = [ ./nixos/modules ];
       mkHost =
         system: hostModules:
+        let
+          defaultNixOSModules = [
+            ./nixos/modules
+            nixos-securenets.nixosModules.${system}.securenets
+          ];
+        in
         nixpkgs.lib.nixosSystem {
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
@@ -115,6 +128,7 @@
         import ./lib/terraform-apps.nix {
           pkgs = allPkgs.pkgs;
           terraform = allPkgs.pkgs-unstable.terraform;
+          extraModules = [ nixos-securenets.terranixModules.securenets ];
           inherit terranix;
         }
       );
