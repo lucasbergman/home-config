@@ -9,6 +9,17 @@ let
     inherit pkgs;
     modules = [ ../assets ] ++ extraModules;
   };
+  config = pkgs.writeShellApplication {
+    name = "terraform-config";
+    text = ''
+      set -e
+      basedir=$(git rev-parse --show-toplevel)
+      cd "$basedir"/assets
+      config_hash=$(nix hash file --type sha1 --base32 ${terraformConfig})
+      cat ${terraformConfig} > "config-''${config_hash}.tf.json"
+      echo "generated Terraform config: config-''${config_hash}.tf.json"
+    '';
+  };
   plan = pkgs.writeShellApplication {
     name = "terraform-plan";
     text = ''
@@ -37,6 +48,10 @@ let
   };
 in
 {
+  terraform-config = {
+    type = "app";
+    program = "${config}/bin/terraform-config";
+  };
   terraform-plan = {
     type = "app";
     program = "${plan}/bin/terraform-plan";
