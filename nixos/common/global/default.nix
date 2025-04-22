@@ -32,11 +32,4 @@
 
   # YOLO
   networking.firewall.enable = false;
-
-  # Use systemd-networkd for address configuration
-  networking = {
-    useDHCP = false;
-    networkmanager.enable = false;
-  };
-  systemd.network.enable = true;
 }

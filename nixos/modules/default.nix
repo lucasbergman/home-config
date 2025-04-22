@@ -11,6 +11,7 @@
   imports = [
     ./cloudbackup.nix
     ./gcplogs.nix
+    ./networking.nix
     ./nginx.nix
     ./security.nix
     ./unpoller.nix
