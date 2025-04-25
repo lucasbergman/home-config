@@ -159,11 +159,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1739472406,
-        "narHash": "sha256-jagMSDa9XIx5jFHBKIHRKmusXBUY+n7RuOMVHMacXuY=",
+        "lastModified": 1745539333,
+        "narHash": "sha256-TgrdNomoo3REfEEtaRhu5bHFJZ4F+oJQqPKg124a50o=",
         "ref": "refs/heads/main",
-        "rev": "d2e97d707a88fa7e3e71383e7134a3334b4a1e4d",
-        "revCount": 36,
+        "rev": "f02d33e3cebb7592b6fca78a343ae71dddd1d1da",
+        "revCount": 37,
         "type": "git",
         "url": "ssh://git@github.com/lucasbergman/idiotbox.git"
       },
