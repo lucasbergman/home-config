@@ -9,6 +9,7 @@
     idiotbox = {
       url = "git+ssh://git@github.com/lucasbergman/idiotbox.git";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
 
     home-manager = {
