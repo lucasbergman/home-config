@@ -139,7 +139,11 @@ in
 
       # Virtual mailbox domains are for when Postfix does "final delivery for
       # hosted domains where each recipient address can have its own mailbox."
-      virtual_mailbox_domains = "bergmans.us";
+      virtual_mailbox_domains = [
+        "bergmans.us"
+        "mcfarlandsllamafarm.com"
+      ];
+
       virtual_mailbox_maps = "hash:/var/lib/postfix/conf/virtual_mailbox";
       virtual_mailbox_base = "${mailDirectory}/users";
       virtual_gid_maps = "static:${builtins.toString vmail_gid}";
