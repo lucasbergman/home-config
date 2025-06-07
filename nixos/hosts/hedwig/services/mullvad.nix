@@ -59,7 +59,7 @@ in
       FIREWALL_DEBUG = "on";
       FIREWALL_OUTBOUND_SUBNETS = "192.168.101.0/24";
       WIREGUARD_ADDRESSES = "10.69.172.88/32";
-      SERVER_CITIES = "Chicago IL";
+      SERVER_CITIES = "Dallas TX";
       PUID = builtins.toString config.users.users.idiotbox.uid;
       PGID = builtins.toString config.users.groups.idiotbox.gid;
     };
