@@ -46,7 +46,7 @@
         longitude = "!secret home_long";
         country = "US";
         time_zone = "America/Chicago";
-        unit_system = "imperial";
+        unit_system = "us_customary";
         currency = "USD";
         external_url = "https://hass.bergman.house";
       };

@@ -44,7 +44,7 @@ in
     in
     {
       enable = true;
-      unifiPackage = pkgs.unifi8;
+      unifiPackage = pkgs.unifi;
       mongodbPackage = pkgs.mongodb-7_0;
       maximumJavaHeapSize = 1024; # TODO: Might be possible to decrease this
       extraJvmOptions = [
