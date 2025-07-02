@@ -169,6 +169,14 @@
       ttl = 300;
     };
 
+    bergmanhouse_cname_photos = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "photos.bergman.house.";
+      type = "CNAME";
+      rrdatas = [ "bergman.house." ];
+      ttl = 300;
+    };
+
     bergmanhouse_cname_plex = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "plex.bergman.house.";

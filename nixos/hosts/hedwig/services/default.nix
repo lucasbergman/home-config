@@ -2,6 +2,7 @@
 {
   imports = [
     ./home_assistant.nix
+    ./immich.nix
     ./monitoring.nix
     ./mullvad.nix
     ./plex.nix
