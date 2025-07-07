@@ -12,7 +12,7 @@ let
   mailDirectory = "/data/mail";
   saslPasswordFile = "/run/sasl_passwd";
   dovecotUserFile = "/run/dovecot_users";
-  dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/2";
+  dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
   vmail_uid = 2000;
   vmail_gid = 2000;
 in
