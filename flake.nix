@@ -10,6 +10,7 @@
       url = "git+ssh://git@github.com/lucasbergman/idiotbox.git";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     home-manager = {
@@ -40,6 +41,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.flake-utils.follows = "flake-utils";
@@ -57,6 +63,7 @@
       gomod2nix,
       nixos-securenets,
       terranix,
+      treefmt-nix,
       vscode-server,
       ...
     }@inputs:
@@ -112,7 +119,14 @@
         };
     in
     {
-      formatter = forAllSystems (system: nixpkgs-unstable.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (
+        system:
+        let
+          treefmt = treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
+        in
+        treefmt.config.build.wrapper
+      );
+
       packages = forAllSystems (
         system:
         import ./pkgs (allPkgsOf {
