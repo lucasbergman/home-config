@@ -23,6 +23,7 @@
       "radio_browser"
       "roku"
       "samsungtv"
+      "sonos"
       "spotify"
       "unifi"
       "unifiprotect"
