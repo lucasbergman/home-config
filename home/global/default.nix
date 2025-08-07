@@ -18,6 +18,7 @@
     pkgs.inetutils
     pkgs.jq
     pkgs.netcat-gnu
+    pkgs.nodejs_22
     pkgs.vim
 
     pkgs-unstable.bitwarden-cli
