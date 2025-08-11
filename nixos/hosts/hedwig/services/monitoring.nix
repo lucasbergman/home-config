@@ -15,6 +15,10 @@
     {
       enable = true;
       listenAddress = "10.6.0.2";
+      globalConfig = {
+        scrape_timeout = "5s";
+        evaluation_interval = "10s";
+      };
       ruleFiles = [
         (builtins.toString (pkgs.writeText "rules.json" (builtins.toJSON (import ./monitoring_rules.nix))))
       ];
@@ -22,6 +26,7 @@
       scrapeConfigs = [
         {
           job_name = "node";
+          scrape_interval = "10s";
           static_configs = [ { targets = [ "[::1]:${toString promcfg.exporters.node.port}" ]; } ];
           relabel_configs = [
             {
@@ -46,6 +51,7 @@
         }
         {
           job_name = "unifi";
+          scrape_interval = "10s";
           static_configs = [ { targets = [ unpollercfg.prometheusListenAddr ]; } ];
           relabel_configs = [
             {
