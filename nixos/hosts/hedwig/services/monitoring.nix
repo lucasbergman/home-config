@@ -19,9 +19,13 @@
         scrape_timeout = "5s";
         evaluation_interval = "10s";
       };
-      ruleFiles = [
-        (builtins.toString (pkgs.writeText "rules.json" (builtins.toJSON (import ./monitoring_rules.nix))))
-      ];
+      ruleFiles =
+        let
+          rulesAttrSet = import ./monitoring_rules.nix { inherit lib; };
+        in
+        [
+          (builtins.toString (pkgs.writeText "rules.json" (builtins.toJSON rulesAttrSet)))
+        ];
 
       scrapeConfigs = [
         {

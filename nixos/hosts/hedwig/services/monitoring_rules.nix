@@ -1,15 +1,27 @@
+{ lib, ... }:
 let
   mkRates =
-    counter:
-    builtins.map
-      (rate: {
-        record = "${counter}:rate${rate}";
-        expr = "rate(${counter}[${rate}])";
-      })
-      [
-        "1m"
-        "5m"
-      ];
+    {
+      name,
+      counter,
+      aggregate ? lib.trivial.id,
+    }:
+    [
+      {
+        record = name;
+        expr = aggregate counter;
+      }
+    ]
+    ++
+      builtins.map
+        (rate: {
+          record = "${name}:rate${rate}";
+          expr = aggregate "rate(${counter}[${rate}])";
+        })
+        [
+          "1m"
+          "5m"
+        ];
 in
 {
   groups = [
@@ -28,45 +40,37 @@ in
     }
     {
       name = "unifi";
-      rules =
-        [
-          {
-            record = "unifi:wan:receive_bytes";
-            expr = "unpoller_device_wan_receive_bytes_total{job='unifi'}";
-          }
-          {
-            record = "unifi:wan:transmit_bytes";
-            expr = "unpoller_device_wan_transmit_bytes_total{job='unifi'}";
-          }
-          {
-            record = "unifi:device:receive_bytes";
-            expr = "unpoller_device_receive_bytes_total{job='unifi'}";
-          }
-          {
-            record = "unifi:device:transmit_bytes";
-            expr = "unpoller_device_transmit_bytes_total{job='unifi'}";
-          }
-        ]
-        ++ (mkRates "unifi:wan:receive_bytes")
-        ++ (mkRates "unifi:wan:transmit_bytes")
-        ++ (mkRates "unifi:device:receive_bytes")
-        ++ (mkRates "unifi:device:transmit_bytes");
+      rules = builtins.concatLists [
+        (mkRates {
+          name = "unifi:wan:receive_bytes";
+          counter = "unpoller_device_wan_receive_bytes_total{job='unifi'}";
+        })
+        (mkRates {
+          name = "unifi:wan:transmit_bytes";
+          counter = "unpoller_device_wan_transmit_bytes_total{job='unifi'}";
+        })
+        (mkRates {
+          name = "unifi:device:receive_bytes";
+          counter = "unpoller_device_receive_bytes_total{job='unifi'}";
+        })
+        (mkRates {
+          name = "unifi:device:transmit_bytes";
+          counter = "unpoller_device_transmit_bytes_total{job='unifi'}";
+        })
+      ];
     }
     {
       name = "node_net";
-      rules =
-        [
-          {
-            record = "node:receive_bytes";
-            expr = "node_network_receive_bytes_total{device=~'^(en|eth).*'}";
-          }
-          {
-            record = "node:transmit_bytes";
-            expr = "node_network_transmit_bytes_total{device=~'^(en|eth).*'}";
-          }
-        ]
-        ++ (mkRates "node:receive_bytes")
-        ++ (mkRates "node:transmit_bytes");
+      rules = builtins.concatLists [
+        (mkRates {
+          name = "node:receive_bytes";
+          counter = "node_network_receive_bytes_total{device=~'^(en|eth).*'}";
+        })
+        (mkRates {
+          name = "node:transmit_bytes";
+          counter = "node_network_transmit_bytes_total{device=~'^(en|eth).*'}";
+        })
+      ];
     }
     {
       name = "node_fs";
@@ -76,17 +80,17 @@ in
             record = "node:filesystem_avail_bytes";
             expr = "node_filesystem_avail_bytes{job='node',fstype!~'(tmpfs|ramfs)'}";
           }
-          {
-            record = "node:disk_read_seconds";
-            expr = "node_disk_read_time_seconds_total";
-          }
-          {
-            record = "node:disk_write_seconds";
-            expr = "node_disk_write_time_seconds_total";
-          }
         ]
-        ++ (mkRates "node:disk_read_seconds")
-        ++ (mkRates "node:disk_write_seconds");
+        ++ builtins.concatLists [
+          (mkRates {
+            name = "node:disk_read_seconds";
+            counter = "node_disk_read_time_seconds_total";
+          })
+          (mkRates {
+            name = "node:disk_write_seconds";
+            counter = "node_disk_write_time_seconds_total";
+          })
+        ];
     }
     {
       name = "node_disk";
@@ -127,12 +131,11 @@ in
     }
     {
       name = "node_cpu";
-      rules = [
-        {
-          record = "node:cpu_seconds";
-          expr = "sum(node_cpu_seconds_total) by (instance, mode)";
-        }
-      ] ++ (mkRates "node:cpu_seconds");
+      rules = mkRates {
+        name = "node:cpu_seconds";
+        counter = "node_cpu_seconds_total";
+        aggregate = e: "sum(${e}) by (instance, mode)";
+      };
     }
   ];
 }
