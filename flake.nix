@@ -117,15 +117,16 @@
             mypkgs = outputs.packages.${system};
           } // (allPkgsOf { inherit system; });
         };
-    in
-    {
-      formatter = forAllSystems (
+
+      mkTreefmt =
         system:
         let
           treefmt = treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
         in
-        treefmt.config.build.wrapper
-      );
+        treefmt.config.build;
+    in
+    {
+      formatter = forAllSystems (system: (mkTreefmt system).wrapper);
 
       packages = forAllSystems (
         system:
@@ -151,6 +152,10 @@
       devShells = forAllSystems (
         system: import ./shell.nix ({ inherit inputs system; } // (allPkgsOf { inherit system; }))
       );
+
+      checks = forAllSystems (system: {
+        format = (mkTreefmt system).check self;
+      });
 
       nixosConfigurations = {
         cheddar = mkHost "x86_64-linux" [ ./nixos/hosts/cheddar ];
