@@ -1,9 +1,17 @@
-{ pkgs-unstable, ... }:
+{ pkgs, ... }:
 {
   services.plex = {
     enable = true;
-    package = pkgs-unstable.plex;
     dataDir = "/storage/media/plex-data";
+    package = pkgs.plex.override {
+      plexRaw = pkgs.plexRaw.overrideAttrs (prev: rec {
+        version = "1.42.1.10060-4e8b05daf";
+        src = pkgs.fetchurl {
+          url = "https://downloads.plex.tv/plex-media-server-new/${version}/debian/${prev.pname}_${version}_amd64.deb";
+          hash = "sha256-OoItvG0IpgUKlZ0JmzDc2WqMtyZrlNCF7MCnUKqBl/Q=";
+        };
+      });
+    };
   };
 
   # Plex serves its data from /storage
