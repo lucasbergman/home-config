@@ -116,7 +116,7 @@
           specialArgs = {
             inherit inputs outputs;
             mypkgs = outputs.packages.${system};
-          } // (allPkgsOf { inherit system; });
+          };
         };
 
       mkTreefmt =

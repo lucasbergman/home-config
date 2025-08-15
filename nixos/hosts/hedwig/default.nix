@@ -1,6 +1,4 @@
 {
-  inputs,
-  outputs,
   lib,
   config,
   pkgs,
@@ -76,6 +74,14 @@
       bits = 4096;
     }
   ];
+
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (pkgs.lib.getName pkg) [
+      "mongodb"
+      "plexmediaserver"
+      "unifi-controller"
+    ];
 
   slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
 
