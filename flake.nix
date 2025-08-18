@@ -76,11 +76,10 @@
       allPkgsOf =
         {
           system,
-          overlays ? [ ],
         }:
         {
           pkgs = import nixpkgs {
-            inherit system overlays;
+            inherit system;
             config.allowUnfree = true;
           };
           pkgs-unstable = import inputs.nixpkgs-unstable {
@@ -132,9 +131,11 @@
 
       packages = forAllSystems (
         system:
-        import ./pkgs (allPkgsOf {
-          inherit system;
-          overlays = [ gomod2nix.overlays.default ];
+        (import ./pkgs {
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ gomod2nix.overlays.default ];
+          };
         })
       );
 
