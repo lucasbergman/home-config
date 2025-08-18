@@ -59,9 +59,10 @@
       self,
       nixpkgs,
       nixpkgs-unstable,
-      idiotbox,
-      home-manager,
+      flake-utils,
       gomod2nix,
+      home-manager,
+      idiotbox,
       nixos-securenets,
       nixos-wsl,
       terranix,
@@ -71,7 +72,6 @@
     }@inputs:
     let
       inherit (self) outputs;
-      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
 
       allPkgsOf =
         {
@@ -118,54 +118,50 @@
             mypkgs = outputs.packages.${system};
           };
         };
-
-      mkTreefmt =
-        system:
-        let
-          treefmt = treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
-        in
-        treefmt.config.build;
     in
-    {
-      formatter = forAllSystems (system: (mkTreefmt system).wrapper);
+    (flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        treefmtConfig =
+          let
+            treefmt = treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
+          in
+          treefmt.config.build;
+      in
+      {
+        formatter = treefmtConfig.wrapper;
 
-      packages = forAllSystems (
-        system:
-        (import ./pkgs {
+        packages = import ./pkgs {
           pkgs = import nixpkgs {
             inherit system;
             overlays = [ gomod2nix.overlays.default ];
           };
-        })
-      );
+        };
 
-      apps = forAllSystems (
-        system:
-        let
-          allPkgs = allPkgsOf { inherit system; };
-        in
-        import ./lib/terraform-apps.nix {
-          pkgs = allPkgs.pkgs;
-          terraform = allPkgs.pkgs-unstable.terraform;
-          extraModules = [ nixos-securenets.terranixModules.securenets ];
-          inherit terranix;
-        }
-      );
+        apps =
+          let
+            allPkgs = allPkgsOf { inherit system; };
+          in
+          import ./lib/terraform-apps.nix {
+            pkgs = allPkgs.pkgs;
+            terraform = allPkgs.pkgs-unstable.terraform;
+            extraModules = [ nixos-securenets.terranixModules.securenets ];
+            inherit terranix;
+          };
 
-      devShells = forAllSystems (
-        system:
-        (import ./shell.nix (
+        devShells = import ./shell.nix (
           {
             inherit gomod2nix system;
           }
           // (allPkgsOf { inherit system; })
-        ))
-      );
+        );
 
-      checks = forAllSystems (system: {
-        format = (mkTreefmt system).check self;
-      });
-
+        checks = {
+          format = treefmtConfig.check self;
+        };
+      }
+    ))
+    // {
       nixosConfigurations = {
         cheddar = mkHost "x86_64-linux" [ ./nixos/hosts/cheddar ];
         hedwig = mkHost "x86_64-linux" [
