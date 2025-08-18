@@ -1,9 +1,8 @@
 {
-  inputs,
-  outputs,
   lib,
   config,
   pkgs,
+  nixos-wsl,
   ...
 }:
 {
@@ -11,7 +10,7 @@
     ../../common/global
     ../../common/users
 
-    inputs.nixos-wsl.nixosModules.wsl
+    nixos-wsl.nixosModules.wsl
   ];
 
   slb.securenet = {

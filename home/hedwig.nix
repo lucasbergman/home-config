@@ -1,7 +1,7 @@
-{ inputs, ... }:
+{ vscode-server, ... }:
 {
   imports = [
-    inputs.vscode-server.homeModules.default
+    vscode-server.homeModules.default
 
     ./global
     ./features/vscode-server.nix

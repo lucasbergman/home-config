@@ -1,8 +1,8 @@
 {
-  inputs,
   pkgs,
   pkgs-unstable,
   system,
+  gomod2nix,
 }:
 {
   default = pkgs.mkShell {
@@ -24,7 +24,7 @@
       pkgs-unstable.google-cloud-sdk
       pkgs-unstable.terraform
 
-      inputs.gomod2nix.packages.${system}.default
+      gomod2nix.packages.${system}.default
     ];
   };
 }

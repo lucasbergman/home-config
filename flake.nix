@@ -63,6 +63,7 @@
       home-manager,
       gomod2nix,
       nixos-securenets,
+      nixos-wsl,
       terranix,
       treefmt-nix,
       vscode-server,
@@ -97,8 +98,8 @@
           inherit modules;
           inherit (allPkgs) pkgs;
           extraSpecialArgs = {
-            inherit inputs;
             inherit (allPkgs) pkgs-unstable;
+            inherit vscode-server;
             mypkgs = outputs.packages.${system};
           };
         };
@@ -114,7 +115,7 @@
         nixpkgs.lib.nixosSystem {
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
-            inherit inputs outputs;
+            inherit inputs nixos-wsl;
             mypkgs = outputs.packages.${system};
           };
         };
@@ -151,7 +152,13 @@
       );
 
       devShells = forAllSystems (
-        system: import ./shell.nix ({ inherit inputs system; } // (allPkgsOf { inherit system; }))
+        system:
+        (import ./shell.nix (
+          {
+            inherit gomod2nix system;
+          }
+          // (allPkgsOf { inherit system; })
+        ))
       );
 
       checks = forAllSystems (system: {
