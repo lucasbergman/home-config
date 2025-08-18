@@ -73,32 +73,14 @@
     let
       inherit (self) outputs;
 
-      allPkgsOf =
-        {
-          system,
-        }:
-        {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          pkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        };
-
       mkHome =
         system: modules:
-        let
-          allPkgs = allPkgsOf { inherit system; };
-        in
         home-manager.lib.homeManagerConfiguration {
           inherit modules;
-          inherit (allPkgs) pkgs;
+          pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {
-            inherit (allPkgs) pkgs-unstable;
             inherit vscode-server;
+            pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
             mypkgs = outputs.packages.${system};
           };
         };
@@ -122,6 +104,16 @@
     (flake-utils.lib.eachDefaultSystem (
       system:
       let
+        pkgs = import nixpkgs { inherit system; };
+        pkgs-unstable = import nixpkgs-unstable {
+          inherit system;
+          config.allowUnfreePredicate =
+            pkg:
+            builtins.elem (pkgs.lib.getName pkg) [
+              "terraform" # :(
+            ];
+        };
+
         treefmtConfig =
           let
             treefmt = treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
@@ -138,23 +130,21 @@
           };
         };
 
-        apps =
-          let
-            allPkgs = allPkgsOf { inherit system; };
-          in
-          import ./lib/terraform-apps.nix {
-            pkgs = allPkgs.pkgs;
-            terraform = allPkgs.pkgs-unstable.terraform;
-            extraModules = [ nixos-securenets.terranixModules.securenets ];
-            inherit terranix;
-          };
+        apps = import ./lib/terraform-apps.nix {
+          inherit pkgs;
+          terraform = pkgs-unstable.terraform;
+          extraModules = [ nixos-securenets.terranixModules.securenets ];
+          inherit terranix;
+        };
 
-        devShells = import ./shell.nix (
-          {
-            inherit gomod2nix system;
-          }
-          // (allPkgsOf { inherit system; })
-        );
+        devShells = import ./shell.nix {
+          inherit
+            gomod2nix
+            pkgs
+            pkgs-unstable
+            system
+            ;
+        };
 
         checks = {
           format = treefmtConfig.check self;
