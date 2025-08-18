@@ -8,6 +8,12 @@
 {
   options = {
     slb.security = {
+      unsafeUnderConstruction = lib.mkOption {
+        type = lib.types.bool;
+        description = "Leave safety belts unbuckled when a machine is first getting set up";
+        default = false;
+      };
+
       enable = lib.mkOption {
         type = lib.types.bool;
         description = "Whether to enable GCP security services (and ACME certs)";

@@ -1,10 +1,10 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {
       PermitRootLogin = "no";
-      PasswordAuthentication = false;
+      PasswordAuthentication = lib.mkDefault config.slb.security.unsafeUnderConstruction;
     };
   };
 }
