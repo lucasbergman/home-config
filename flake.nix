@@ -32,11 +32,6 @@
       inputs.terranix.follows = "terranix";
     };
 
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     terranix = {
       url = "github:terranix/terranix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -64,7 +59,6 @@
       home-manager,
       idiotbox,
       nixos-securenets,
-      nixos-wsl,
       terranix,
       treefmt-nix,
       vscode-server,
@@ -96,7 +90,7 @@
         nixpkgs.lib.nixosSystem {
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
-            inherit inputs nixos-wsl;
+            inherit inputs;
             mypkgs = outputs.packages.${system};
           };
         };

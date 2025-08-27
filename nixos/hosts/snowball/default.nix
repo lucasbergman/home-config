@@ -1,26 +1,36 @@
 {
-  lib,
-  config,
-  pkgs,
-  nixos-wsl,
   ...
 }:
 {
   imports = [
     ../../common/global
     ../../common/users
-
-    nixos-wsl.nixosModules.wsl
+    ../../common/desktop.nix
+    ./hardware-configuration.nix
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  slb.security.unsafeUnderConstruction = true;
+
   slb.securenet = {
+    # TODO
     enable = false;
     network = "bergnet";
     privateKeyPath = "/etc/bergmans-wg-key";
   };
 
+  systemd.network.networks."10-lan" = {
+    matchConfig.Name = "enp3s0";
+    networkConfig = {
+      DHCP = "ipv4";
+      IPv6AcceptRA = true;
+    };
+  };
+
   networking = {
-    hostName = "snowball-wsl";
+    hostName = "snowball";
     domain = "bergman.house";
     wireless.enable = false;
   };
@@ -30,11 +40,11 @@
   slb.security.enable = false;
   slb.backups.enable = false;
 
-  # This is running under WSL
-  wsl.enable = true;
-  wsl.defaultUser = "lucas";
-  slb.networking.enableSystemdNetworkd = false; # Windows handles the network
-  nixpkgs.hostPlatform = "x86_64-linux";
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
 
   security.polkit.enable = true;
   hardware.graphics.enable = true;
