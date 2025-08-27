@@ -8,7 +8,7 @@
     alsa.enable = true;
     pulse.enable = true;
   };
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
