@@ -51,13 +51,16 @@ in
   terraform-config = {
     type = "app";
     program = "${config}/bin/terraform-config";
+    meta.description = "Generate Terraform configuration from Terranix modules";
   };
   terraform-plan = {
     type = "app";
     program = "${plan}/bin/terraform-plan";
+    meta.description = "Create Terraform execution plan from Terranix configuration";
   };
   terraform-apply = {
     type = "app";
     program = "${apply}/bin/terraform-apply";
+    meta.description = "Apply Terraform execution plan to infrastructure";
   };
 }
