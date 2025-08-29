@@ -1,4 +1,5 @@
 {
+  pkgs-unstable,
   ...
 }:
 {
@@ -15,4 +16,8 @@
     desktopManager.gnome.enable = true;
   };
   security.pam.services.swaylock = { };
+  programs.hyprland = {
+    enable = true;
+    package = pkgs-unstable.hyprland;
+  };
 }
