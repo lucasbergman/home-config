@@ -106,11 +106,11 @@
     "$mainMod, P, pseudo," # dwindle
     "$mainMod, J, togglesplit," # dwindle
 
-    # Move focus with mainMod + arrow keys
-    "$mainMod, left, movefocus, l"
-    "$mainMod, right, movefocus, r"
-    "$mainMod, up, movefocus, u"
-    "$mainMod, down, movefocus, d"
+    # Move focus with mainMod + vi-style movement keys
+    "$mainMod, H, movefocus, l"
+    "$mainMod, L, movefocus, r"
+    "$mainMod, K, movefocus, u"
+    "$mainMod, J, movefocus, d"
 
     # Switch workspaces with mainMod + [0-9]
     "$mainMod, 1, workspace, 1"
