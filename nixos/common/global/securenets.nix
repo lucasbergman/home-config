@@ -21,7 +21,7 @@
       {
         name = "snowball";
         addr = "10.6.0.3";
-        pubkey = "iStRyux5lZny3mFxxFcTmJOjmzb3lQ4GcsjUXi2big8=";
+        pubkey = "Kdwto8BVUZtkU6zqVlEyhHykUEGis/jjURV3BvqAPm8=";
         site = "indiana";
       }
     ];

@@ -12,11 +12,8 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  slb.security.unsafeUnderConstruction = true;
-
   slb.securenet = {
-    # TODO
-    enable = false;
+    enable = true;
     network = "bergnet";
     privateKeyPath = "/etc/bergmans-wg-key";
   };
