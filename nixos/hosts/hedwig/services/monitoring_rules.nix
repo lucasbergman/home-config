@@ -74,23 +74,22 @@ in
     }
     {
       name = "node_fs";
-      rules =
-        [
-          {
-            record = "node:filesystem_avail_bytes";
-            expr = "node_filesystem_avail_bytes{job='node',fstype!~'(tmpfs|ramfs)'}";
-          }
-        ]
-        ++ builtins.concatLists [
-          (mkRates {
-            name = "node:disk_read_seconds";
-            counter = "node_disk_read_time_seconds_total";
-          })
-          (mkRates {
-            name = "node:disk_write_seconds";
-            counter = "node_disk_write_time_seconds_total";
-          })
-        ];
+      rules = [
+        {
+          record = "node:filesystem_avail_bytes";
+          expr = "node_filesystem_avail_bytes{job='node',fstype!~'(tmpfs|ramfs)'}";
+        }
+      ]
+      ++ builtins.concatLists [
+        (mkRates {
+          name = "node:disk_read_seconds";
+          counter = "node_disk_read_time_seconds_total";
+        })
+        (mkRates {
+          name = "node:disk_write_seconds";
+          counter = "node_disk_write_time_seconds_total";
+        })
+      ];
     }
     {
       name = "node_disk";

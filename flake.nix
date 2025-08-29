@@ -94,6 +94,7 @@
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
             inherit inputs;
+            pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
             mypkgs = outputs.packages.${system};
           };
         };

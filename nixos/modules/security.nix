@@ -121,55 +121,54 @@
         };
       };
 
-      systemd.services =
-        {
-          "instance-key" = {
-            description = "decrypt instance key";
-            wantedBy = [ "multi-user.target" ];
-            before = [ "acme-${cfg.acmeHostName}.service" ]; # TODO hack
-            serviceConfig = {
-              Type = "oneshot";
-              UMask = 337;
-            };
-
-            script =
-              with builtins;
-              let
-                # Use the host's EdDSA 25519 key for SOPS
-                hostKeyPaths = map (getAttr "path") config.services.openssh.hostKeys;
-                edDSAKey = lib.lists.findSingle (lib.hasInfix "ed25519") "" "" hostKeyPaths;
-                sopsKeyPath =
-                  assert edDSAKey != "";
-                  edDSAKey;
-                keyPath = if cfg.gcpInstanceKeyPath == null then "" else cfg.gcpInstanceKeyPath;
-              in
-              ''
-                if [ -n "${keyPath}" ]; then
-                  # Decrypt a SOPS-encrypted instance key
-                  install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-                  env SOPS_AGE_KEY=$(${pkgs.ssh-to-age}/bin/ssh-to-age -private-key < "${sopsKeyPath}") \
-                    ${pkgs.sops}/bin/sops --decrypt ${keyPath} > ${credsPath}
-                elif [ -f "${installedCredsPath}" ]; then
-                  # Install a hand-installed instance key
-                  install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-                  cat ${installedCredsPath} > ${credsPath}
-                else
-                  echo "No GCP instance key found at ${installedCredsPath}" >&2
-                  exit 1
-                fi
-
-                # Make a handy file with GCP project and service account info
-                install -m 0444 /dev/null ${infoPath}
-                cat >${infoPath} <<EOF
-                GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
-                GCE_SERVICE_ACCOUNT_FILE=${credsPath}
-                EOF
-              '';
+      systemd.services = {
+        "instance-key" = {
+          description = "decrypt instance key";
+          wantedBy = [ "multi-user.target" ];
+          before = [ "acme-${cfg.acmeHostName}.service" ]; # TODO hack
+          serviceConfig = {
+            Type = "oneshot";
+            UMask = 337;
           };
-        }
-        // lib.mapAttrs' (
-          name: value: lib.nameValuePair ("secret-" + name) (mkSecretService name value)
-        ) cfg.secrets;
+
+          script =
+            with builtins;
+            let
+              # Use the host's EdDSA 25519 key for SOPS
+              hostKeyPaths = map (getAttr "path") config.services.openssh.hostKeys;
+              edDSAKey = lib.lists.findSingle (lib.hasInfix "ed25519") "" "" hostKeyPaths;
+              sopsKeyPath =
+                assert edDSAKey != "";
+                edDSAKey;
+              keyPath = if cfg.gcpInstanceKeyPath == null then "" else cfg.gcpInstanceKeyPath;
+            in
+            ''
+              if [ -n "${keyPath}" ]; then
+                # Decrypt a SOPS-encrypted instance key
+                install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
+                env SOPS_AGE_KEY=$(${pkgs.ssh-to-age}/bin/ssh-to-age -private-key < "${sopsKeyPath}") \
+                  ${pkgs.sops}/bin/sops --decrypt ${keyPath} > ${credsPath}
+              elif [ -f "${installedCredsPath}" ]; then
+                # Install a hand-installed instance key
+                install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
+                cat ${installedCredsPath} > ${credsPath}
+              else
+                echo "No GCP instance key found at ${installedCredsPath}" >&2
+                exit 1
+              fi
+
+              # Make a handy file with GCP project and service account info
+              install -m 0444 /dev/null ${infoPath}
+              cat >${infoPath} <<EOF
+              GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
+              GCE_SERVICE_ACCOUNT_FILE=${credsPath}
+              EOF
+            '';
+        };
+      }
+      // lib.mapAttrs' (
+        name: value: lib.nameValuePair ("secret-" + name) (mkSecretService name value)
+      ) cfg.secrets;
 
       security.acme = {
         acceptTerms = true;
