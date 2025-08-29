@@ -5,7 +5,7 @@ let
     version = "2024.4_5253";
     src = pkgs.fetchzip {
       url = "https://infinitekind.com/stabledl/2024.4.5253/moneydance-linux.tar.gz";
-      hash = "sha256-wwSb3CuhuXB4I9jq+TpLPbd1k9UzqQbAaZkGKgi+nns=";
+      hash = "sha256-xOdkuaN17ss9tTSXgU//s6cBm2jGEgP9eTtvW0k3VWQ=";
     };
   });
 in
