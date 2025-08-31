@@ -1,7 +1,7 @@
 {
   monitor = ",preferred,auto,auto";
-  "$terminal" = "kitty";
-  "$menu" = "wofi --show drun";
+  "$terminal" = "alacritty";
+  "$menu" = "wofi --show run";
 
   general = {
     gaps_in = 5;

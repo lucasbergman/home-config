@@ -1,4 +1,5 @@
 {
+  pkgs,
   pkgs-unstable,
   ...
 }:
@@ -10,8 +11,18 @@
     pulse.enable = true;
   };
   services.pulseaudio.enable = false;
+  services.xserver.displayManager.gdm.enable = true;
   programs.hyprland = {
     enable = true;
     package = pkgs-unstable.hyprland;
+  };
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = [
+      "hyprland"
+      "gtk"
+    ];
   };
 }

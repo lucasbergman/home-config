@@ -23,6 +23,12 @@
     portalPackage = null;
   };
 
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font.size = 18;
+    };
+  };
   programs.kitty.enable = true;
   programs.wofi.enable = true;
 
