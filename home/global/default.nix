@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   ...
 }:
 {
@@ -15,13 +14,12 @@
   };
 
   home.packages = [
+    pkgs.bitwarden-cli
     pkgs.inetutils
     pkgs.jq
     pkgs.netcat-gnu
     pkgs.nodejs_22
     pkgs.vim
-
-    pkgs-unstable.bitwarden-cli
   ];
 
   nixpkgs.config.allowUnfree = true;
