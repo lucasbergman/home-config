@@ -118,6 +118,14 @@
       ttl = 300;
     };
 
+    bergmanhouse_srv_matrix_new_bullshit_for_some_reason = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "_matrix-fed._tcp.bergman.house.";
+      type = "SRV";
+      rrdatas = [ "10 0 443 matrix.bergman.house." ];
+      ttl = 300;
+    };
+
     bergmanhouse_a_matrix = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "matrix.bergman.house.";
