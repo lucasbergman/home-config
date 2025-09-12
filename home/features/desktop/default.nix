@@ -1,5 +1,9 @@
 { pkgs, pkgs-unstable, ... }:
 {
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1"; # Pander to Electron on Wayland
+  };
+
   home.packages = [
     pkgs.dejavu_fonts
     pkgs.google-fonts
