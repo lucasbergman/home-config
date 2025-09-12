@@ -35,9 +35,12 @@
   programs.vscode = {
     enable = true;
     package = pkgs-unstable.vscode;
-    extensions = with pkgs-unstable.vscode-extensions; [
+    profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
       bbenoist.nix
-      kamadorueda.alejandra
+      ms-python.debugpy
+      ms-python.mypy-type-checker
+      ms-python.python
+      ms-vscode-remote.remote-ssh
     ];
   };
 }
