@@ -104,6 +104,14 @@
 
   slb.nginx.enable = true;
 
+  services.nginx.virtualHosts."bergman.house" = {
+    forceSSL = true;
+    enableACME = true;
+    locations."/" = {
+      return = "404";
+    };
+  };
+
   slb.gcplogs = {
     enable = true;
     location = "home:chateau";
