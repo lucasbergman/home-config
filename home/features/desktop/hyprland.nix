@@ -1,6 +1,6 @@
 {
   monitor = ",preferred,auto,auto";
-  "$terminal" = "alacritty";
+  "$terminal" = "kitty";
   "$menu" = "wofi --show run";
 
   general = {
@@ -97,14 +97,13 @@
 
   # Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
   bind = [
-    "$mainMod, Q, exec, $terminal"
+    "$mainMod, Return, exec, $terminal"
     "$mainMod, C, killactive,"
-    "$mainMod, M, exit,"
-    "$mainMod, E, exec, $fileManager"
-    "$mainMod, V, togglefloating,"
-    "$mainMod, R, exec, $menu"
-    "$mainMod, P, pseudo," # dwindle
     "$mainMod, J, togglesplit," # dwindle
+    "$mainMod, P, pseudo," # dwindle
+    "$mainMod SHIFT, Q, exit,"
+    "$mainMod, R, exec, $menu"
+    "$mainMod, V, togglefloating,"
 
     # Move focus with mainMod + vi-style movement keys
     "$mainMod, H, movefocus, l"
