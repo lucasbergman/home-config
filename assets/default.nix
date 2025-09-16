@@ -7,7 +7,6 @@
     ./dns.nix
     ./iam.nix
     ./hedwig.nix
-    ./krusty.nix
     ./mail.nix
     ./secrets.nix
     ./snowball.nix
