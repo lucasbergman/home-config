@@ -68,9 +68,9 @@
       inherit (self) outputs;
 
       mkHome =
-        system: modules:
+        system: extraModules:
         home-manager.lib.homeManagerConfiguration {
-          inherit modules;
+          modules = [ ./home/modules ] ++ extraModules;
           pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {
             inherit vscode-server;
