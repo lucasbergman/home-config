@@ -2,8 +2,11 @@
 {
   imports = [
     vscode-server.homeModules.default
-
-    ./global
     ./features/vscode-server.nix
   ];
+
+  slb = {
+    isDesktop = false;
+    enableDevelopment = true;
+  };
 }
