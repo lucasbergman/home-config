@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 {
@@ -11,36 +12,57 @@
     description = "Whether to enable development tools and packages";
   };
 
-  config = lib.mkIf config.slb.enableDevelopment {
-    programs.emacs = {
-      enable = true;
-      package =
-        let
-          emacsPackage = if config.slb.isDesktop then pkgs.emacs30-pgtk else pkgs.emacs30-nox;
-        in
-        (pkgs.emacsPackagesFor emacsPackage).emacsWithPackages (
-          epkgs: with epkgs; [
-            bazel
-            crux
-            fireplace
-            lsp-mode
-            magit
-            mu4e
-            nix-mode
-            smex
-            use-package
-          ]
-        );
-      extraConfig = ''
-        (load "${./emacs.el}")
-      '';
-    };
+  config = lib.mkIf config.slb.enableDevelopment (
+    let
+      inherit (config) slb;
+    in
+    {
+      home.packages = [
+        pkgs-unstable.claude-code
+        pkgs-unstable.gemini-cli
+      ];
 
-    services.emacs = {
-      enable = true;
-      client.enable = true;
-      defaultEditor = true;
-      socketActivation.enable = true;
-    };
-  };
+      programs.emacs = {
+        enable = true;
+        package =
+          let
+            emacsPackage = if slb.isDesktop then pkgs.emacs30-pgtk else pkgs.emacs30-nox;
+          in
+          (pkgs.emacsPackagesFor emacsPackage).emacsWithPackages (
+            epkgs: with epkgs; [
+              bazel
+              crux
+              fireplace
+              lsp-mode
+              magit
+              mu4e
+              nix-mode
+              smex
+              use-package
+            ]
+          );
+        extraConfig = ''
+          (load "${./emacs.el}")
+        '';
+      };
+
+      programs.vscode = {
+        enable = slb.isDesktop;
+        profiles.default.extensions = with pkgs.vscode-extensions; [
+          bbenoist.nix
+          ms-python.debugpy
+          ms-python.mypy-type-checker
+          ms-python.python
+          ms-vscode-remote.remote-ssh
+        ];
+      };
+
+      services.emacs = {
+        enable = true;
+        client.enable = true;
+        defaultEditor = true;
+        socketActivation.enable = true;
+      };
+    }
+  );
 }

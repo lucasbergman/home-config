@@ -3,7 +3,6 @@
   imports = [
     ./features/desktop
     ./features/desktop/moneydance.nix
-    ./features/development
   ];
 
   slb = {
