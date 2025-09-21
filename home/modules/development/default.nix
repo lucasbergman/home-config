@@ -57,6 +57,8 @@
         ];
       };
 
+      services.vscode-server.enable = (!slb.isDesktop) && slb.enableDevelopment;
+
       services.emacs = {
         enable = true;
         client.enable = true;

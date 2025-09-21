@@ -2,7 +2,6 @@
 {
   imports = [
     vscode-server.homeModules.default
-    ./features/vscode-server.nix
   ];
 
   slb = {
