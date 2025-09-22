@@ -2,10 +2,15 @@
   config,
   lib,
   pkgs,
+  vscode-server,
   ...
 }:
 {
-  imports = [ ./development ];
+  imports = [
+    vscode-server.homeModules.default
+    ./desktop
+    ./development
+  ];
 
   options.slb = {
     isDesktop = lib.mkOption {
