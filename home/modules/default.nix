@@ -57,6 +57,11 @@
 
     programs.direnv.enable = true;
 
+    programs.tmux = {
+      enable = true;
+      prefix = "C-o";
+    };
+
     programs.git = {
       enable = true;
       userName = "Lucas Bergman";
