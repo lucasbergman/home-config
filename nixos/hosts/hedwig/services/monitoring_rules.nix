@@ -136,5 +136,26 @@ in
         aggregate = e: "sum(${e}) by (instance, mode)";
       };
     }
+    {
+      name = "node_health";
+      rules = [
+        {
+          record = "node:last_boot_time_seconds";
+          expr = "node_boot_time_seconds";
+        }
+        {
+          alert = "node_rebooted";
+          expr = "changes(node_boot_time_seconds[1h]) > 0";
+          for = "5m";
+          labels = {
+            severity = "notify";
+          };
+          annotations = {
+            summary = "Node {{ $labels.instance }} has rebooted";
+            description = "Node {{ $labels.instance }} rebooted at {{ $value | humanizeTimestamp }}";
+          };
+        }
+      ];
+    }
   ];
 }
