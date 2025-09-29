@@ -5,6 +5,9 @@
   pkgs,
   ...
 }:
+let
+  myAddress = "10.6.0.2";
+in
 {
   services.prometheus =
     let
@@ -14,7 +17,7 @@
     in
     {
       enable = true;
-      listenAddress = "10.6.0.2";
+      listenAddress = myAddress;
       globalConfig = {
         scrape_timeout = "5s";
         evaluation_interval = "10s";
@@ -90,6 +93,60 @@
           ];
         }
       ];
+
+      alertmanagers = [
+        {
+          static_configs = [
+            { targets = [ "${promcfg.alertmanager.listenAddress}:${toString promcfg.alertmanager.port}" ]; }
+          ];
+        }
+      ];
+
+      alertmanager = {
+        enable = true;
+        listenAddress = myAddress;
+        webExternalUrl = "http://${myAddress}:${toString promcfg.alertmanager.port}";
+        logLevel = "debug";
+
+        extraFlags = [
+          # Turn off HA/cluster mode. That's a good idea in single-server setups
+          # anyway - might as well reduce one's attack surface - but I found out
+          # that this wasn't the default in a stupid way. On a Linode VM with no
+          # RFC 1918 private interface (only loopback and public), alertmanager
+          # dies at startup saying "Failed to get final advertise address: No
+          # private IP address found".
+          "--cluster.listen-address=''"
+        ];
+
+        configuration = {
+          global = {
+            smtp_smarthost = "cheddar.internal.bergman.house:587";
+            smtp_from = "alertmanager@bergmans.us";
+          };
+          route = {
+            group_by = [
+              "alertname"
+              "cluster"
+              "service"
+            ];
+            group_wait = "30s";
+            group_interval = "5m";
+            repeat_interval = "4h";
+            receiver = "me-mail"; # default receiver
+          };
+          receivers = [
+            {
+              name = "me-mail";
+              email_configs = [
+                {
+                  to = "lucas+alerts@bergmans.us";
+                  tls_config.insecure_skip_verify = true;
+                }
+              ];
+            }
+          ];
+        };
+      };
 
       exporters = {
         node = {
