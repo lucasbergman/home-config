@@ -17,6 +17,7 @@ in
     in
     {
       enable = true;
+      retentionTime = "90d";
       listenAddress = myAddress;
       globalConfig = {
         scrape_timeout = "5s";
