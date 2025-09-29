@@ -83,6 +83,17 @@ in
     relayHost = "email-smtp.us-east-2.amazonaws.com";
     relayPort = 587;
 
+    networks = [
+      "127.0.0.0/8"
+      "10.6.0.0/24" # Include WireGuard mesh in trusted networks
+    ];
+
+    enableSubmission = true;
+    submissionOptions = {
+      smtpd_tls_security_level = "encrypt";
+      smtpd_client_restrictions = "permit_mynetworks,permit_sasl_authenticated,reject";
+    };
+
     mapFiles.virtual_alias = ./../conf/postfix/virtual_alias;
     mapFiles.virtual_mailbox = ./../conf/postfix/virtual_mailbox;
     mapFiles.sasl_passwd = saslPasswordFile;
