@@ -104,7 +104,7 @@ in
         }
         {
           record = "node:disk:command_timeout:raw";
-          expr = "smartctl_device_attribute{attribute_id='188',attribute_value_type='raw'}";
+          expr = "smartctl_device_attribute{attribute_id='188',attribute_value_type='raw'} % 0x10000";
         }
         {
           record = "node:disk:current_pending_sector:raw";
