@@ -116,14 +116,14 @@ in
         }
         {
           alert = "node_disk_smart";
-          expr = "{__name__=~'node:disk:[^:]+:raw'} > 0";
+          expr = "delta({__name__=~'node:disk:[^:]+:raw'}[1h]) > 0";
           for = "1m";
           labels = {
             severity = "notify";
           };
           annotations = {
             summary = "Drive {{ $labels.device }} reports a SMART issue";
-            description = "{{ $labels.__name__ }} is {{ $value }} for drive {{ $labels.device }}";
+            description = "{{ $labels.__name__ }} has increased in the last hour for drive {{ $labels.device }}";
           };
         }
       ];
