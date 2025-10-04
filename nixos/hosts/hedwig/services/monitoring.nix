@@ -163,6 +163,8 @@ in
             "/dev/sda"
             "/dev/sdb"
             "/dev/sdc"
+            "/dev/sdd"
+            "/dev/sde"
           ];
         };
       };
