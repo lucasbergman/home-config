@@ -68,17 +68,30 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
       # SES password for mail submission
       mail_ses_password = {
         secret_id = "mail-ses-password";
-        replication = {
-          auto = { };
-        };
+        replication.auto = { };
       };
 
       # User names and (hashed) passwords for mail server users
       mail_userdb = {
         secret_id = "mail-userdb";
-        replication = {
-          auto = { };
-        };
+        replication.auto = { };
+      };
+
+      mail_arc_private_key_202510 = {
+        secret_id = "mail-arc-private-key-202510";
+        replication.auto = { };
+      };
+    };
+
+    resource.google_dns_record_set = {
+      mail_arc_key_202510 = {
+        managed_zone = "bergmans";
+        name = "arc202510._domainkey.bergmans.us.";
+        type = "TXT";
+        rrdatas = [
+          "\"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqxYsMxmVdnEJTJHazK3D3p577cb5QYkx76nCt23jNsiAgyJtDbyuo+CdkhiQziqqlIErZ/jcvn3KhJRK0HpWNsjGCFcsoEVjJ3vkm7ispLZrOIWWiUUsnG9W76cN0zKyPKEiknZeR0as6kdgUbc3E7KhCFhtLM8kG5QX91K67M3JzdkOJ0XJrFIzmhwvFMFJR\" \"L9pLfpZPV5iVRMU+ZhRb6oqgLwx7hMaluHHKlhFjIPHk9gdeYu9AAR+ZvTA3xvkIoWci4AiYj97CTQQaI56JulkeehZMt0uSyz3EATvz+If8WwNeUG8ACfu+/Q+518S+RyZO2ww+cgEVehFOKwq2QIDAQAB\""
+        ];
+        ttl = 300;
       };
     };
 
