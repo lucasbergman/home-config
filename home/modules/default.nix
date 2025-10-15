@@ -26,6 +26,7 @@
       pkgs.bitwarden-cli
       pkgs.inetutils
       pkgs.jq
+      pkgs.jujutsu
       pkgs.netcat-gnu
       pkgs.nodejs_22
       pkgs.vim
