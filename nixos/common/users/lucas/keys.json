@@ -1,9 +1,9 @@
 {
-  "home-desktop-windows": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOau4E8GDV4xKNNxbHE3siF0FAkk+5e9NHhlKXvhU4MJ lucas@snowball-windows",
-  "home-server": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxQDnZ2MZ0Q+APiJ7u3MnJ+T23uNTkwyf5R6YJwzX49 lucas@hedwig",
-  "home-phone": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILqggWZJUgCELDtgl7bZu2Mpk16jVwFkkE5Ue5KVv/Ku lucas@pixel-9",
-  "work-laptop": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOU7WhR8A2pmvOk2HaiKUFWXUYxzkGEtKOXV0mW9MaGN slb@googoo-chromebox",
-  "work-laptop-linux": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJU4UW9W4qHZrHsUk6ngTyf2Ht7LfcXkdEof+1nxylds slb@googoo-chromebook-linux",
-  "work-desktop": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN30FpKKW2kdcFb6XkZPhvM3WH6Abxz8RUAkZsbLIfrc slb@googoo-chromebook",
-  "kid-macbook": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFA3vj3li8eP5nxZtaaBOrrcxEHEC+EHYpVkSveGByA lucas@kid-air"
+    "home-desktop-windows": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOau4E8GDV4xKNNxbHE3siF0FAkk+5e9NHhlKXvhU4MJ lucas@snowball-windows",
+    "home-server": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxQDnZ2MZ0Q+APiJ7u3MnJ+T23uNTkwyf5R6YJwzX49 lucas@hedwig",
+    "home-phone": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILqggWZJUgCELDtgl7bZu2Mpk16jVwFkkE5Ue5KVv/Ku lucas@pixel-9",
+    "work-laptop": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOU7WhR8A2pmvOk2HaiKUFWXUYxzkGEtKOXV0mW9MaGN slb@googoo-chromebox",
+    "work-laptop-linux": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJU4UW9W4qHZrHsUk6ngTyf2Ht7LfcXkdEof+1nxylds slb@googoo-chromebook-linux",
+    "work-desktop": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN30FpKKW2kdcFb6XkZPhvM3WH6Abxz8RUAkZsbLIfrc slb@googoo-chromebook",
+    "kid-macbook": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFA3vj3li8eP5nxZtaaBOrrcxEHEC+EHYpVkSveGByA lucas@kid-air"
 }

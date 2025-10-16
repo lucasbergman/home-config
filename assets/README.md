@@ -1,8 +1,8 @@
 # About This
 
-This is a Terraform plan for managing assets in public cloud services. The
-Terraform configuration is written in the Nix language and translated to JSON
-by [Terranix](https://terranix.org/).
+This is a Terraform plan for managing assets in public cloud services. The Terraform
+configuration is written in the Nix language and translated to JSON by
+[Terranix](https://terranix.org/).
 
 Minimum survival commands:
 
@@ -13,8 +13,7 @@ $ nix run .#terraform-apply
 
 ## First-time State Storage Setup
 
-Terraform state is stored in a Google Cloud Storage bucket. Minimum survival
-commands:
+Terraform state is stored in a Google Cloud Storage bucket. Minimum survival commands:
 
 ```shell
 # Check that our Terraform state storage bucket exists already:
@@ -31,8 +30,8 @@ $ gsutil mb -p bergmans-services -b on --pap enforced gs://bergmans-services-hom
 
 ## Setting Up Secrets
 
-Secrets get stored manually to keep them from being stored in Terraform state
-or version control, even encrypted. Minimum survival commands:
+Secrets get stored manually to keep them from being stored in Terraform state or version
+control, even encrypted. Minimum survival commands:
 
 ```shell
 # Check whether we have our Restic backup password stored:
