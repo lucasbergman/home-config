@@ -1,4 +1,6 @@
 {
+  pkgs,
+  pkgs-unstable,
   ...
 }:
 {
@@ -9,10 +11,19 @@
     pulse.enable = true;
   };
   services.pulseaudio.enable = false;
-
   services.desktopManager.plasma6.enable = true;
-  services.displayManager.sddm = {
+  services.displayManager.sddm.enable = true;
+  programs.hyprland = {
     enable = true;
-    wayland.enable = true;
+    package = pkgs-unstable.hyprland;
+  };
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = [
+      "hyprland"
+      "gtk"
+    ];
   };
 }
