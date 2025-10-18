@@ -3,6 +3,8 @@
   "$terminal" = "kitty";
   "$menu" = "wofi --show run";
 
+  xwayland.force_zero_scaling = true;
+
   general = {
     gaps_in = 5;
     gaps_out = 20;

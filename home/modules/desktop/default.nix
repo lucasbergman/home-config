@@ -9,7 +9,12 @@
 {
   config = lib.mkIf config.slb.isDesktop {
     home.sessionVariables = {
-      NIXOS_OZONE_WL = "1"; # Pander to Electron on Wayland
+      # Pander to Electron on Wayland
+      NIXOS_OZONE_WL = "1";
+
+      # Pander to Java/Swing on XWayland
+      _JAVA_AWT_WM_NONREPARENTING = "1";
+      GDK_SCALE = "2";
     };
 
     home.packages = [
@@ -28,7 +33,7 @@
       (mypkgs.moneydance.override {
         clientJdk = pkgs.jetbrains.jdk;
         baseJvmFlags = [ "-client" ];
-        jvmFlags = [ "-Dawt.toolkit.name=WLToolkit" ];
+        jvmFlags = [ "-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ];
       })
     ];
 
