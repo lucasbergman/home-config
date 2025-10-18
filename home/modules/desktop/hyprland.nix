@@ -1,6 +1,6 @@
 {
   monitor = ",preferred,auto,auto";
-  "$terminal" = "kitty";
+  "$terminal" = "ghostty";
   "$menu" = "wofi --show run";
 
   xwayland.force_zero_scaling = true;

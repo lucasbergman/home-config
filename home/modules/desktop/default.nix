@@ -52,7 +52,7 @@
         font.size = 18;
       };
     };
-    programs.kitty.enable = true;
+    programs.ghostty.enable = true;
     programs.wofi.enable = true;
   };
 }
