@@ -19,6 +19,9 @@ let
   virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/3";
   vmail_uid = 2000;
   vmail_gid = 2000;
+  openarcUID = 2002;
+  openarcKeyFile = "/run/openarc.key";
+  openarcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
 in
 {
   security.acme.certs.${postfixTLSHost} = {
@@ -195,6 +198,11 @@ in
         "smartmousetravel.com"
       ];
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
+
+      # OpenARC Milter
+      smtpd_milters = "inet:127.0.0.1:8891";
+      non_smtpd_milters = "inet:127.0.0.1:8891";
+      milter_default_action = "tempfail";
     };
   };
 
@@ -257,5 +265,29 @@ in
 
       ssl_min_protocol = TLSv1.2
     '';
+  };
+
+  slb.security.secrets.openarc-private-key = {
+    after = [ "openarc-setup.service" ];
+    before = [ "openarc.service" ];
+    outPath = openarcKeyFile;
+    owner = "openarc";
+    secretPath = openarcKeySecret;
+  };
+
+  services.openarc = {
+    enable = true;
+    uid = openarcUID;
+    domain = "bergmans.us";
+    selector = "arc202510";
+    keyFile = openarcKeyFile;
+    socket = "inet:8891@localhost";
+    mode = "sv";
+    internalHosts = [
+      "127.0.0.1"
+      "::1"
+      "10.6.0.0/24"
+    ];
+    milterUsers = [ "postfix" ];
   };
 }
