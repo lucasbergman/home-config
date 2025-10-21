@@ -31,7 +31,6 @@
       pkgs.bitwarden-cli
       pkgs.inetutils
       pkgs.jq
-      pkgs.jujutsu
       pkgs.netcat-gnu
       pkgs.nodejs_22
       pkgs.vim
@@ -78,6 +77,16 @@
         graph = "log --graph --oneline --decorate";
         st = "status";
         staged = "diff --staged";
+      };
+    };
+
+    programs.jujutsu = {
+      enable = true;
+      settings = {
+        user = {
+          email = "lucas@bergmans.us";
+          name = "Lucas Bergman";
+        };
       };
     };
   };
