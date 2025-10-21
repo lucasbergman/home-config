@@ -13,6 +13,8 @@ let
   saslPasswordFile = "/run/sasl_passwd";
   dovecotUserFile = "/run/dovecot_users";
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
+  virtualMailboxFile = "/run/virtual_mailbox";
+  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/1";
   vmail_uid = 2000;
   vmail_gid = 2000;
 in
@@ -64,6 +66,16 @@ in
     '';
   };
 
+  slb.security.secrets."postfix-virtual-mailbox" = {
+    before = [
+      "postfix.service"
+      "postfix-setup.service"
+    ];
+    outPath = virtualMailboxFile;
+    group = "postfix";
+    secretPath = virtualMailboxSecret;
+  };
+
   services.postfix = {
     enable = true;
     domain = postfixDomain;
@@ -95,7 +107,7 @@ in
     };
 
     mapFiles.virtual_alias = ./../conf/postfix/virtual_alias;
-    mapFiles.virtual_mailbox = ./../conf/postfix/virtual_mailbox;
+    mapFiles.virtual_mailbox = virtualMailboxFile;
     mapFiles.sasl_passwd = saslPasswordFile;
 
     # Set up some deeper mumbo-jumbo not supported by the NixOS module
