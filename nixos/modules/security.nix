@@ -57,6 +57,11 @@
                 type = nullOr path;
                 default = null;
               };
+              after = lib.mkOption {
+                description = "List of systemd units that secret writing should wait for";
+                type = listOf str;
+                default = [ ];
+              };
               before = lib.mkOption {
                 description = "List of systemd units that should be delayed until after secrets are written";
                 type = listOf str;
@@ -101,7 +106,7 @@
           description = "Fetch secret ${name}";
           wantedBy = [ "multi-user.target" ];
           inherit (conf) before;
-          after = [ "instance-key.service" ];
+          after = [ "instance-key.service" ] ++ conf.after;
           serviceConfig.Type = "oneshot";
           environment.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 
