@@ -180,6 +180,7 @@
       cheddar_mail_ses_password = mkMember "mail_ses_password";
       cheddar_mail_userdb = mkMember "mail_userdb";
       cheddar_mail_virtual_mailbox = mkMember "mail_virtual_mailbox";
+      cheddar_mail_virtual_alias = mkMember "mail_virtual_alias";
       cheddar_mail_arc_private_key = mkMember "mail_arc_private_key_202510";
     };
 }

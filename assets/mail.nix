@@ -83,6 +83,12 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         replication.auto = { };
       };
 
+      # Virtual alias mappings for Postfix
+      mail_virtual_alias = {
+        secret_id = "mail-virtual-alias";
+        replication.auto = { };
+      };
+
       mail_arc_private_key_202510 = {
         secret_id = "mail-arc-private-key-202510";
         replication.auto = { };

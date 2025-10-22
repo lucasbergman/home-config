@@ -15,6 +15,8 @@ let
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
   virtualMailboxFile = "/run/virtual_mailbox";
   virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/1";
+  virtualAliasFile = "/run/virtual_alias";
+  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/1";
   vmail_uid = 2000;
   vmail_gid = 2000;
 in
@@ -76,6 +78,16 @@ in
     secretPath = virtualMailboxSecret;
   };
 
+  slb.security.secrets."postfix-virtual-alias" = {
+    before = [
+      "postfix.service"
+      "postfix-setup.service"
+    ];
+    outPath = virtualAliasFile;
+    group = "postfix";
+    secretPath = virtualAliasSecret;
+  };
+
   services.postfix = {
     enable = true;
     domain = postfixDomain;
@@ -106,7 +118,7 @@ in
       smtpd_client_restrictions = "permit_mynetworks,permit_sasl_authenticated,reject";
     };
 
-    mapFiles.virtual_alias = ./../conf/postfix/virtual_alias;
+    mapFiles.virtual_alias = virtualAliasFile;
     mapFiles.virtual_mailbox = virtualMailboxFile;
     mapFiles.sasl_passwd = saslPasswordFile;
 
