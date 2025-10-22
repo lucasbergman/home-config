@@ -162,7 +162,6 @@ in
 
       # Postfix should never act as an SMTP client except to the Amazon relay
       # host, so it's safe to set a high security bar
-      smtp_use_tls = true;
       smtp_tls_security_level = "secure";
       smtp_tls_mandatory_ciphers = "high";
       smtp_tls_mandatory_protocols = ">=TLSv1.2";
