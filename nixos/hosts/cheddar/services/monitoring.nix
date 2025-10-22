@@ -54,6 +54,18 @@ in
         ];
       }
       {
+        job_name = "postfix";
+        static_configs = [ { targets = [ "[::1]:${toString promcfg.exporters.postfix.port}" ]; } ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            regex = "(.+):(.*)$";
+            target_label = "instance";
+            replacement = "cheddar:$2";
+          }
+        ];
+      }
+      {
         job_name = "home_dns";
         metrics_path = "/probe";
         scrape_interval = "5m";
@@ -135,6 +147,11 @@ in
         enable = true;
         listenAddress = "[::1]";
         enabledCollectors = [ "systemd" ];
+      };
+
+      postfix = {
+        enable = true;
+        listenAddress = "[::1]";
       };
     };
 
