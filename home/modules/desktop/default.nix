@@ -52,7 +52,10 @@
         font.size = 18;
       };
     };
-    programs.ghostty.enable = true;
+    programs.ghostty = {
+      enable = true;
+      settings.theme = "Adwaita Dark";
+    };
     programs.wofi.enable = true;
   };
 }
