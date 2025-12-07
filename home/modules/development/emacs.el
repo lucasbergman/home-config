@@ -67,3 +67,6 @@
             uniquify-separator "|"
             uniquify-after-kill-buffer-p t
             uniquify-ignore-buffers-re "^\\*"))
+
+(use-package direnv)
+(use-package eglot)

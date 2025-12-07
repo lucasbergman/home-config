@@ -18,6 +18,7 @@
     in
     {
       home.packages = [
+        pkgs.nixd
         pkgs-unstable.claude-code
         pkgs-unstable.gemini-cli
       ];
@@ -32,6 +33,8 @@
             epkgs: with epkgs; [
               bazel
               crux
+              direnv
+              eglot
               fireplace
               lsp-mode
               magit
