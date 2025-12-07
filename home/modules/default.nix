@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   vscode-server,
@@ -71,6 +70,9 @@
       enable = true;
       userName = "Lucas Bergman";
       userEmail = "lucas@bergmans.us";
+      extraConfig = {
+        init.defaultBranch = "main";
+      };
 
       aliases = {
         co = "checkout";
