@@ -79,6 +79,16 @@
     };
   };
 
+  resource.linode_rdns.cheddar = {
+    address = lib.tfRef "linode_instance.cheddar.ip_address";
+    rdns = "smtp.bergmans.us";
+  };
+
+  resource.linode_rdns.cheddar_ipv6 = {
+    address = lib.tfRef "split(\"/\", linode_instance.cheddar.ipv6)[0]";
+    rdns = "smtp.bergmans.us";
+  };
+
   resource.google_dns_record_set =
     let
       zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
