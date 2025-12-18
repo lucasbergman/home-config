@@ -40,9 +40,30 @@ let
         };
       };
     };
+
+  dmarcForDomain =
+    {
+      name,
+      domain,
+      project ? "bergmans-services",
+    }:
+    {
+      resource.google_dns_record_set."${name}_dmarc" = {
+        inherit project;
+        managed_zone = name;
+        name = "_dmarc.${domain}.";
+        type = "TXT";
+        rrdatas = [ "\"v=DMARC1; p=none; rua=mailto:postmaster@${domain}\"" ];
+        ttl = 3600;
+      };
+    };
 in
 builtins.foldl' lib.attrsets.recursiveUpdate { } [
   (sesForDomain {
+    name = "bergmans";
+    domain = "bergmans.us";
+  })
+  (dmarcForDomain {
     name = "bergmans";
     domain = "bergmans.us";
   })
@@ -51,13 +72,26 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
     name = "bergmanhouse";
     domain = "bergman.house";
   })
+  (dmarcForDomain {
+    name = "bergmanhouse";
+    domain = "bergman.house";
+  })
 
   (sesForDomain {
     name = "blurt";
     domain = "blurt.chat";
   })
+  (dmarcForDomain {
+    name = "blurt";
+    domain = "blurt.chat";
+  })
 
   (sesForDomain {
+    name = "smartmouse";
+    domain = "smartmousetravel.com";
+    project = "smartmouse-web";
+  })
+  (dmarcForDomain {
     name = "smartmouse";
     domain = "smartmousetravel.com";
     project = "smartmouse-web";
