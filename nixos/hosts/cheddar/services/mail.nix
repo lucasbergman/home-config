@@ -14,9 +14,9 @@ let
   dovecotUserFile = "/run/dovecot_users";
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
   virtualMailboxFile = "/run/virtual_mailbox";
-  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/1";
+  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/3";
   virtualAliasFile = "/run/virtual_alias";
-  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/1";
+  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/3";
   vmail_uid = 2000;
   vmail_gid = 2000;
 in
