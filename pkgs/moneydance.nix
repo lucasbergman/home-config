@@ -5,8 +5,8 @@
   fetchzip,
   makeWrapper,
   glib,
-  openjdk23,
-  clientJdk ? openjdk23.override { enableJavaFX = true; },
+  openjdk25,
+  clientJdk ? openjdk25.override { enableJavaFX = true; },
   wrapGAppsHook3,
   baseJvmFlags ? [
     "-client"

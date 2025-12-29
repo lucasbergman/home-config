@@ -5,10 +5,10 @@
   ...
 }:
 let
-  postfixTLSHost = "smtp.bergmans.us";
   postfixDomain = "bergmans.us";
-  dovecotTLSHost = "pop.bergmans.us";
-  dovecotLegacyTLSHost = "greywind.bergmans.us";
+  postfixTLSHost = "smtp.${postfixDomain}";
+  dovecotTLSHost = "pop.${postfixDomain}";
+  dovecotLegacyTLSHost = "greywind.${postfixDomain}";
   mailDirectory = "/data/mail";
   saslPasswordFile = "/run/sasl_passwd";
   dovecotUserFile = "/run/dovecot_users";
@@ -93,27 +93,9 @@ in
 
   services.postfix = {
     enable = true;
-    domain = postfixDomain;
-    hostname = postfixTLSHost;
-    origin = "$myhostname";
-    sslCert = "/var/lib/acme/${postfixTLSHost}/cert.pem";
-    sslKey = "/var/lib/acme/${postfixTLSHost}/key.pem";
 
     postmasterAlias = "root";
     rootAlias = "lucas@bergmans.us";
-
-    # Allow users to have infinite '+'-separated addresses
-    recipientDelimiter = "+";
-
-    # Pretend Amazon SES is the next-hop MX for all non-local mail delivery
-    # (overrides the recipient domain)
-    relayHost = "email-smtp.us-east-2.amazonaws.com";
-    relayPort = 587;
-
-    networks = [
-      "127.0.0.0/8"
-      "10.6.0.0/24" # Include WireGuard mesh in trusted networks
-    ];
 
     enableSubmission = true;
     submissionOptions = {
@@ -125,12 +107,32 @@ in
     mapFiles.virtual_mailbox = virtualMailboxFile;
     mapFiles.sasl_passwd = saslPasswordFile;
 
-    # Set up some deeper mumbo-jumbo not supported by the NixOS module
-    config = {
+    settings.main = {
       compatibility_level = "3.7";
 
+      myhostname = postfixTLSHost;
+      mydomain = postfixDomain;
+      myorigin = "$myhostname";
+
+      mynetworks = [
+        "127.0.0.0/8"
+        "10.6.0.0/24" # Include WireGuard mesh in trusted networks
+      ];
+
+      smtpd_tls_chain_files = [
+        "/var/lib/acme/${postfixTLSHost}/key.pem"
+        "/var/lib/acme/${postfixTLSHost}/fullchain.pem"
+      ];
+
+      # Allow users to have infinite '+'-separated addresses
+      recipient_delimiter = "+";
+
+      # Pretend Amazon SES is the next-hop MX for all non-local mail delivery
+      # (overrides the recipient domain)
+      relayhost = [ "email-smtp.us-east-2.amazonaws.com:587" ];
+
       # 64 MiB (default is about 10)
-      message_size_limit = "67108864";
+      message_size_limit = 67108864;
       virtual_mailbox_limit = "$message_size_limit";
 
       smtpd_banner = "$myhostname ESMTP";
@@ -236,7 +238,7 @@ in
 
     extraConfig = ''
       service auth {
-        unix_listener ${config.services.postfix.config.queue_directory}/private/auth {
+        unix_listener ${config.services.postfix.settings.main.queue_directory}/private/auth {
           mode = 0666
           user = dovecot2
           group = dovecot2

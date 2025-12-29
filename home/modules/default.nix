@@ -68,17 +68,21 @@
 
     programs.git = {
       enable = true;
-      userName = "Lucas Bergman";
-      userEmail = "lucas@bergmans.us";
-      extraConfig = {
-        init.defaultBranch = "main";
-      };
 
-      aliases = {
-        co = "checkout";
-        graph = "log --graph --oneline --decorate";
-        st = "status";
-        staged = "diff --staged";
+      settings = {
+        user = {
+          name = "Lucas Bergman";
+          email = "lucas@bergmans.us";
+        };
+
+        alias = {
+          co = "checkout";
+          graph = "log --graph --oneline --decorate";
+          st = "status";
+          staged = "diff --staged";
+        };
+
+        init.defaultBranch = "main";
       };
     };
 
