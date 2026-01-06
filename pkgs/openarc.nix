@@ -14,11 +14,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "openarc";
-  version = "1.2.2";
+  version = "1.3.0";
 
   src = fetchurl {
     url = "https://github.com/flowerysong/OpenARC/releases/download/v${finalAttrs.version}/openarc-${finalAttrs.version}.tar.gz";
-    hash = "sha256-NxHtgL12V2ga3sMhjkAejeTXfmqT1h2kwld4kc+iTho=";
+    hash = "sha256-amjs9jNVBEOGSMk5MCltHC8Vqa2QmW0lgY50XI698rw=";
   };
 
   nativeBuildInputs = [
