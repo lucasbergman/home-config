@@ -111,6 +111,12 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         replication.auto = { };
       };
 
+      # Transport map for Postfix
+      mail_transport = {
+        secret_id = "mail-transport";
+        replication.auto = { };
+      };
+
       # Virtual mailbox mappings for Postfix
       mail_virtual_mailbox = {
         secret_id = "mail-virtual-mailbox";

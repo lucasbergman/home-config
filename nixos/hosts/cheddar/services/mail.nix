@@ -13,6 +13,8 @@ let
   saslPasswordFile = "/run/sasl_passwd";
   dovecotUserFile = "/run/dovecot_users";
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
+  transportFile = "/run/postfix_transport";
+  transportSecret = "projects/bergmans-services/secrets/mail-transport/versions/1";
   virtualMailboxFile = "/run/virtual_mailbox";
   virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/3";
   virtualAliasFile = "/run/virtual_alias";
@@ -71,6 +73,16 @@ in
     '';
   };
 
+  slb.security.secrets."postfix-transport" = {
+    before = [
+      "postfix.service"
+      "postfix-setup.service"
+    ];
+    outPath = transportFile;
+    group = "postfix";
+    secretPath = transportSecret;
+  };
+
   slb.security.secrets."postfix-virtual-mailbox" = {
     before = [
       "postfix.service"
@@ -103,6 +115,7 @@ in
       smtpd_client_restrictions = "permit_mynetworks,permit_sasl_authenticated,reject";
     };
 
+    mapFiles.transport = transportFile;
     mapFiles.virtual_alias = virtualAliasFile;
     mapFiles.virtual_mailbox = virtualMailboxFile;
     mapFiles.sasl_passwd = saslPasswordFile;
@@ -183,6 +196,7 @@ in
         "mcfarlandsllamafarm.com"
       ];
 
+      transport_maps = "hash:/var/lib/postfix/conf/transport";
       virtual_mailbox_maps = "hash:/var/lib/postfix/conf/virtual_mailbox";
       virtual_mailbox_base = "${mailDirectory}/users";
       virtual_gid_maps = "static:${builtins.toString vmail_gid}";
