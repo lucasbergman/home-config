@@ -142,7 +142,7 @@
             Type = "simple";
             User = "openarc";
             Group = "openarc";
-            ExecStart = "${mypkgs.openarc}/bin/openarc -f -c ${configFile}";
+            ExecStart = "${mypkgs.openarc}/bin/openarc -l -f -c ${configFile}";
             ExecReload = "${pkgs.coreutils}/bin/kill -USR1 $MAINPID";
             Restart = "always";
             PrivateTmp = true;
