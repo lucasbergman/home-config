@@ -28,27 +28,9 @@ in
   # has the right ACLs; in particular, this helps if we move the
   # block storage volume from one VM instance to another and the
   # user/group ID for murmur changes in between the two instances.
-  #
-  # The documentation for system.activationScripts tries to make one
-  # feel guilty about using this feature, but I do what I want.
-  system.activationScripts."murmur-storage" = {
-    deps = [
-      "users"
-      "groups"
-    ];
-    text =
-      let
-        dir = lib.escapeShellArg dataDirectory;
-      in
-      ''
-        if ! [[ ! -e ${dir} ]]; then
-          install -d -m 750 -o murmur -g murmur ${dir}
-        else
-          chmod 750 ${dir}
-          chown --recursive murmur:murmur ${dir}
-        fi
-      '';
-  };
+  systemd.tmpfiles.rules = [
+    "d ${dataDirectory} 0750 murmur murmur -"
+  ];
 
   services.murmur = {
     enable = true;
