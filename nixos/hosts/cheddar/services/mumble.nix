@@ -68,4 +68,6 @@ in
       database=${dataDirectory}/murmur.sqlite
     '';
   };
+
+  systemd.services.murmur.serviceConfig.ReadWritePaths = [ dataDirectory ];
 }
