@@ -31,9 +31,7 @@
       pkgs-unstable.google-chrome
 
       (mypkgs.moneydance.override {
-        clientJdk = pkgs.jetbrains.jdk;
-        baseJvmFlags = [ "-client" ];
-        jvmFlags = [ "-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ];
+        clientJdk = pkgs.openjdk21.override { enableJavaFX = true; };
       })
     ];
 
