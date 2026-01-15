@@ -21,6 +21,9 @@
         pkgs.nixd
         pkgs-unstable.claude-code
         pkgs-unstable.gemini-cli
+      ]
+      ++ lib.optionals slb.isDesktop [
+        pkgs-unstable.jetbrains.idea
       ];
 
       programs.emacs = {
