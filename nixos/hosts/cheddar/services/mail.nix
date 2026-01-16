@@ -24,6 +24,28 @@ let
   openarcUID = 2002;
   openarcKeyFile = "/run/openarc.key";
   openarcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
+  opendkimSelector = "dkim202601";
+  opendkimKeyFile = "/var/lib/opendkim/keys/${opendkimSelector}.private";
+  opendkimKeySecret = "projects/bergmans-services/secrets/mail-dkim-private-key-202601/versions/1";
+
+  # Virtual mailbox domains are for when Postfix does "final delivery for
+  # hosted domains where each recipient address can have its own mailbox."
+  virtualMailboxDomains = [
+    "bergmans.us"
+    "mcfarlandsllamafarm.com"
+  ];
+  # Virtual alias domains are for mail that gets delivered to "hosted
+  # domains where each recipient address is aliased to an address in a
+  # different domain." Mail for the domains below gets aliased to some
+  # address in bergmans.us.
+  virtualAliasDomains = [
+    "bergman.house"
+    "blurt.chat"
+    "boozyprofessor.com"
+    "smartgirltravel.com"
+    "smartmousetravel.com"
+  ];
+  allMailDomains = virtualMailboxDomains ++ virtualAliasDomains;
 in
 {
   security.acme.certs.${postfixTLSHost} = {
@@ -192,12 +214,7 @@ in
       smtp_sasl_password_maps = "hash:/var/lib/postfix/conf/sasl_passwd";
       smtp_sasl_security_options = [ "noanonymous" ];
 
-      # Virtual mailbox domains are for when Postfix does "final delivery for
-      # hosted domains where each recipient address can have its own mailbox."
-      virtual_mailbox_domains = [
-        "bergmans.us"
-        "mcfarlandsllamafarm.com"
-      ];
+      virtual_mailbox_domains = virtualMailboxDomains;
 
       transport_maps = "hash:/var/lib/postfix/conf/transport";
       virtual_mailbox_maps = "hash:/var/lib/postfix/conf/virtual_mailbox";
@@ -205,17 +222,7 @@ in
       virtual_gid_maps = "static:${builtins.toString vmail_gid}";
       virtual_uid_maps = "static:${builtins.toString vmail_uid}";
 
-      # Virtual alias domains are for mail that gets delivered to "hosted
-      # domains where each recipient address is aliased to an address in a
-      # different domain." Mail for the domains below gets aliased to some
-      # address in bergmans.us.
-      virtual_alias_domains = [
-        "bergman.house"
-        "blurt.chat"
-        "boozyprofessor.com"
-        "smartgirltravel.com"
-        "smartmousetravel.com"
-      ];
+      virtual_alias_domains = virtualAliasDomains;
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
 
       # OpenARC Milter (verify incoming + seal forwarded mail on port 25)
@@ -309,5 +316,22 @@ in
       "10.6.0.0/24"
     ];
     milterUsers = [ "postfix" ];
+  };
+
+  slb.security.secrets.opendkim-private-key = {
+    before = [ "opendkim.service" ];
+    outPath = opendkimKeyFile;
+    owner = "opendkim";
+    secretPath = opendkimKeySecret;
+  };
+
+  services.opendkim = {
+    enable = true;
+    selector = opendkimSelector;
+    domains = "csl:${lib.concatStringsSep "," allMailDomains}";
+    socket = "inet:8892@localhost";
+    settings = {
+      Syslog = "true";
+    };
   };
 }
