@@ -113,6 +113,9 @@ in
     submissionOptions = {
       smtpd_tls_security_level = "encrypt";
       smtpd_client_restrictions = "permit_mynetworks,permit_sasl_authenticated,reject";
+      # Disable ARC for submission; authenticated users don't need verify/seal.
+      # TODO: Add OpenDKIM here for signing originating mail.
+      smtpd_milters = "";
     };
 
     mapFiles.transport = transportFile;
@@ -215,10 +218,11 @@ in
       ];
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
 
-      # OpenARC Milter
+      # OpenARC Milter (verify incoming + seal forwarded mail on port 25)
       smtpd_milters = "inet:127.0.0.1:8891";
-      non_smtpd_milters = "inet:127.0.0.1:8891";
       milter_default_action = "tempfail";
+      # TODO: Add OpenDKIM here to sign local mail (cron, etc.).
+      non_smtpd_milters = "";
     };
   };
 
