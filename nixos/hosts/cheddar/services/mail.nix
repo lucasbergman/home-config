@@ -142,7 +142,7 @@ in
 
       # Pretend Amazon SES is the next-hop MX for all non-local mail delivery
       # (overrides the recipient domain)
-      relayhost = [ "email-smtp.us-east-2.amazonaws.com:587" ];
+      relayhost = [ "[email-smtp.us-east-2.amazonaws.com]:587" ];
 
       # 64 MiB (default is about 10)
       message_size_limit = 67108864;
