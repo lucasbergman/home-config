@@ -133,6 +133,11 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         secret_id = "mail-arc-private-key-202510";
         replication.auto = { };
       };
+
+      mail_dkim_private_key_202601 = {
+        secret_id = "mail-dkim-private-key-202601";
+        replication.auto = { };
+      };
     };
 
     resource.google_dns_record_set = {
@@ -142,6 +147,16 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         type = "TXT";
         rrdatas = [
           "\"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqxYsMxmVdnEJTJHazK3D3p577cb5QYkx76nCt23jNsiAgyJtDbyuo+CdkhiQziqqlIErZ/jcvn3KhJRK0HpWNsjGCFcsoEVjJ3vkm7ispLZrOIWWiUUsnG9W76cN0zKyPKEiknZeR0as6kdgUbc3E7KhCFhtLM8kG5QX91K67M3JzdkOJ0XJrFIzmhwvFMFJR\" \"L9pLfpZPV5iVRMU+ZhRb6oqgLwx7hMaluHHKlhFjIPHk9gdeYu9AAR+ZvTA3xvkIoWci4AiYj97CTQQaI56JulkeehZMt0uSyz3EATvz+If8WwNeUG8ACfu+/Q+518S+RyZO2ww+cgEVehFOKwq2QIDAQAB\""
+        ];
+        ttl = 300;
+      };
+
+      mail_dkim_key_202601 = {
+        managed_zone = "bergmans";
+        name = "dkim202601._domainkey.bergmans.us.";
+        type = "TXT";
+        rrdatas = [
+          "\"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxQdKYpdPSCwrtP+Xmls3idpfJocl38yf5V2EBAA3lgGAuktEXklpBmIpOCUUARfQJPVcWklUVbhoVVqSllpFAtrXWsOd3/wwxiC1oz8pwa6Ihr3bGfY0bB1WaUuUyAF8oGk1VJUHus4gh5+S0+1kncDq732a0sdcyDiqcAUA8SkYP0Vp6YpkhrIk0XH9kRQ\" \"w458WetwuSyGZEFMtGzLo2RpM20Tcqz5YoocYnMnlYY15qGKxC7ZpV0rOAkl6C7bSFAtd3lJuCxKBjlyfEzyAq1Y/RIKmc4uOEhc9pH/SCAamO62SwdevKLbLrbI/g6ju6OHXhL1HaSaRsXW7b7FmzwIDAQAB\""
         ];
         ttl = 300;
       };
