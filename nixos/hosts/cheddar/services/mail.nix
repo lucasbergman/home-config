@@ -229,6 +229,8 @@ in
       milter_default_action = "tempfail";
       # Local mail (cron, etc.) uses OpenDKIM for signing.
       non_smtpd_milters = "inet:127.0.0.1:8892";
+      # Ensure Postfix-generated mail (bounces, etc.) goes through milters.
+      internal_mail_filter_classes = [ "bounce" ];
     };
   };
 
@@ -331,6 +333,7 @@ in
     socket = "inet:8892@localhost";
     settings = {
       Syslog = "true";
+      InternalHosts = "127.0.0.1,::1,10.6.0.0/24";
     };
   };
 }
