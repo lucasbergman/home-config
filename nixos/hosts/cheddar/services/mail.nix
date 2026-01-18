@@ -170,6 +170,7 @@ in
 
       # 64 MiB (default is about 10)
       message_size_limit = 67108864;
+      mailbox_size_limit = "$message_size_limit";
       virtual_mailbox_limit = "$message_size_limit";
 
       smtpd_banner = "$myhostname ESMTP";
