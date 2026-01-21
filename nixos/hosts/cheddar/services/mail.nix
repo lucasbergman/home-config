@@ -88,6 +88,7 @@ in
       "postfix.service"
       "postfix-setup.service"
     ];
+    restartUnits = [ "postfix-setup.service" ];
     outPath = saslPasswordFile;
     group = "postfix";
     template = pkgs.writeText "sasl_passwd" ''
@@ -100,6 +101,7 @@ in
       "postfix.service"
       "postfix-setup.service"
     ];
+    restartUnits = [ "postfix-setup.service" ];
     outPath = transportFile;
     group = "postfix";
     secretPath = transportSecret;
@@ -110,6 +112,7 @@ in
       "postfix.service"
       "postfix-setup.service"
     ];
+    restartUnits = [ "postfix-setup.service" ];
     outPath = virtualMailboxFile;
     group = "postfix";
     secretPath = virtualMailboxSecret;
@@ -120,6 +123,7 @@ in
       "postfix.service"
       "postfix-setup.service"
     ];
+    restartUnits = [ "postfix-setup.service" ];
     outPath = virtualAliasFile;
     group = "postfix";
     secretPath = virtualAliasSecret;
@@ -248,6 +252,7 @@ in
     outPath = dovecotUserFile;
     group = "dovecot2";
     secretPath = dovecotUserFileSecret;
+    restartUnits = [ "dovecot.service" ];
   };
 
   services.dovecot2 = {
