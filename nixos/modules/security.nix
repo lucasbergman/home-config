@@ -77,6 +77,11 @@
                 type = nullOr str;
                 default = null;
               };
+              restartUnits = lib.mkOption {
+                description = "List of systemd units that should restart when this secret changes";
+                type = listOf str;
+                default = [ ];
+              };
             };
           });
       };
@@ -107,7 +112,10 @@
           wantedBy = [ "multi-user.target" ];
           inherit (conf) before;
           after = [ "instance-key.service" ] ++ conf.after;
-          serviceConfig.Type = "oneshot";
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true; # Stay "active" so bindsTo works
+          };
           environment.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 
           script = ''
@@ -117,6 +125,36 @@
             ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${tmpl} > ${conf.outPath}
           '';
         };
+
+      # Append the given secret service to the target's bindsTo list
+      addBindsTo =
+        acc: secretUnit: targetUnit:
+        let
+          unitName = lib.removeSuffix ".service" targetUnit;
+        in
+        acc
+        // {
+          ${unitName}.bindsTo = (acc.${unitName}.bindsTo or [ ]) ++ [ secretUnit ];
+        };
+
+      # Get a flattened list of {secret, target} pairs from restartUnits options
+      allRestartBindings =
+        secrets:
+        lib.concatLists (
+          lib.mapAttrsToList (
+            name: conf:
+            map (unit: {
+              secretUnit = "secret-${name}.service";
+              targetUnit = unit;
+            }) conf.restartUnits
+          ) secrets
+        );
+
+      mkRestartBindings =
+        secrets:
+        lib.foldl' (acc: { secretUnit, targetUnit }: addBindsTo acc secretUnit targetUnit) { } (
+          allRestartBindings secrets
+        );
     in
     lib.mkIf cfg.enable {
       users.groups = {
@@ -171,9 +209,10 @@
             '';
         };
       }
-      // lib.mapAttrs' (
+      // (lib.mapAttrs' (
         name: value: lib.nameValuePair ("secret-" + name) (mkSecretService name value)
-      ) cfg.secrets;
+      ) cfg.secrets)
+      // (mkRestartBindings cfg.secrets);
 
       security.acme = {
         acceptTerms = true;
