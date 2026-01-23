@@ -12,6 +12,7 @@
     ./bgpdata.nix
     ./cloudbackup.nix
     ./gcplogs.nix
+    ./ip-abuse-report.nix
     ./networking.nix
     ./nginx.nix
     ./openarc.nix
