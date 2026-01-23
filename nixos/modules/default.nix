@@ -9,6 +9,7 @@
   };
 
   imports = [
+    ./bgpdata.nix
     ./cloudbackup.nix
     ./gcplogs.nix
     ./networking.nix
