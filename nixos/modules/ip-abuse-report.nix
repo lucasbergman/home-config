@@ -57,7 +57,10 @@ in
         fi
 
         # Generate report
-        ip-abuse-report < "$IPS_FILE" > "$REPORT_FILE"
+        ip-abuse-report \
+          --bgp-table "${config.slb.bgpData.dataDir}/table.jsonl" \
+          --asn-table "${config.slb.bgpData.dataDir}/asns.csv" \
+          < "$IPS_FILE" > "$REPORT_FILE"
 
         # Check if report has content
         LINE_COUNT=$(wc -l < "$REPORT_FILE")

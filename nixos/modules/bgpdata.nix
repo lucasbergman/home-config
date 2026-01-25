@@ -18,6 +18,12 @@ in
       type = lib.types.str;
       description = "Contact email for bgp.tools User-Agent";
     };
+    dataDir = lib.mkOption {
+      type = lib.types.path;
+      default = "/var/lib/bgp-data";
+      readOnly = true;
+      description = "Directory to store BGP data (managed by systemd StateDirectory)";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -36,12 +42,12 @@ in
 
       script =
         let
-          tempOutFile = "/var/lib/bgp-data/table.jsonl.tmp";
-          outFile = "/var/lib/bgp-data/table.jsonl";
+          tempOutFile = "${cfg.dataDir}/table.jsonl.tmp";
+          outFile = "${cfg.dataDir}/table.jsonl";
           url = "https://bgp.tools/table.jsonl";
 
-          tempAsnsFile = "/var/lib/bgp-data/asns.csv.tmp";
-          outAsnsFile = "/var/lib/bgp-data/asns.csv";
+          tempAsnsFile = "${cfg.dataDir}/asns.csv.tmp";
+          outAsnsFile = "${cfg.dataDir}/asns.csv";
           urlAsns = "https://bgp.tools/asns.csv";
         in
         ''
