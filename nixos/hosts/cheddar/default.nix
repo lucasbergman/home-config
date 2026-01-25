@@ -76,6 +76,16 @@
     reportEmail = "lucas@bergmans.us";
   };
 
+  networking.nftables.enable = true;
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "bergnet0" ];
+    allowedUDPPorts = [
+      # TODO: This should be managed by the nixos-securenets module
+      51820 # WireGuard
+    ];
+  };
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
 }

@@ -342,4 +342,13 @@ in
       InternalHosts = "127.0.0.1,::1,10.6.0.0/24";
     };
   };
+
+  networking.firewall.allowedTCPPorts = [
+    25 # SMTP
+    587 # SMTP Submission
+    143 # IMAP
+    993 # IMAPS
+    110 # POP3
+    995 # POP3S
+  ];
 }
