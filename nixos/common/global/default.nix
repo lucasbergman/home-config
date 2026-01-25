@@ -30,6 +30,6 @@
   time.timeZone = lib.mkDefault "Etc/UTC";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # YOLO
-  networking.firewall.enable = false;
+  # Firewalls are annoying
+  networking.firewall.enable = lib.mkDefault false;
 }
