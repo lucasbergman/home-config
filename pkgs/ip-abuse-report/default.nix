@@ -11,9 +11,16 @@ python3.pkgs.buildPythonApplication {
   src = ./.;
 
   propagatedBuildInputs = [ python3.pkgs.pytricia ];
+  nativeCheckInputs = [ python3.pkgs.mypy ];
 
   installPhase = ''
     install -Dm755 ip-abuse-report.py $out/bin/ip-abuse-report
+  '';
+
+  checkPhase = ''
+    runHook preCheck
+    mypy --strict .
+    runHook postCheck
   '';
 
   meta = {

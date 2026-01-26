@@ -10,8 +10,16 @@ python3.pkgs.buildPythonApplication {
 
   src = ./.;
 
+  nativeCheckInputs = [ python3.pkgs.mypy ];
+
   installPhase = ''
     install -Dm755 asn-blocklist-gen.py $out/bin/asn-blocklist-gen
+  '';
+
+  checkPhase = ''
+    runHook preCheck
+    mypy --strict .
+    runHook postCheck
   '';
 
   meta = {
