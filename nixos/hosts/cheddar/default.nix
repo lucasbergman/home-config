@@ -88,7 +88,12 @@
 
   slb.asnBlocking = {
     enable = true;
-    asns = [ ];
+    asns = [
+      "AS215929" # Data Campus Limited (HK)
+      "AS4134" # China Telecom Backbone (CN)
+      "AS9498" # Bharti Airtel Ltd (IN)
+      "AS9808" # China Mobile Backbone (CN)
+    ];
     setName = "brute-forcers";
   };
 
