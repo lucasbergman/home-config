@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import ipaddress
 import json
 import logging
 import sys
@@ -95,13 +96,26 @@ def main() -> None:
         logging.warning("No ASNs provided; blocked set will be empty")
 
     routes = _load_bgp_table(args.bgp_table)
-    blocked_cidrs = [r.cidr for a in block_asns for r in routes[a] if ":" not in r.cidr]
-    if not blocked_cidrs:
-        logging.warning("No CIDRs found; blocked set will be empty")
-    logging.info(f"Found {len(blocked_cidrs)} CIDRs to block")
+
+    # Collect all CIDRs to block
+    networks: list[ipaddress.IPv4Network] = []
+    for asn in block_asns:
+        for route in routes[asn]:
+            if ":" in route.cidr:
+                # TODO: IPv4 only for now
+                continue
+            networks.append(ipaddress.IPv4Network(route.cidr))
+
+    logging.info(f"Found {len(networks)} networks to block")
+    if not networks:
+        logging.warning("No networks found; blocked set will be empty")
+
+    # Collapse overlapping/adjacent networks
+    blocked_cidrs = list(ipaddress.collapse_addresses(networks))
+    logging.info(f"Found {len(blocked_cidrs)} collapsed ranges to block")
 
     print(f"flush set {args.family} {args.table} {args.set_name}")
-    for cidr in sorted(set(blocked_cidrs)):
+    for cidr in blocked_cidrs:
         print(f"add element {args.family} {args.table} {args.set_name} {{ {cidr} }}")
 
 
