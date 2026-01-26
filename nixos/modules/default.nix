@@ -9,6 +9,7 @@
   };
 
   imports = [
+    ./asn-blocking.nix
     ./bgpdata.nix
     ./cloudbackup.nix
     ./gcplogs.nix
