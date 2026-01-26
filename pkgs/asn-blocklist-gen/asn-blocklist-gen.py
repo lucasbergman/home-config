@@ -92,14 +92,12 @@ def main() -> None:
                 block_asns.update(_parse_target_asns(f))
 
     if not block_asns:
-        logging.warning("No ASNs provided. Exiting.")
-        return
+        logging.warning("No ASNs provided; blocked set will be empty")
 
     routes = _load_bgp_table(args.bgp_table)
     blocked_cidrs = [r.cidr for a in block_asns for r in routes[a]]
     if not blocked_cidrs:
-        logging.warning("No CIDRs found for the specified ASNs")
-        return
+        logging.warning("No CIDRs found; blocked set will be empty")
     logging.info(f"Found {len(blocked_cidrs)} CIDRs to block")
 
     print(f"flush set {args.family} {args.table} {args.set_name}")
