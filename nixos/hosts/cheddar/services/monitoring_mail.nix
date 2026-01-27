@@ -93,7 +93,7 @@ in
         [
           {
             alert = "postfix_deferred_queue_growing";
-            expr = ''postfix:queue:deferred > 10'';
+            expr = "postfix:queue:deferred > 10";
             for = "30m";
             labels.severity = "warning";
             annotations = {
@@ -117,7 +117,7 @@ in
           }
           {
             alert = "postfix_sasl_brute_force";
-            expr = ''postfix:smtpd:sasl_failures:rate15m > 1'';
+            expr = "postfix:smtpd:sasl_failures:rate15m > 1";
             for = "10m";
             labels.severity = "notify";
             annotations = {
