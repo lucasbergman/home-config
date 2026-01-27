@@ -27,44 +27,40 @@ in
       description = "Generate and email daily abuse report";
       path = with pkgs; [
         coreutils
-        gnugrep
-        gnused
+        jq
         systemd
         mypkgs.ip-abuse-report
         postfix
       ];
       script = ''
         set -euo pipefail
-        IPS_FILE=$(mktemp)
         REPORT_FILE=$(mktemp)
 
         # Cleanup trap
-        trap 'rm -f "$IPS_FILE" "$REPORT_FILE"' EXIT
+        trap 'rm -f "$REPORT_FILE"' EXIT
 
-        # Extract IPs from yesterday's Postfix logs
-        journalctl --unit postfix.service --since yesterday --until today | \
-          grep 'SASL LOGIN authentication failed' | \
-          cut -d '[' -f3 | cut -d ']' -f1 >> "$IPS_FILE"
+        # Extract abuse attempts from yesterday's logs and generate report
+        (
+          # Postfix SASL authentication failures
+          journalctl --output json --unit postfix.service --since yesterday --until today | \
+            jq -c 'select(.MESSAGE | test("SASL LOGIN authentication failed")) |
+                   {ip: (.MESSAGE | match("\\[([^\\]]+)\\]").captures[0].string),
+                    time_unix_us: ._SOURCE_REALTIME_TIMESTAMP,
+                    line: .MESSAGE}'
 
-        # Extract IPs from yesterday's SSH logs
-        journalctl --unit sshd.service --since yesterday --until today | \
-          grep ': Invalid user' | \
-          sed 's,^.*from \([^ ]*\) .*$,\1,' >> "$IPS_FILE"
+          # SSH invalid user attempts
+          journalctl --output json --unit sshd.service --since yesterday --until today | \
+            jq -c 'select(.MESSAGE | test("^Invalid user ")) |
+                   {ip: (.MESSAGE | match("from ([^ ]+)").captures[0].string),
+                    time_unix_us: ._SOURCE_REALTIME_TIMESTAMP,
+                    line: .MESSAGE}'
+        ) | \
+          add-asn-info \
+            --bgp-table "${config.slb.bgpData.dataDir}/table.jsonl" \
+            --asn-table "${config.slb.bgpData.dataDir}/asns.csv" | \
+          ip-abuse-report > "$REPORT_FILE"
 
-        if [ ! -s "$IPS_FILE" ]; then
-          echo "No abusive IPs found for yesterday."
-          exit 0
-        fi
-
-        # Generate report
-        ip-abuse-report \
-          --bgp-table "${config.slb.bgpData.dataDir}/table.jsonl" \
-          --asn-table "${config.slb.bgpData.dataDir}/asns.csv" \
-          < "$IPS_FILE" > "$REPORT_FILE"
-
-        # Check if report has content
-        LINE_COUNT=$(wc -l < "$REPORT_FILE")
-        if [ "$LINE_COUNT" -le 0 ]; then
+        if [ ! -s "$REPORT_FILE" ]; then
             echo "Report empty (no ASNs met threshold)."
             exit 0
         fi

@@ -15,6 +15,7 @@ python3.pkgs.buildPythonApplication {
 
   installPhase = ''
     install -Dm755 ip-abuse-report.py $out/bin/ip-abuse-report
+    install -Dm755 add-asn-info.py $out/bin/add-asn-info
   '';
 
   checkPhase = ''
@@ -24,7 +25,7 @@ python3.pkgs.buildPythonApplication {
   '';
 
   meta = {
-    description = "Tool to map IPs to ASNs using local BGP data";
+    description = "Tools for ASN-based abuse reporting";
     mainProgram = "ip-abuse-report";
     maintainers = with lib.maintainers; [ lucasbergman ];
   };

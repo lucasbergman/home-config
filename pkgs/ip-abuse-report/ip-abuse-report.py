@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 import argparse
-import csv
 import json
 import logging
 import sys
 from collections import defaultdict, namedtuple
-from typing import Dict, TextIO
-
-import pytricia  # type: ignore
 
 
 class _ASNData(namedtuple("_ASNData", ["asn", "name", "cc"])):
@@ -24,7 +20,7 @@ class _ASNStats(object):
         return _ASNStats()
 
     def __init__(self) -> None:
-        self.asn_id: int = 0
+        self.asn_id: str = ""
         self.attempts: defaultdict[str, int] = defaultdict(int)
 
     def add_attempts(self, ip: str, attempts: int) -> None:
@@ -43,49 +39,10 @@ class _ASNStats(object):
 _MISSING_ASN = _ASNData(asn="UNKNOWN", name="Unknown Network", cc="??")
 
 
-def _load_bgp_table(path: str, asn_meta: Dict[int, _ASNData]) -> pytricia.PyTricia:
-    """Load the BGP routing table into a prefix trie, mapping CIDRs to ASN metadata."""
-    logging.info(f"Loading BGP table from {path}...")
-    result = pytricia.PyTricia()
-    with open(path, "r") as f:
-        for line in f:
-            rec = json.loads(line)
-            result[rec["CIDR"]] = asn_meta[int(rec["ASN"])]
-    logging.info(f"Loaded {len(result)} BGP routes")
-    return result
-
-
-def _load_asn_metadata(path: str) -> Dict[int, _ASNData]:
-    """Load ASN name and country metadata from a CSV file."""
-    logging.info(f"Loading ASN metadata from {path}...")
-    result: Dict[int, _ASNData] = defaultdict(lambda: _MISSING_ASN)
-    with open(path, "r", newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            asn_str: str = row["asn"]  # e.g. "AS123"
-            asn_id: int = int(asn_str[2:])
-            result[asn_id] = _ASNData(asn=asn_id, name=row["name"], cc=row["cc"])
-    logging.info(f"Loaded {len(result)} ASN records")
-    return result
-
-
 def main() -> None:
     logging.basicConfig(level=logging.INFO, stream=sys.stderr)
     parser = argparse.ArgumentParser(
-        description="Map IPs to ASNs and generate abuse report."
-    )
-    parser.add_argument(
-        "files", metavar="FILE", nargs="*", help="Input files with IPs (default: stdin)"
-    )
-    parser.add_argument(
-        "--bgp-table",
-        default="/var/lib/bgp-data/table.jsonl",
-        help="Path to BGP table JSONL file",
-    )
-    parser.add_argument(
-        "--asn-table",
-        default="/var/lib/bgp-data/asns.csv",
-        help="Path to ASN metadata CSV file",
+        description="Aggregate abuse attempts by ASN and generate report."
     )
     parser.add_argument(
         "--min-attempts",
@@ -95,32 +52,32 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    asn_meta = _load_asn_metadata(args.asn_table)
-    bgp_ranges: pytricia.PyTricia = _load_bgp_table(args.bgp_table, asn_meta)
+    asn_stats: dict[str, _ASNStats] = defaultdict(_ASNStats.new)
+    asn_meta: dict[str, _ASNData] = {}
 
-    attempts_per_addr: Dict[str, int] = defaultdict(int)
+    line_num = 0
+    for line in sys.stdin:
+        line_num += 1
+        line = line.strip()
+        if not line:
+            continue
 
-    def count_ips(stream: TextIO) -> None:
-        for line in stream:
-            ip: str = line.strip()
-            if not ip:
-                continue
-            attempts_per_addr[ip] += 1
+        record = json.loads(line)
+        ip = record.get("ip", "").strip()
+        if not ip:
+            logging.warning(f"line {line_num}: no ip field")
+            continue
 
-    if not args.files:
-        count_ips(sys.stdin)
-    else:
-        for fname in args.files:
-            with open(fname, "r") as f:
-                count_ips(f)
+        asn: str = record["asn"]
+        asn_name = record["asn_name"]
+        asn_cc = record["asn_country"]
 
-    asn_stats: Dict[int, _ASNStats] = defaultdict(_ASNStats.new)
+        if asn not in asn_meta:
+            asn_meta[asn] = _ASNData(asn=asn, name=asn_name, cc=asn_cc)
 
-    for addr, attempts in attempts_per_addr.items():
-        asn_data: _ASNData = bgp_ranges.get(addr, _MISSING_ASN)
-        stats = asn_stats[asn_data.asn]
-        stats.asn_id = asn_data.asn
-        stats.add_attempts(addr, attempts)
+        stats = asn_stats[asn]
+        stats.asn_id = asn
+        stats.add_attempts(ip, 1)
 
     asn_stats_sorted = sorted(
         [s for s in asn_stats.values() if s.nattempts() >= args.min_attempts],
