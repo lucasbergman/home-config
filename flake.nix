@@ -30,6 +30,7 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.terranix.follows = "terranix";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     terranix = {

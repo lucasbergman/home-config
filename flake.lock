@@ -123,14 +123,16 @@
         "terranix": [
           "terranix"
         ],
-        "treefmt-nix": "treefmt-nix"
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
       },
       "locked": {
-        "lastModified": 1745528768,
-        "narHash": "sha256-SCGKdnJQlhjJM+Nqb06XxK7F2FR8mpQXYZct0soVCEU=",
+        "lastModified": 1769616069,
+        "narHash": "sha256-8oVSDzRncz/QXdEFxj/FJPqqVmq8otUAo8ecs6gkeEQ=",
         "owner": "lucasbergman",
         "repo": "nixos-securenets",
-        "rev": "9fb04146c0b2d5ecd489900ca2fe4b5d8fc6bcd6",
+        "rev": "8d3c61a97e9d7a96dc2ce0791938ae932104af4c",
         "type": "github"
       },
       "original": {
@@ -181,7 +183,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "terranix": "terranix",
-        "treefmt-nix": "treefmt-nix_2",
+        "treefmt-nix": "treefmt-nix",
         "vscode-server": "vscode-server"
       }
     },
@@ -238,27 +240,6 @@
       }
     },
     "treefmt-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixos-securenets",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1744961264,
-        "narHash": "sha256-aRmUh0AMwcbdjJHnytg1e5h5ECcaWtIFQa6d9gI85AI=",
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "rev": "8d404a69efe76146368885110f29a2ca3700bee6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"

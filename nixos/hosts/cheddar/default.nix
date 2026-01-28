@@ -80,10 +80,6 @@
   networking.firewall = {
     enable = true;
     trustedInterfaces = [ "bergnet0" ];
-    allowedUDPPorts = [
-      # TODO: This should be managed by the nixos-securenets module
-      51820 # WireGuard
-    ];
   };
 
   slb.asnBlocking = {
