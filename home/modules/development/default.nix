@@ -18,6 +18,7 @@
     in
     {
       home.packages = [
+        pkgs.gh
         pkgs.nixd
         pkgs-unstable.claude-code
         pkgs-unstable.gemini-cli
