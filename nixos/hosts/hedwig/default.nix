@@ -90,6 +90,7 @@
     backupPaths = [
       "/persist"
       "/home/lucas"
+      "/storage/users/lucas"
 
       # Department of tragically hard-coded systemd service data directories
       "/var/lib/prometheus2"
