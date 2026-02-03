@@ -128,11 +128,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769616069,
-        "narHash": "sha256-8oVSDzRncz/QXdEFxj/FJPqqVmq8otUAo8ecs6gkeEQ=",
+        "lastModified": 1770133495,
+        "narHash": "sha256-ApGSw/Ut28TKla/Ix8/4pVdBSJ+MPViKp2fSBpaUWIU=",
         "owner": "lucasbergman",
         "repo": "nixos-securenets",
-        "rev": "8d3c61a97e9d7a96dc2ce0791938ae932104af4c",
+        "rev": "19d74125c26a1812cc2fdd0f5772cca7c429cceb",
         "type": "github"
       },
       "original": {
