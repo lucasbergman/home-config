@@ -34,8 +34,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # https://grahamc.com/blog/nixos-on-zfs/
-  boot.kernelParams = [ "elevator=none" ];
+  boot.kernelParams = [
+    "elevator=none" # https://grahamc.com/blog/nixos-on-zfs/
+    "i915.enable_guc=3" # https://wiki.archlinux.org/title/Intel_graphics
+  ];
 
   networking = {
     hostName = "hedwig";
