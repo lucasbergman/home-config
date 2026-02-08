@@ -14,11 +14,11 @@ let
   dovecotUserFile = "/run/dovecot_users";
   dovecotUserFileSecret = "projects/bergmans-services/secrets/mail-userdb/versions/3";
   transportFile = "/run/postfix_transport";
-  transportSecret = "projects/bergmans-services/secrets/mail-transport/versions/1";
+  transportSecret = "projects/bergmans-services/secrets/mail-transport/versions/2";
   virtualMailboxFile = "/run/virtual_mailbox";
-  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/3";
+  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/4";
   virtualAliasFile = "/run/virtual_alias";
-  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/3";
+  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/4";
   vmail_uid = 2000;
   vmail_gid = 2000;
   openarcUID = 2002;
