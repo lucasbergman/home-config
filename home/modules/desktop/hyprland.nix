@@ -143,10 +143,19 @@
   ];
 
   windowrule = [
-    # Ignore maximize requests from apps. You'll probably like this.
-    "suppressevent maximize, class:.*"
-
-    # Fix some dragging issues with XWayland
-    "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+    {
+      name = "moneydance-popup-x";
+      "match:class" = "^Moneydance";
+      "match:title" = "^win";
+      "match:float" = true;
+      no_initial_focus = true;
+    }
+    {
+      name = "moneydance-popup-wayland";
+      "match:class" = "^Moneydance";
+      "match:title" = "^$";
+      "match:float" = true;
+      no_initial_focus = true;
+    }
   ];
 }
