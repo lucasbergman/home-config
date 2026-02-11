@@ -37,6 +37,8 @@
   slb.security.enable = false;
   slb.backups.enable = false;
 
+  slb.qemu.enable = true;
+
   services.printing.enable = true;
   services.avahi = {
     enable = true;

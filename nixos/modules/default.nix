@@ -17,6 +17,7 @@
     ./networking.nix
     ./nginx.nix
     ./openarc.nix
+    ./qemu.nix
     ./security.nix
     ./unpoller.nix
   ];
