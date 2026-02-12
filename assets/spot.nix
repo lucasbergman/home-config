@@ -59,4 +59,21 @@
       ttl = 300;
     };
   };
+
+  resource.google_service_account.instance_spot = {
+    account_id = "instance-spot";
+    display_name = "Spot VM instance account";
+  };
+
+  resource.google_project_iam_member.spot_acme_dns = {
+    project = lib.tfRef "var.gcp_project";
+    role = lib.tfRef "google_project_iam_custom_role.acme_dns.name";
+    member = "serviceAccount:\${google_service_account.instance_spot.email}";
+  };
+
+  resource.google_project_iam_member.spot_log_writer = {
+    project = lib.tfRef "var.gcp_project";
+    role = "roles/logging.logWriter";
+    member = "serviceAccount:\${google_service_account.instance_spot.email}";
+  };
 }

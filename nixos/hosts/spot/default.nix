@@ -21,7 +21,11 @@
   networking.firewall.enable = true;
 
   slb.backups.enable = false;
-  slb.security.enable = false;
+
+  slb.security = {
+    enable = true;
+    gcpInstanceKeyPath = null;
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
