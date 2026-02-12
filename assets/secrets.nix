@@ -10,4 +10,11 @@
       auto = { };
     };
   };
+
+  resource.google_secret_manager_secret.nebula_ca_key = {
+    secret_id = "nebula-ca-key";
+    replication = {
+      auto = { };
+    };
+  };
 }

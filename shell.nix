@@ -9,6 +9,7 @@
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
 
     nativeBuildInputs = [
+      pkgs.dnsutils
       pkgs.git
       pkgs.go
       pkgs.home-manager

@@ -10,6 +10,7 @@
     ../../common/users
     ../../linode
     ./hardware-configuration.nix
+    ./services/nebula.nix
   ];
 
   networking = {
@@ -21,6 +22,11 @@
   networking.firewall.enable = true;
 
   slb.backups.enable = false;
+
+  # Turn off mDNS; it's pointless on a cloud VM
+  services.resolved.extraConfig = ''
+    MulticastDNS=no
+  '';
 
   slb.security = {
     enable = true;
