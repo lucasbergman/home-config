@@ -10,6 +10,7 @@
     ./mail.nix
     ./secrets.nix
     ./snowball.nix
+    ./spot.nix
     ./variables.nix
 
     # Pull in our WireGuard mesh network(s) spec
