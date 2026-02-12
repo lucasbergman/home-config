@@ -102,6 +102,14 @@
       ttl = 1800;
     };
 
+    bergmanhouse_a_lucas = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "lucas.bergman.house.";
+      type = "A";
+      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      ttl = 1800;
+    };
+
     bergmanhouse_a_mail = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "mail.bergman.house.";
