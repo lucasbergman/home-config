@@ -76,4 +76,29 @@
     role = "roles/logging.logWriter";
     member = "serviceAccount:\${google_service_account.instance_spot.email}";
   };
+
+  resource.google_secret_manager_secret =
+    let
+      mkSecret = name: {
+        secret_id = name;
+        replication = {
+          auto = { };
+        };
+      };
+    in
+    {
+      nebula_host_key_spot = mkSecret "nebula-host-key-spot";
+    };
+
+  resource.google_secret_manager_secret_iam_member =
+    let
+      mkMember = secret: {
+        secret_id = lib.tfRef "google_secret_manager_secret.${secret}.secret_id";
+        role = "roles/secretmanager.secretAccessor";
+        member = "serviceAccount:\${google_service_account.instance_spot.email}";
+      };
+    in
+    {
+      spot_nebula_host_key_spot = mkMember "nebula_host_key_spot";
+    };
 }
