@@ -65,6 +65,12 @@
     linkConfig.RequiredForOnline = "routable";
   };
 
+  networking.nameservers = [ "192.168.101.3" ];
+  services.resolved.fallbackDns = [
+    "75.75.75.75"
+    "75.75.76.76"
+  ];
+
   services.openssh.hostKeys = [
     {
       path = "/persist/etc/ssh/ssh_host_ed25519_key";
