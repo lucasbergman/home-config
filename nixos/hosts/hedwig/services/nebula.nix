@@ -53,4 +53,17 @@ in
   };
 
   networking.firewall.trustedInterfaces = [ "nebula.${networkName}" ];
+
+  systemd.network.networks."nebula-${networkName}" = {
+    matchConfig.Name = "nebula.${networkName}";
+    dns = [ lighthouseNebulaIP ];
+    networkConfig = {
+      Domains = [ "~priv.bergman.house" ];
+      KeepConfiguration = true;
+      IPv6AcceptRA = false;
+      LinkLocalAddressing = false;
+    };
+    linkConfig.RequiredForOnline = false;
+    DHCP = "no";
+  };
 }
