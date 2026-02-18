@@ -9,10 +9,12 @@
           "::1"
           "enp3s0"
           "bergnet0"
+          "nebula.bergnet"
         ];
         interface-action = [
           "enp3s0 allow"
           "bergnet0 allow"
+          "nebula.bergnet allow"
         ];
       };
       forward-zone = [

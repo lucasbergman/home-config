@@ -5,6 +5,7 @@
     ./immich.nix
     ./monitoring.nix
     ./mullvad.nix
+    ./nebula.nix
     ./plex.nix
     ./unbound.nix
     ./unifi.nix

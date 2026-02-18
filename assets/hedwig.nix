@@ -65,6 +65,13 @@
     };
   };
 
+  resource.google_secret_manager_secret.nebula_host_key_hedwig = {
+    secret_id = "nebula-host-key-hedwig";
+    replication = {
+      auto = { };
+    };
+  };
+
   resource.google_secret_manager_secret_iam_member =
     let
       mkMember = secret: {
@@ -79,5 +86,6 @@
       hedwig_mullvad_wg_key_hedwig = mkMember "mullvad_wg_key_hedwig";
       hedwig_mullvad_account = mkMember "mullvad_account";
       hedwig_home_assistant_secrets_file = mkMember "home_assistant_secrets_file";
+      hedwig_nebula_host_key_hedwig = mkMember "nebula_host_key_hedwig";
     };
 }
