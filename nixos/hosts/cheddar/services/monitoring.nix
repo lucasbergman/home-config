@@ -26,7 +26,7 @@ in
 
   services.prometheus = {
     enable = true;
-    listenAddress = "10.6.0.1";
+    listenAddress = "10.7.1.4";
     ruleFiles = [
       (mkYAML "mail.rules" ./monitoring_mail.nix { inherit lib; })
       (mkYAML "prober_home_dns.rules" ./monitoring_prober_home_dns.nix { })
@@ -158,7 +158,7 @@ in
 
     alertmanager = {
       enable = true;
-      listenAddress = "10.6.0.1";
+      listenAddress = "10.7.1.4";
       environmentFile = alertmanagerEnvFile;
       logLevel = "debug";
 

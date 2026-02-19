@@ -157,7 +157,7 @@ in
 
       mynetworks = [
         "127.0.0.0/8"
-        "10.6.0.0/24" # Include WireGuard mesh in trusted networks
+        "10.7.1.0/24" # Include Nebula mesh in trusted networks
       ];
 
       smtpd_tls_chain_files = [
@@ -320,7 +320,7 @@ in
     internalHosts = [
       "127.0.0.1"
       "::1"
-      "10.6.0.0/24"
+      "10.7.1.0/24"
     ];
     milterUsers = [ "postfix" ];
   };
@@ -339,7 +339,7 @@ in
     socket = "inet:8892@localhost";
     settings = {
       Syslog = "true";
-      InternalHosts = "127.0.0.1,::1,10.6.0.0/24";
+      InternalHosts = "127.0.0.1,::1,10.7.1.0/24";
     };
   };
 
