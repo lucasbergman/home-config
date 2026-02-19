@@ -23,6 +23,8 @@
     domain = "bergmans.us";
   };
 
+  slb.nebula.enable = true;
+
   slb.securenet = {
     enable = true;
     network = "bergnet";
