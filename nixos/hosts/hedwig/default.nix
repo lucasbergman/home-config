@@ -13,6 +13,8 @@
     ./services
   ];
 
+  slb.nebula.enable = true;
+
   fileSystems = {
     "/nix" = {
       device = "rpool/ephemeral/nix";

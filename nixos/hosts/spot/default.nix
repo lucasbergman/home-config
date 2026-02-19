@@ -10,8 +10,12 @@
     ../../common/users
     ../../linode
     ./hardware-configuration.nix
-    ./services/nebula.nix
   ];
+
+  slb.nebula = {
+    enable = true;
+    isLighthouse = true;
+  };
 
   networking = {
     hostName = "spot";
