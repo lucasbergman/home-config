@@ -112,35 +112,6 @@
         "url": "ssh://git@github.com/lucasbergman/idiotbox.git"
       }
     },
-    "nixos-securenets": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "terranix": [
-          "terranix"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770133495,
-        "narHash": "sha256-ApGSw/Ut28TKla/Ix8/4pVdBSJ+MPViKp2fSBpaUWIU=",
-        "owner": "lucasbergman",
-        "repo": "nixos-securenets",
-        "rev": "19d74125c26a1812cc2fdd0f5772cca7c429cceb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lucasbergman",
-        "repo": "nixos-securenets",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1769318308,
@@ -179,7 +150,6 @@
         "gomod2nix": "gomod2nix",
         "home-manager": "home-manager",
         "idiotbox": "idiotbox",
-        "nixos-securenets": "nixos-securenets",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "terranix": "terranix",

@@ -25,12 +25,6 @@
 
   slb.nebula.enable = true;
 
-  slb.securenet = {
-    enable = true;
-    network = "bergnet";
-    privateKeyPath = "/etc/bergmans-wg-key";
-  };
-
   slb.backups = {
     gcsPath = "/cheddar";
     backupPaths = [ "/data" ];
