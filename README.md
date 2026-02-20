@@ -10,3 +10,4 @@ to be rid of that someday.
 - **hedwig**: Home server running Plex media server, Home Assistant, Immich photo
   management, and UniFi controller
 - **snowball**: Desktop/workstation
+- **spot**: Cloud VM running the [Nebula](https://github.com/slackhq/nebula) lighthouse

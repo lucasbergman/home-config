@@ -1,9 +1,15 @@
 Notes on setting up a host
 
-1. **Instance keys**: Every host gets a role account and a private key that it uses for
-   authenticating with Google Cloud. For now, you have to generate one with Terraform,
-   get the SSH host public key from the new host, encrypt the instance key with sops,
-   then check that into Git. That's a bit overwrought, and we may as well just stick
-   them on the host by hand.
-2. **WireGuard keys**: If the host needs one or more WireGuard keys, generate those and
-   stick them on the host by hand. We'll clean that up soon.
+**Instance keys**: Every host gets a service account and a private key that it uses for
+authenticating with Google Cloud. Generate the service account with Terraform, create a
+new key, and drop that on the host:
+
+```shell
+$ gcloud iam service-accounts keys create KEY_FILE.json \
+    --iam-account=SERVICE_ACCOUNT_EMAIL
+$ install -o root -g root -m 0600 KEY_FILE.json /etc/gcp-instance-creds.json
+```
+
+**Nebula mesh network keys**: If the host uses the `bergnet` Nebula mesh network,
+generate the host's key and certificate with `nebula-cert sign` and put them at
+`/etc/nebula-bergnet-host.{crt,key}` on the host.
