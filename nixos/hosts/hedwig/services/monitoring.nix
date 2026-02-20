@@ -5,7 +5,7 @@
   ...
 }:
 let
-  myAddress = "10.6.0.2";
+  myAddress = "10.7.1.2";
 in
 {
   services.prometheus =
