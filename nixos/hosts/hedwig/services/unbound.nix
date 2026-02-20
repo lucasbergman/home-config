@@ -19,6 +19,10 @@
       };
       forward-zone = [
         {
+          name = "priv.bergman.house.";
+          forward-addr = "10.7.1.1";
+        }
+        {
           name = ".";
           forward-addr = [
             # TODO: Does Comcast support DoT or DoH?
