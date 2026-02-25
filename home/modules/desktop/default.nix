@@ -7,6 +7,12 @@
   ...
 }:
 {
+  imports = [
+    ./hypridle.nix
+    ./hyprlock.nix
+    ./waybar.nix
+  ];
+
   config = lib.mkIf config.slb.isDesktop {
     home.sessionVariables = {
       # Pander to Electron on Wayland
@@ -17,10 +23,15 @@
       GDK_SCALE = "2";
     };
 
+    fonts.fontconfig.enable = true;
+
     home.packages = [
       pkgs.dejavu_fonts
+      pkgs.font-awesome
       pkgs.google-fonts
+      pkgs.nerd-fonts.jetbrains-mono
       pkgs.noto-fonts
+      pkgs.noto-fonts-color-emoji
 
       pkgs.grim
       pkgs.slurp
@@ -52,7 +63,11 @@
     };
     programs.ghostty = {
       enable = true;
-      settings.theme = "Adwaita Dark";
+      settings = {
+        theme = "Adwaita Dark";
+        font-family = "JetBrainsMono NF";
+        font-size = 14;
+      };
     };
     programs.wofi.enable = true;
   };

@@ -106,6 +106,7 @@
     "$mainMod SHIFT, Q, exit,"
     "$mainMod, R, exec, $menu"
     "$mainMod, V, togglefloating,"
+    "$mainMod SHIFT, L, exec, loginctl lock-session"
 
     # Move focus with mainMod + vi-style movement keys
     "$mainMod, H, movefocus, l"
