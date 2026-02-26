@@ -16,6 +16,7 @@
       pkgs.jq
       pkgs.nix
       pkgs.nvd
+      pkgs.python3
       pkgs.sops
       pkgs.ssh-to-age
       pkgs.terranix
