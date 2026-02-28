@@ -95,5 +95,23 @@
         };
       };
     };
+
+    accounts.email.accounts =
+      let
+        name = "Lucas Bergman";
+      in
+      {
+        bergmans = {
+          primary = true;
+          address = "lucas@bergmans.us";
+          realName = name;
+          notmuch.enable = true;
+        };
+        bergmanhouse = {
+          address = "lucas@bergman.house";
+          realName = name;
+          notmuch.enable = true;
+        };
+      };
   };
 }
