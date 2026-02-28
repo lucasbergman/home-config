@@ -20,6 +20,7 @@
       home.packages = [
         pkgs.gh
         pkgs.nixd
+        pkgs.w3m
         pkgs-unstable.claude-code
         pkgs-unstable.gemini-cli
       ]
@@ -44,8 +45,10 @@
               magit
               mu4e
               nix-mode
+              notmuch
               smex
               use-package
+              w3m
             ]
           );
         extraConfig = ''

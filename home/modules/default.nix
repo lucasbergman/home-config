@@ -9,6 +9,7 @@
     vscode-server.homeModules.default
     ./desktop
     ./development
+    ./notmuch
   ];
 
   options.slb = {
