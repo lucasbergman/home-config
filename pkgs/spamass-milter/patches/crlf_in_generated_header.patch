@@ -1,0 +1,35 @@
+Description: Spamass-milter doesn't properly maintain CRLF in folded header newlines.
+Bug: https://bz.apache.org/SpamAssassin/show_bug.cgi?id=7785
+Author: Henrik Krohns, Matthieu Schapranow <schapranow@hpi.de<mailto:schapranow@hpi.de>, Don Armstrong <don@debian.org>
+Forwarded: no
+--- a/spamass-milter.cpp
++++ b/spamass-milter.cpp
+@@ -1135,7 +1135,27 @@
+     assassin->set_subject(headerv);
+ 
+   // assemble header to be written to SpamAssassin
+-  string header = string(headerf) + ": " + headerv + "\r\n";
++  string header = headerv;
++
++  // Replace all LF with CRLF
++  // As milter documentation says:
++  //     headerv    Header field value.  The content of the header may
++  //       include folded white space, i.e., multiple lines with following
++  //       white space where lines are separated by LF (not CR/LF).  The
++  //       trailing line terminator (CR/LF) is removed.
++  // Need to make sure folded header line breaks are sent to SA as CRLF
++  string::size_type idx = header.size();
++  while ( (idx = header.rfind('\n', idx)) != string::npos )
++  {
++    if (idx == 0 || header[idx-1] != '\r') {
++      header.insert(idx,"\r");
++    } else {
++      idx -= 1;
++    }
++  }
++
++  // final assembly
++  header = string(headerf) + ": " + header + "\r\n";
+  
+   try {
+     // write to SpamAssassin client

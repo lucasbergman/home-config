@@ -1,0 +1,68 @@
+Description: Include Auth information in the received line
+Origin: https://www.linuxhacker.at/opensource-projects/spamass-milter
+Bug-Debian: #627989
+Author: Herbert Straub, Knut Arne Bjørndal <knut.arne.bjorndal@easyconnect.no>
+Forwarded: no
+--- a/spamass-milter.cpp
++++ b/spamass-milter.cpp
+@@ -940,7 +940,8 @@
+ 		   
+ 		*/
+ 		const char *macro_b, *macro_i, *macro_j, *macro_r,
+-		           *macro_s, *macro_v, *macro_Z, *macro__;
++		           *macro_s, *macro_v, *macro_Z, *macro__,
++		           *macro_auth_type, *macro_auth_ssf;
+ 		char date[32];
+ 
+ 		/* RFC 822 date. */
+@@ -977,7 +978,22 @@
+ 			macro_r = "SMTP";
+ 			warnmacro("r", "ENVRCPT");
+ 		}
+-			
++
++		/* Authenticated bits Information */
++		macro_auth_type = smfi_getsymval(ctx, "{auth_type}");
++		if (!macro_auth_type)
++		{
++			macro_auth_type = "";
++			warnmacro("auth_type", "ENVRCPT");
++		}
++
++		macro_auth_ssf = smfi_getsymval(ctx, "{auth_ssf}");
++		if (!macro_auth_ssf)
++		{
++			macro_auth_ssf = "";
++			warnmacro("auth_ssf", "ENVRCPT");
++		}
++
+ 		/* Sendmail currently cannot pass us the {s} macro, but
+ 		   I do not know why.  Leave this in for the day sendmail is
+ 		   fixed.  Until that day, use the value remembered by
+@@ -1016,11 +1032,22 @@
+ 		assassin->output((string)"X-Envelope-From: "+assassin->from()+"\r\n");
+ 		assassin->output((string)"X-Envelope-To: "+envrcpt[0]+"\r\n");
+ 
+-		assassin->output((string)
+-			"Received: from "+macro_s+" ("+macro__+")\r\n\t"+
+-			"by "+macro_j+" ("+macro_v+"/"+macro_Z+") with "+macro_r+" id "+macro_i+"\r\n\t"+
++		string rec_header;
++		rec_header=(string)"Received: from "+macro_s+" ("+macro__+")\r\n\t";
++		if (strlen(macro_auth_type)!=0) {
++			rec_header+=(string)"(authenticated";
++			if (strlen(macro_auth_ssf)!=0) {
++				rec_header+=(string)" bits="+macro_auth_ssf;
++			}
++			rec_header+=(string)")\r\n\t";
++		}
++		rec_header+=(string)"by "+macro_j+" ("+macro_v+"/"+macro_Z+") with "+
++			macro_r+" id "+macro_i+"\r\n\t"+
+ 			macro_b+"\r\n\t"+
+-			"(envelope-from "+assassin->from()+")\r\n");
++			"(envelope-from "+assassin->from()+");\r\n";
++
++		debug(D_SPAMC, "Received header for spamc: %s", rec_header.c_str());
++		assassin->output(rec_header);
+ 
+ 	} else
+ 		assassin->output((string)"X-Envelope-To: "+envrcpt[0]+"\r\n");

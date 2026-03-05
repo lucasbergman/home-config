@@ -1,0 +1,27 @@
+--- a/spamass-milter.cpp
++++ b/spamass-milter.cpp
+@@ -784,7 +784,6 @@
+ {
+   SpamAssassin* assassin;
+   struct context *sctx = (struct context *)smfi_getpriv(ctx);
+-  const char *queueid;
+ 
+   if (sctx == NULL)
+   {
+@@ -837,16 +836,6 @@
+   // remember the MAIL FROM address
+   assassin->set_from(string(envfrom[0]));
+   
+-  queueid=smfi_getsymval(ctx, const_cast<char *>("i"));
+-  if (!queueid)
+-  {
+-    queueid="unknown";
+-    warnmacro("i", "ENVFROM");
+-  }
+-  assassin->queueid = queueid;
+-
+-  debug(D_MISC, "queueid=%s", queueid);
+-
+   // tell Milter to continue
+   debug(D_FUNC, "mlfi_envfrom: exit");
+ 

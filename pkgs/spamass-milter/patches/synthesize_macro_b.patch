@@ -1,0 +1,30 @@
+From: Don Armstrong <don@debian.org>
+Date: Fri, 28 Nov 2025 17:04:53 -0800
+Subject: Synthesize macro $b using current time
+
+Bug-Debian: https://bugs.debian.org/949370
+Forwarded: no
+---
+ spamass-milter.cpp | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/spamass-milter.cpp b/spamass-milter.cpp
+index 1924a99..9947b32 100644
+--- a/spamass-milter.cpp
++++ b/spamass-milter.cpp
+@@ -964,15 +964,10 @@ mlfi_envrcpt(SMFICTX* ctx, char** envrcpt)
+ 		char date[32];
+ 
+ 		/* RFC 822 date. */
+-		macro_b = smfi_getsymval(ctx, const_cast<char *>("b"));
+-		if (!macro_b)                                  
+-		{
+ 			time_t tval;
+ 			time(&tval);
+ 			strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", localtime(&tval));
+ 			macro_b = date;
+-			warnmacro("b", "ENVRCPT");
+-		}
+ 
+ 		/* queue ID */
+ 		macro_i = smfi_getsymval(ctx, const_cast<char *>("i"));

@@ -9,4 +9,5 @@
   moneydance = pkgs.callPackage ./moneydance.nix { };
   openarc = pkgs.callPackage ./openarc.nix { };
   prometheus-jmx = pkgs.callPackage ./prometheus-jmx.nix { };
+  spamass-milter = pkgs.callPackage ./spamass-milter { };
 }
