@@ -55,7 +55,6 @@
       "systemd-logind.service"
       "systemd-networkd.service"
       "systemd-oomd.service"
-      "systemd-resolved.service"
       "systemd-timesyncd.service"
       "systemd-udevd.service"
     ];

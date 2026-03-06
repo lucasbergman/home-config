@@ -5,5 +5,6 @@
     ./matrix.nix
     ./mumble.nix
     ./monitoring.nix
+    ./unbound.nix
   ];
 }
