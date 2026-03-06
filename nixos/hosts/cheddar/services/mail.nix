@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  mypkgs,
   pkgs,
   ...
 }:
@@ -340,6 +341,33 @@ in
     settings = {
       Syslog = "true";
       InternalHosts = "127.0.0.1,::1,10.7.1.0/24";
+    };
+  };
+
+  services.spamassassin = {
+    enable = true;
+    debug = true;
+    config = ''
+      rewrite_header Subject [SPAM]
+
+      # Set threshold for spam classification (default is 5)
+      required_score 6.0
+    '';
+  };
+
+  systemd.services.spamass-milter = {
+    description = "SpamAssassin Milter";
+    after = [
+      "spamd.service"
+      "network.target"
+    ];
+    requires = [ "spamd.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${mypkgs.spamass-milter}/bin/spamass-milter -p inet:8894@localhost";
+      User = "spamd";
+      Group = "spamd";
+      Restart = "on-failure";
     };
   };
 
