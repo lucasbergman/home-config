@@ -1,3 +1,8 @@
+(setq
+  user-full-name "Lucas Bergman"
+  user-mail-address "lucas@bergmans.us"
+  message-default-mail-headers "Bcc: lucas@bergmans.us\n")
+
 ;; Tell MESSAGE-MODE to use the sendmail CLI to send messages. Elsewhere,
 ;; home-manager sets the sendmail program to a script that connects to the
 ;; mail host and execs sendmail there.
