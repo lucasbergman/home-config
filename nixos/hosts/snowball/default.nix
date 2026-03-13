@@ -30,8 +30,24 @@
 
   # This is a desktop
   time.timeZone = "America/Chicago";
-  slb.security.enable = false;
-  slb.backups.enable = false;
+
+  slb.security = {
+    gcpInstanceKeyPath = null; # key is installed by hand
+  };
+
+  slb.backups = {
+    gcsPath = "/snowball";
+    backupPaths = [
+      "/home/lucas/Moneydance"
+      "/home/lucas/hack"
+      "/home/lucas/mail"
+    ];
+    passwordSecretID = "projects/bergmans-services/secrets/restic-password-snowball/versions/1";
+    exclude = [
+      ".terraform"
+      "node_modules"
+    ];
+  };
 
   slb.qemu.enable = true;
 
