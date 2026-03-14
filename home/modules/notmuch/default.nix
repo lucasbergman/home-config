@@ -37,6 +37,7 @@
         mbsync = {
           enable = true;
           create = "maildir";
+          expunge = "imap";
         };
       };
 
