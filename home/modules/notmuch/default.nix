@@ -46,8 +46,15 @@
         (setq sendmail-program "${sendmail}")
       '';
 
+      programs.afew.enable = true;
       programs.mbsync.enable = true;
       programs.notmuch.enable = true;
+
+      services.mbsync = {
+        enable = true;
+        frequency = "*:0/10";
+        postExec = "${pkgs.notmuch}/bin/notmuch new && ${pkgs.afew}/bin/afew --tag --new";
+      };
     }
   );
 }
