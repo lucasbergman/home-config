@@ -77,12 +77,7 @@
   ];
 
   nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    builtins.elem (pkgs.lib.getName pkg) [
-      "mongodb"
-      "plexmediaserver"
-      "unifi-controller"
-    ];
+    pkg: builtins.elem (pkgs.lib.getName pkg) [ "plexmediaserver" ];
 
   slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
 
@@ -95,7 +90,6 @@
 
       # Department of tragically hard-coded systemd service data directories
       "/var/lib/prometheus2"
-      "/var/lib/unifi"
     ];
     passwordSecretID = "projects/bergmans-services/secrets/restic-password-hedwig/versions/1";
     exclude = [
@@ -127,7 +121,6 @@
       "systemd-resolved.service"
       "systemd-timesyncd.service"
       "systemd-udevd.service"
-      "unifi.service"
       "zfs-zed.service"
     ];
   };
