@@ -46,9 +46,13 @@
         (setq sendmail-program "${sendmail}")
       '';
 
-      programs.afew.enable = true;
       programs.mbsync.enable = true;
       programs.notmuch.enable = true;
+
+      programs.afew = {
+        enable = true;
+        extraConfig = builtins.readFile ./afew.conf;
+      };
 
       services.mbsync = {
         enable = true;
