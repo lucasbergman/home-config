@@ -173,6 +173,7 @@ in
 
   slb.unpoller = {
     enable = true;
+    unifiUrl = "https://192.168.101.1/";
     unifiUser = "unifipoller";
     unifiPasswordSecretID = "projects/bergmans-services/secrets/unpoller-password-hedwig/versions/1";
   };

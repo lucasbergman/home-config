@@ -27,6 +27,12 @@
       description = "Address/port to export Prometheus-compatible metrics";
       default = "[::1]:9130";
     };
+
+    unifiUrl = lib.mkOption {
+      type = lib.types.str;
+      description = "URL of the UniFi controller";
+      default = "https://127.0.0.1:8443/";
+    };
   };
 
   config =
@@ -61,7 +67,7 @@
                   {
                     user = cfg.unifiUser;
                     pass = "file://${unpollerPassFile}";
-                    url = "https://127.0.0.1:8443/";
+                    url = cfg.unifiUrl;
                     verify_ssl = false;
                   }
                 ];
