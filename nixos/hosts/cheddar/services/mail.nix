@@ -239,6 +239,19 @@ in
       non_smtpd_milters = "inet:127.0.0.1:8892";
       # Ensure Postfix-generated mail (bounces, etc.) goes through milters.
       internal_mail_filter_classes = [ "bounce" ];
+
+      # Route null-sender mail (bounces/DSNs) directly instead of via SES,
+      # which rejects empty sender. "smtp:" = smtp transport with empty nexthop,
+      # bypassing relayhost and delivering directly via MX lookup.
+      sender_dependent_default_transport_maps = "inline:{<>=smtp:}";
+
+      # Notify postmaster on bounces
+      notify_classes = [
+        "bounce"
+        "2bounce"
+        "resource"
+        "software"
+      ];
     };
   };
 
