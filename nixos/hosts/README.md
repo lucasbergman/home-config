@@ -2,6 +2,7 @@ This directory contains a NixOS configurations, one directory per host:
 
 - cheddar: server on Akamai (formerly Linode)
 - hedwig: server in the house
+- pinchy: small server on Akamai (formerly Linode), playing with agents
 - snowball: desktop in the house
 - spot: small server on Akamai (formerly Linode), Nebula lighthouse
 

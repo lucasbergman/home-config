@@ -145,6 +145,7 @@
           ./nixos/hosts/hedwig
           idiotbox.nixosModules."x86_64-linux".default
         ];
+        pinchy = mkHost "x86_64-linux" [ ./nixos/hosts/pinchy ];
         snowball = mkHost "x86_64-linux" [ ./nixos/hosts/snowball ];
         spot = mkHost "x86_64-linux" [ ./nixos/hosts/spot ];
       };

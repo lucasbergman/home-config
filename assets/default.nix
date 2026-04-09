@@ -10,6 +10,7 @@
     ./mail.nix
     ./secrets.nix
     ./snowball.nix
+    ./pinchy.nix
     ./spot.nix
     ./variables.nix
   ];
