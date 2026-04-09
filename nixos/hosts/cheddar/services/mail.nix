@@ -355,7 +355,12 @@ in
     socket = "inet:8892@localhost";
     settings = {
       Syslog = "true";
+      SyslogSuccess = "true";
       InternalHosts = "127.0.0.1,::1,10.7.1.0/24";
+
+      # Match OpenARC's authserv-id so OpenARC trusts and includes our
+      # Authentication-Results in ARC-Authentication-Results
+      AuthservID = "bergmans.us";
     };
   };
 
