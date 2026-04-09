@@ -230,8 +230,10 @@ in
       virtual_alias_domains = virtualAliasDomains;
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
 
-      # OpenARC Milter (verify incoming + seal forwarded mail on port 25)
-      smtpd_milters = "inet:127.0.0.1:8891";
+      # OpenDKIM (verify inbound DKIM) then OpenARC (seal) on port 25.
+      # Order matters: OpenDKIM must add Authentication-Results before OpenARC
+      # reads them to populate ARC-Authentication-Results.
+      smtpd_milters = "inet:127.0.0.1:8892 inet:127.0.0.1:8891";
       milter_default_action = "tempfail";
       # Local mail (cron, etc.) uses OpenDKIM for signing.
       non_smtpd_milters = "inet:127.0.0.1:8892";
