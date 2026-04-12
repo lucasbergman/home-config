@@ -72,6 +72,46 @@
           radius = 220;
         }
       ];
+
+      automation =
+        let
+          mkACSafety = zone: {
+            alias = "AC Safety: ${zone}";
+            description = "Turn off AC if local temperature falls below 60°F: ${zone}";
+            triggers = [
+              {
+                platform = "time_pattern";
+                minutes = "/20";
+              }
+            ];
+            conditions = [
+              {
+                condition = "numeric_state";
+                entity_id = "weather.forecast_home";
+                attribute = "temperature";
+                below = 60;
+              }
+              {
+                condition = "state";
+                entity_id = "climate.${zone}";
+                state = "cool";
+              }
+            ];
+            actions = [
+              {
+                service = "climate.set_hvac_mode";
+                data = {
+                  entity_id = "climate.${zone}";
+                  hvac_mode = "off";
+                };
+              }
+            ];
+          };
+        in
+        [
+          (mkACSafety "kitchen")
+          (mkACSafety "upstairs")
+        ];
     };
   };
 
