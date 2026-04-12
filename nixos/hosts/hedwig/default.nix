@@ -89,6 +89,7 @@
       "/storage/users/lucas"
 
       # Department of tragically hard-coded systemd service data directories
+      "/var/lib/hass"
       "/var/lib/prometheus2"
     ];
     passwordSecretID = "projects/bergmans-services/secrets/restic-password-hedwig/versions/1";
