@@ -208,6 +208,12 @@ in
       smtpd_sasl_path = "private/auth";
       smtpd_sasl_type = "dovecot";
 
+      # Raise the line-folding threshold to avoid breaking DKIM signatures on
+      # forwarded mail. Postfix folds lines >990 bytes by default (RFC 5321
+      # limit is 998), but this rewrites the body and invalidates the sender's
+      # DKIM body hash. Major providers tolerate long lines in practice.
+      smtp_line_length_limit = 1998;
+
       # Use opportunistic TLS for outbound SMTP. Even Gmail servers flunk name
       # verification with smtp_tls_security_level set to "secure".
       smtp_tls_security_level = "may";
