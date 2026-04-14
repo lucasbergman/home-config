@@ -7,6 +7,10 @@
     secretPath = "projects/bergmans-services/secrets/home-assistant-secrets-file/versions/3";
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "python3.13-ecdsa-0.19.1"
+  ];
+
   services.home-assistant = {
     enable = true;
     package = (pkgs.home-assistant.override { extraPackages = ps: [ ps.grpcio ]; });
@@ -27,6 +31,7 @@
       "spotify"
       "unifi"
       "unifiprotect"
+      "xbox"
     ];
     config = {
       # https://www.home-assistant.io/integrations/default_config/
