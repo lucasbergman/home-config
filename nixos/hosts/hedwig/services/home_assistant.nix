@@ -24,6 +24,7 @@
       "ipp"
       "met"
       "nest"
+      "nws"
       "radio_browser"
       "roku"
       "samsungtv"
@@ -92,7 +93,7 @@
             conditions = [
               {
                 condition = "numeric_state";
-                entity_id = "weather.forecast_home";
+                entity_id = "weather.kigq";
                 attribute = "temperature";
                 below = 60;
               }
