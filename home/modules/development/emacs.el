@@ -2,6 +2,9 @@
 ;; 800,000 bytes. Raise that to 10 MiB, because 1990 called.
 (setq gc-cons-threshold (* 10 1024 1024))
 
+;; Currently experimenting with this darkish theme
+(load-theme 'modus-vivendi t)
+
 ;;
 ;; Random editing properties
 ;;
@@ -67,6 +70,14 @@
             uniquify-separator "|"
             uniquify-after-kill-buffer-p t
             uniquify-ignore-buffers-re "^\\*"))
+
+;; shr, the Simple HTML Renderer
+(use-package shr
+  :config
+    ;; Don't respect HTML colors if the luminance difference is below 70.
+    ;; The default is 40, and experimentally a bunch of HTML mail was
+    ;; unreadable gray-on-black.
+    (setq shr-color-visible-luminance-min 70))
 
 (use-package direnv)
 (use-package eglot)
