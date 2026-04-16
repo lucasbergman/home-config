@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   slb.security.secrets."home-assistant-secrets" = {
     before = [ "home-assistant.service" ];
@@ -52,6 +52,52 @@
         namespace = "hass";
         requires_auth = false;
       };
+
+      template =
+        let
+          mkWeatherSensors = station: [
+            {
+              unique_id = "weather_${station}_temperature";
+              name = "Weather ${lib.toUpper station} Temperature";
+              unit_of_measurement = "°F";
+              state = "{{ state_attr('weather.${station}', 'temperature') }}";
+              state_class = "measurement";
+            }
+            {
+              unique_id = "weather_${station}_humidity";
+              name = "Weather ${lib.toUpper station} Humidity";
+              unit_of_measurement = "%";
+              state = "{{ state_attr('weather.${station}', 'humidity') }}";
+              state_class = "measurement";
+            }
+            {
+              unique_id = "weather_${station}_pressure";
+              name = "Weather ${lib.toUpper station} Pressure";
+              unit_of_measurement = "inHg";
+              state = "{{ state_attr('weather.${station}', 'pressure') }}";
+              state_class = "measurement";
+            }
+            {
+              unique_id = "weather_${station}_wind_speed";
+              name = "Weather ${lib.toUpper station} Wind Speed";
+              unit_of_measurement = "mph";
+              state = "{{ state_attr('weather.${station}', 'wind_speed') }}";
+              state_class = "measurement";
+            }
+            {
+              unique_id = "weather_${station}_visibility";
+              name = "Weather ${lib.toUpper station} Visibility";
+              unit_of_measurement = "mi";
+              state = "{{ state_attr('weather.${station}', 'visibility') }}";
+              state_class = "measurement";
+            }
+          ];
+        in
+        [
+          {
+            sensor = mkWeatherSensors "kigq";
+          }
+        ];
 
       homeassistant = {
         name = "Home";
