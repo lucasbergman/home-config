@@ -137,6 +137,32 @@ in
       };
     }
     {
+      name = "weather";
+      interval = "5m";
+      rules = [
+        {
+          record = "weather:temperature_fahrenheit";
+          expr = "label_replace(hass_sensor_unit_celsius{entity=~'sensor.weather_.*_temperature'}, 'station', '$1', 'entity', 'sensor.weather_(.+)_temperature') * 9 / 5 + 32";
+        }
+        {
+          record = "weather:humidity_percent";
+          expr = "label_replace(hass_sensor_unit_percent{entity=~'sensor.weather_.*_humidity'}, 'station', '$1', 'entity', 'sensor.weather_(.+)_humidity')";
+        }
+        {
+          record = "weather:pressure_inhg";
+          expr = "label_replace(hass_sensor_unit_inhg{entity=~'sensor.weather_.*_pressure'}, 'station', '$1', 'entity', 'sensor.weather_(.+)_pressure')";
+        }
+        {
+          record = "weather:wind_speed_mph";
+          expr = "label_replace(hass_sensor_unit_mph{entity=~'sensor.weather_.*_wind_speed'}, 'station', '$1', 'entity', 'sensor.weather_(.+)_wind_speed')";
+        }
+        {
+          record = "weather:visibility_mi";
+          expr = "label_replace(hass_sensor_unit_mi{entity=~'sensor.weather_.*_visibility'}, 'station', '$1', 'entity', 'sensor.weather_(.+)_visibility')";
+        }
+      ];
+    }
+    {
       name = "node_health";
       rules = [
         {
