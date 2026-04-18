@@ -101,5 +101,11 @@
     ;; unreadable gray-on-black.
     (setq shr-color-visible-luminance-min 70))
 
+(use-package whitespace
+  :diminish whitespace-mode
+  :config (setq whitespace-style '(face trailing space-after-tab
+                                   space-before-tab lines-tail)
+                whitespace-line-column 88))
+
 (use-package direnv)
 (use-package eglot)
