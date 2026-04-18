@@ -5,6 +5,7 @@
 {
   asn-blocklist-gen = pkgs.callPackage ./asn-blocklist-gen { };
   gcp-secret-subst = pkgs.callPackage ./gcp-secret-subst { };
+  google-antigravity = pkgs.callPackage ./google-antigravity.nix { };
   ip-abuse-report = pkgs.callPackage ./ip-abuse-report { };
   moneydance = pkgs.callPackage ./moneydance.nix { };
   openarc = pkgs.callPackage ./openarc.nix { };
