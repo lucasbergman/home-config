@@ -26,6 +26,28 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(defvar *slb-preferred-font*
+  (cond
+   ((eq window-system 'ns) "menlo-12")
+   ((eq window-system 'mac) "menlo-12")
+   (t
+    (if (= 0 (shell-command "fc-list | grep -q 'JetBrains Mono'"))
+        "JetBrains Mono:size=16:style=Regular"
+      "Monospace:size=16"))))
+
+;;
+;; Frame properties
+;;
+(setq initial-frame-alist `((width . 90)
+                            (height . 50)
+                            (line-spacing . 1)
+                            (vertical-scroll-bars . right)
+                            (font . ,*slb-preferred-font*)
+                            (tool-bar-lines . 0)  ; the toolbar is dumb
+                            (menu-bar-lines . ,(if (eq window-system 'ns) 1 0))
+                            )
+      default-frame-alist initial-frame-alist)
+
 (use-package crux
   :bind (("C-a" . crux-move-beginning-of-line)))
 
