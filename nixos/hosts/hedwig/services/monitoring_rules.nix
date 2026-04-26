@@ -16,7 +16,7 @@ let
       builtins.map
         (rate: {
           record = "${name}:rate${rate}";
-          expr = aggregate "rate(${counter}[${rate}])";
+          expr = aggregate "rate(${name}[${rate}])";
         })
         [
           "1m"
@@ -39,23 +39,26 @@ in
           ];
     }
     {
+      # I caught WAN bytes metrics from unpoller running backward a few times per day
+      # since I moved to the Cloud Gateway. The max_over_time(...[2m]) keeps them
+      # non-decreasing, assuming things sort out in any given two-minute window.
       name = "unifi";
       rules = builtins.concatLists [
         (mkRates {
           name = "unifi:wan:receive_bytes";
-          counter = "unpoller_device_wan_receive_bytes_total{job='unifi'}";
+          counter = "max_over_time(unpoller_device_wan_receive_bytes_total{job='unifi'}[2m])";
         })
         (mkRates {
           name = "unifi:wan:transmit_bytes";
-          counter = "unpoller_device_wan_transmit_bytes_total{job='unifi'}";
+          counter = "max_over_time(unpoller_device_wan_transmit_bytes_total{job='unifi'}[2m])";
         })
         (mkRates {
           name = "unifi:device:receive_bytes";
-          counter = "unpoller_device_receive_bytes_total{job='unifi'}";
+          counter = "max_over_time(unpoller_device_receive_bytes_total{job='unifi'}[2m])";
         })
         (mkRates {
           name = "unifi:device:transmit_bytes";
-          counter = "unpoller_device_transmit_bytes_total{job='unifi'}";
+          counter = "max_over_time(unpoller_device_transmit_bytes_total{job='unifi'}[2m])";
         })
       ];
     }
