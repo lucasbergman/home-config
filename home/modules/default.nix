@@ -94,6 +94,7 @@
           email = "lucas@bergmans.us";
           name = "Lucas Bergman";
         };
+        ui.pager = "less --quit-if-one-screen";
       };
     };
 
