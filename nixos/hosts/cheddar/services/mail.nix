@@ -23,6 +23,7 @@ let
   vmail_uid = 2000;
   vmail_gid = 2000;
   openarcUID = 2002;
+  openarcSelector = "arc202510";
   openarcKeyFile = "/run/openarc.key";
   openarcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
   opendkimSelector = "dkim202601";
@@ -56,6 +57,11 @@ in
 
   users = {
     groups.vmail.gid = vmail_gid;
+    groups.mailkeys.members = [
+      "opendkim"
+      "openarc"
+      "rspamd"
+    ];
     users.vmail = {
       uid = vmail_uid;
       group = "vmail";
@@ -246,6 +252,9 @@ in
       # Ensure Postfix-generated mail (bounces, etc.) goes through milters.
       internal_mail_filter_classes = [ "bounce" ];
 
+      # Explicitly pass our domain name to rspamd for the authserv-id
+      milter_macro_daemon_name = postfixTLSHost;
+
       # Route null-sender mail (bounces/DSNs) directly instead of via SES,
       # which rejects empty sender. "smtp:" = smtp transport with empty nexthop,
       # bypassing relayhost and delivering directly via MX lookup.
@@ -325,9 +334,13 @@ in
 
   slb.security.secrets.openarc-private-key = {
     after = [ "openarc-setup.service" ];
-    before = [ "openarc.service" ];
+    before = [
+      "openarc.service"
+      "rspamd.service"
+    ];
     outPath = openarcKeyFile;
-    owner = "openarc";
+    owner = "root";
+    group = "mailkeys";
     secretPath = openarcKeySecret;
   };
 
@@ -335,7 +348,7 @@ in
     enable = true;
     uid = openarcUID;
     domain = "bergmans.us";
-    selector = "arc202510";
+    selector = openarcSelector;
     keyFile = openarcKeyFile;
     socket = "inet:8891@localhost";
     mode = "sv";
@@ -348,10 +361,68 @@ in
   };
 
   slb.security.secrets.opendkim-private-key = {
-    before = [ "opendkim.service" ];
+    before = [
+      "opendkim.service"
+      "rspamd.service"
+    ];
     outPath = opendkimKeyFile;
-    owner = "opendkim";
+    owner = "root";
+    group = "mailkeys";
     secretPath = opendkimKeySecret;
+  };
+
+  services.rspamd = {
+    enable = true;
+    workers = {
+      normal = { };
+      controller = {
+        bindSockets = [ "[::1]:11334" ];
+        extraConfig = ''
+          password = "$2$zsjqsssfx9bnh5r15eayryk8awtqi1sk$ycqd9jpom1n7enuqnfy77t613rhwb7za4u94gkaeaxn1361zf1qb";
+        '';
+      };
+      rspamd_proxy = {
+        type = "rspamd_proxy";
+        bindSockets = [ "[::1]:11332" ];
+        extraConfig = ''
+          upstream "local" {
+            default = yes;
+            self_scan = yes;
+          }
+        '';
+      };
+    };
+    locals = {
+      "redis.conf".text = ''
+        servers = "${config.services.redis.servers.rspamd.unixSocket}";
+      '';
+      "actions.conf".text = ''
+        reject = 100; # Unreachable score during testing
+      '';
+      "dkim_signing.conf".text = ''
+        path = "${opendkimKeyFile}";
+        selector = "${opendkimSelector}";
+        use_domain = "bergmans.us";
+      '';
+      "arc.conf".text = ''
+        path = "${openarcKeyFile}";
+        selector = "${openarcSelector}";
+
+        # Sign/seal incoming external mail; that usually gets forwarded
+        sign_inbound = true;
+        use_domain_sign_inbound = "bergmans.us";
+
+        # No reason to ARC-sign local mail
+        sign_authenticated = false;
+        sign_local = false;
+      '';
+    };
+  };
+
+  services.redis.servers.rspamd = {
+    enable = true;
+    port = 0; # disable TCP, Unix socket only
+    user = config.services.rspamd.user;
   };
 
   services.opendkim = {
@@ -405,4 +476,14 @@ in
     110 # POP3
     995 # POP3S
   ];
+
+  services.nginx.virtualHosts."rspamd.bergmans.us" = {
+    forceSSL = true;
+    enableACME = true;
+
+    locations."/" = {
+      proxyPass = "http://[::1]:11334";
+      proxyWebsockets = true;
+    };
+  };
 }

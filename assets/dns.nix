@@ -48,6 +48,14 @@
       ttl = 300;
     };
 
+    bergmans_a_rspamd = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
+      name = "rspamd.bergmans.us.";
+      type = "A";
+      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      ttl = 300;
+    };
+
     bergmans_txt = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
       name = lib.tfRef "google_dns_managed_zone.bergmans.dns_name";
