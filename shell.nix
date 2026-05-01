@@ -15,6 +15,7 @@
       pkgs.home-manager
       pkgs.jq
       pkgs.nix
+      pkgs.nixfmt-rfc-style
       pkgs.nvd
       pkgs.python3
       pkgs.sops
