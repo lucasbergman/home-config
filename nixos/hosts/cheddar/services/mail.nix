@@ -146,8 +146,8 @@ in
     submissionOptions = {
       smtpd_tls_security_level = "encrypt";
       smtpd_client_restrictions = "permit_mynetworks,permit_sasl_authenticated,reject";
-      # Submission uses OpenDKIM for signing (no ARC verify/seal needed).
-      smtpd_milters = "inet:127.0.0.1:8892";
+      # Submission uses rspamd for DKIM signing.
+      smtpd_milters = "inet:[::1]:11332";
     };
 
     mapFiles.transport = transportFile;
@@ -242,14 +242,10 @@ in
       virtual_alias_domains = virtualAliasDomains;
       virtual_alias_maps = "hash:/var/lib/postfix/conf/virtual_alias";
 
-      # OpenDKIM (verify inbound DKIM) then OpenARC (seal) on port 25.
-      # Order matters: OpenDKIM must add Authentication-Results before OpenARC
-      # reads them to populate ARC-Authentication-Results.
-      smtpd_milters = "inet:127.0.0.1:8892 inet:127.0.0.1:8891";
+      # Route all milter traffic to rspamd for spam filtering, DKIM, and ARC.
+      smtpd_milters = "inet:[::1]:11332";
+      non_smtpd_milters = "inet:[::1]:11332";
       milter_default_action = "tempfail";
-      # Local mail (cron, etc.) uses OpenDKIM for signing.
-      non_smtpd_milters = "inet:127.0.0.1:8892";
-      # Ensure Postfix-generated mail (bounces, etc.) goes through milters.
       internal_mail_filter_classes = [ "bounce" ];
 
       # Explicitly pass our domain name to rspamd for the authserv-id
@@ -345,7 +341,7 @@ in
   };
 
   services.openarc = {
-    enable = true;
+    enable = false;
     uid = openarcUID;
     domain = "bergmans.us";
     selector = openarcSelector;
@@ -426,7 +422,7 @@ in
   };
 
   services.opendkim = {
-    enable = true;
+    enable = false;
     selector = opendkimSelector;
     domains = "csl:${lib.concatStringsSep "," allMailDomains}";
     socket = "inet:8892@localhost";
@@ -442,7 +438,7 @@ in
   };
 
   services.spamassassin = {
-    enable = true;
+    enable = false;
     debug = true;
     config = ''
       rewrite_header Subject [SPAM]
@@ -453,6 +449,7 @@ in
   };
 
   systemd.services.spamass-milter = {
+    enable = false;
     description = "SpamAssassin Milter";
     after = [
       "spamd.service"
