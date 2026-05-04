@@ -13,14 +13,23 @@ let
   # Cert and key are placed manually on each host
   certPath = "/etc/nebula-bergnet-host.crt";
   keyPath = "/etc/nebula-bergnet-host.key";
+
+  registry = import ../common/global/nebula-bergnet-registry.nix;
+  hostConfig = registry.hosts.${config.networking.hostName} or { };
 in
 {
   options.slb.nebula = {
     enable = lib.mkEnableOption "Nebula bergnet configuration";
 
+    ip = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = hostConfig.ip or null;
+      description = "The IP address of this host on the Nebula mesh.";
+    };
+
     isLighthouse = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = hostConfig.isLighthouse or false;
       description = "Whether this node is a lighthouse.";
     };
   };
