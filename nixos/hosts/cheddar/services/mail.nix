@@ -393,7 +393,7 @@ in
         servers = "${config.services.redis.servers.rspamd.unixSocket}";
       '';
       "actions.conf".text = ''
-        reject = 100; # Unreachable score during testing
+        reject = 15;
       '';
       "dkim_signing.conf".text = ''
         path = "${opendkimKeyFile}";
