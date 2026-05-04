@@ -412,6 +412,11 @@ in
         sign_authenticated = false;
         sign_local = false;
       '';
+      # This caused me no end of trouble, catching totally normal ad
+      # campaigns and "there was a new sign-in to your blah-blah account"
+      "fuzzy_check.conf".text = ''
+        enabled = false;
+      '';
     };
   };
 
