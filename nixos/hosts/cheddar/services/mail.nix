@@ -413,6 +413,17 @@ in
       "fuzzy_check.conf".text = ''
         enabled = false;
       '';
+
+      "settings.conf".text = ''
+        # Whitelist locally generated mail (bounces, cron jobs, etc)
+        whitelist_local {
+          priority = high;
+          ip = ["127.0.0.0/8", "::1/128", "10.7.1.0/24"];
+          apply {
+            score = -100.0;
+          }
+        }
+      '';
     };
   };
 
