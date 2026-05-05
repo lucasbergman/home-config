@@ -384,17 +384,16 @@ in
       };
     };
     locals = {
-      "redis.conf".text = ''
-        servers = "${config.services.redis.servers.rspamd.unixSocket}";
-      '';
       "actions.conf".text = ''
         reject = 15;
       '';
+
       "dkim_signing.conf".text = ''
         path = "${opendkimKeyFile}";
         selector = "${opendkimSelector}";
         use_domain = "bergmans.us";
       '';
+
       "arc.conf".text = ''
         path = "${openarcKeyFile}";
         selector = "${openarcSelector}";
@@ -407,8 +406,10 @@ in
         sign_authenticated = false;
         sign_local = false;
       '';
-      # This caused me no end of trouble, catching totally normal ad
-      # campaigns and "there was a new sign-in to your blah-blah account"
+
+      # Just disable the fuzzy_check module. This caused me no end of trouble,
+      # catching totally normal ad campaigns and "there was a new sign-in to
+      # your blah-blah account."
       "fuzzy_check.conf".text = ''
         enabled = false;
       '';
@@ -420,6 +421,9 @@ in
     port = 0; # disable TCP, Unix socket only
     user = config.services.rspamd.user;
   };
+  services.rspamd.locals."redis.conf".text = ''
+    servers = "${config.services.redis.servers.rspamd.unixSocket}";
+  '';
 
   services.opendkim = {
     enable = false;
