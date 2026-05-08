@@ -251,9 +251,10 @@ in
       # bypassing relayhost and delivering directly via MX lookup.
       sender_dependent_default_transport_maps = "inline:{<>=smtp:}";
 
-      # Notify postmaster on bounces
+      # Notify postmaster on double bounces, resource issues, and software
+      # errors. Omit "bounce" because it CCs postmaster with transcripts of
+      # every rejected SMTP session (e.g. unknown user), which is very noisy.
       notify_classes = [
-        "bounce"
         "2bounce"
         "resource"
         "software"
