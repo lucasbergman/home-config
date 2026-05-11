@@ -425,6 +425,16 @@ in
           }
         }
       '';
+
+      "force_actions.conf".text = ''
+        rules {
+          REJECT_BOGUS_MSGID {
+            action = "reject";
+            expression = "INVALID_MSGID || MISSING_MID";
+            message = "Message-ID is missing or invalid";
+          }
+        }
+      '';
     };
   };
 
