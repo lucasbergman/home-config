@@ -428,10 +428,10 @@ in
 
       "force_actions.conf".text = ''
         rules {
-          REJECT_BOGUS_MSGID {
+          REJECT_MISSING_MSGID {
             action = "reject";
-            expression = "INVALID_MSGID || MISSING_MID";
-            message = "Message-ID is missing or invalid";
+            expression = "MISSING_MID";
+            message = "Message-ID header is missing";
           }
         }
       '';
@@ -445,6 +445,10 @@ in
   };
   services.rspamd.locals."redis.conf".text = ''
     servers = "${config.services.redis.servers.rspamd.unixSocket}";
+  '';
+
+  services.rspamd.overrides."scores.conf".text = ''
+    INVALID_MSGID = 4.0;
   '';
 
   services.opendkim = {
