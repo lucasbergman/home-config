@@ -17,4 +17,11 @@
       auto = { };
     };
   };
+
+  resource.google_secret_manager_secret.rats_api_key = {
+    secret_id = "rats-api-key";
+    replication = {
+      auto = { };
+    };
+  };
 }

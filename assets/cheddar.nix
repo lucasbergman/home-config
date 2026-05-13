@@ -194,5 +194,6 @@
       cheddar_mail_virtual_alias = mkMember "mail_virtual_alias";
       cheddar_mail_arc_private_key = mkMember "mail_arc_private_key_202510";
       cheddar_mail_dkim_private_key = mkMember "mail_dkim_private_key_202601";
+      cheddar_rats_api_key = mkMember "rats_api_key";
     };
 }

@@ -26,6 +26,8 @@ let
   openarcSelector = "arc202510";
   openarcKeyFile = "/run/openarc.key";
   openarcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
+  ratsRBLConfigFile = "/run/rspamd-rats-rbl.conf";
+  ratsAPIKeySecret = "projects/bergmans-services/secrets/rats-api-key/versions/1";
   opendkimSelector = "dkim202601";
   opendkimKeyFile = "/var/lib/opendkim/keys/${opendkimSelector}.private";
   opendkimKeySecret = "projects/bergmans-services/secrets/mail-dkim-private-key-202601/versions/1";
@@ -363,6 +365,46 @@ in
     secretPath = opendkimKeySecret;
   };
 
+  slb.security.secrets.rspamd-rats-rbl = {
+    before = [ "rspamd.service" ];
+    outPath = ratsRBLConfigFile;
+    group = "rspamd";
+    template = pkgs.writeText "rspamd-rats-rbl-tmpl" ''
+      rbls {
+        rats_dyna {
+          symbol = "RATS_DYNA";
+          rbl = "{{gcpSecret "${ratsAPIKeySecret}"}}.dyna.spamrats.com";
+          from = true;
+          ipv4 = true;
+          ipv6 = true;
+          returncodes {
+            RATS_DYNA = ["127.0.0.36"];
+          }
+        }
+        rats_noptr {
+          symbol = "RATS_NOPTR";
+          rbl = "{{gcpSecret "${ratsAPIKeySecret}"}}.noptr.spamrats.com";
+          from = true;
+          ipv4 = true;
+          ipv6 = true;
+          returncodes {
+            RATS_NOPTR = ["127.0.0.37"];
+          }
+        }
+        rats_spam {
+          symbol = "RATS_SPAM";
+          rbl = "{{gcpSecret "${ratsAPIKeySecret}"}}.spam.spamrats.com";
+          from = true;
+          ipv4 = true;
+          ipv6 = true;
+          returncodes {
+            RATS_SPAM = ["127.0.0.38"];
+          }
+        }
+      }
+    '';
+  };
+
   services.rspamd = {
     enable = true;
     workers = {
@@ -435,6 +477,11 @@ in
           }
         }
       '';
+
+      "rbl.conf".text = ''
+        .include(priority=5, duplicate=merge) "${ratsRBLConfigFile}"
+      '';
+
     };
   };
 
@@ -448,6 +495,8 @@ in
   '';
 
   services.rspamd.overrides."scores.conf".text = ''
+    RATS_SPAM = 12.0;
+    RATS_NOPTR = 7.0;
     INVALID_MSGID = 4.0;
   '';
 
