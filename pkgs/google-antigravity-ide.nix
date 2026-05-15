@@ -6,16 +6,16 @@
 }:
 
 let
-  version = "1.23.2-4781536860569600";
-  hash = "sha256-UjKkBI/0+hVoXZqYG6T7pXPil/PvybdvY455S693VyU=";
+  version = "2.0.3-6242596486512640";
+  hash = "sha256-ALX9cJ/vAsn4GrTt136NW6+LhYQsxlT6AW19BJLN6AM=";
   weirdURLHash = "j0qc3";
 
   unwrapped = stdenv.mkDerivation {
-    pname = "google-antigravity-unwrapped";
+    pname = "google-antigravity-ide-unwrapped";
     inherit version;
 
     src = fetchurl {
-      url = "https://edgedl.me.gvt1.com/edgedl/release2/${weirdURLHash}/antigravity/stable/${version}/linux-x64/Antigravity.tar.gz";
+      url = "https://edgedl.me.gvt1.com/edgedl/release2/${weirdURLHash}/antigravity/stable/${version}/linux-x64/Antigravity%20IDE.tar.gz";
       inherit hash;
     };
 
@@ -24,15 +24,15 @@ let
 
     installPhase = ''
       runHook preInstall
-      mkdir -p $out/share/google-antigravity
-      cp -r . $out/share/google-antigravity/
+      mkdir -p $out/share/google-antigravity-ide
+      cp -r . $out/share/google-antigravity-ide/
       runHook postInstall
     '';
   };
 
 in
 buildFHSEnv {
-  name = "google-antigravity";
+  name = "google-antigravity-ide";
 
   targetPkgs =
     pkgs: with pkgs; [
@@ -68,15 +68,15 @@ buildFHSEnv {
     ];
 
   # chrome-sandbox requires setuid root; --no-sandbox skips that requirement
-  runScript = "${unwrapped}/share/google-antigravity/antigravity --no-sandbox";
+  runScript = "${unwrapped}/share/google-antigravity-ide/antigravity-ide --no-sandbox";
 
   meta = {
     homepage = "https://antigravity.google/";
-    description = "Google Antigravity";
+    description = "Google Antigravity IDE";
     sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
     license = lib.licenses.unfree;
     platforms = [ "x86_64-linux" ];
     maintainers = [ lib.maintainers.lucasbergman ];
-    mainProgram = "google-antigravity";
+    mainProgram = "google-antigravity-ide";
   };
 }
