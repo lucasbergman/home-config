@@ -3,6 +3,7 @@
   lib,
   pkgs,
   pkgs-unstable,
+  mypkgs,
   ...
 }:
 {
@@ -21,11 +22,11 @@
         pkgs.gh
         pkgs.nixd
         pkgs.w3m
-        pkgs-unstable.claude-code
-        pkgs-unstable.gemini-cli
+        mypkgs.google-antigravity-cli
       ]
       ++ lib.optionals slb.isDesktop [
         pkgs-unstable.jetbrains.idea
+        mypkgs.google-antigravity-ide
       ];
 
       programs.emacs = {
