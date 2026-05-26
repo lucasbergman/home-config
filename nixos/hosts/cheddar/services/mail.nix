@@ -495,7 +495,7 @@ in
   '';
 
   services.rspamd.overrides."scores.conf".text = ''
-    RATS_SPAM = 12.0;
+    RATS_SPAM = 0.0;
     RATS_NOPTR = 7.0;
     INVALID_MSGID = 4.0;
   '';
