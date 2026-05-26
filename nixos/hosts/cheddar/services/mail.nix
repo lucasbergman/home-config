@@ -505,6 +505,12 @@ in
       "INVALID_MSGID" {
         weight = 4.0;
       }
+      "RECEIVED_SPAMHAUS_SBL" {
+        weight = 6.0;
+      }
+      "RBL_MAILSPIKE_WORST" {
+        weight = 6.0;
+      }
     }
   '';
 
