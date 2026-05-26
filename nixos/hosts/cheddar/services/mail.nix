@@ -494,10 +494,18 @@ in
     servers = "${config.services.redis.servers.rspamd.unixSocket}";
   '';
 
-  services.rspamd.overrides."scores.conf".text = ''
-    RATS_SPAM = 0.0;
-    RATS_NOPTR = 7.0;
-    INVALID_MSGID = 4.0;
+  services.rspamd.locals."groups.conf".text = ''
+    symbols {
+      "RATS_SPAM" {
+        weight = 0.0;
+      }
+      "RATS_NOPTR" {
+        weight = 7.0;
+      }
+      "INVALID_MSGID" {
+        weight = 4.0;
+      }
+    }
   '';
 
   services.opendkim = {
