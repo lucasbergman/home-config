@@ -432,6 +432,11 @@ in
     locals = {
       "actions.conf".text = ''
         reject = 15;
+        greylist = null;
+      '';
+
+      "greylist.conf".text = ''
+        enabled = false;
       '';
 
       "dkim_signing.conf".text = ''
