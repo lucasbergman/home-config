@@ -417,7 +417,10 @@ in
       };
       rspamd_proxy = {
         type = "rspamd_proxy";
-        bindSockets = [ "[::1]:11332" ];
+        bindSockets = [
+          "[::1]:11332"
+          "127.0.0.1:11332"
+        ];
         extraConfig = ''
           upstream "local" {
             default = yes;
