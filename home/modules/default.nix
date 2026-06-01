@@ -94,7 +94,22 @@
           email = "lucas@bergmans.us";
           name = "Lucas Bergman";
         };
-        ui.pager = "less --quit-if-one-screen";
+        ui = {
+          pager = "less --quit-if-one-screen";
+          diff-formatter = ":git";
+        };
+        colors = {
+          "diff removed token" = {
+            fg = "bright red";
+            bg = "#500000";
+            underline = false;
+          };
+          "diff added token" = {
+            fg = "bright green";
+            bg = "#005000";
+            underline = false;
+          };
+        };
       };
     };
 
