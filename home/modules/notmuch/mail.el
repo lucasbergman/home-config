@@ -23,7 +23,9 @@
        (notmuch-search-next-thread))))
 
 (use-package notmuch
+  :init
+    (setq notmuch-search-oldest-first nil)
   :config
-  (slb-notmuch-bind-tags "!" '("+spam" "-inbox"))
-  (slb-notmuch-bind-tags "#" '("+del" "-inbox"))
-  (slb-notmuch-bind-tags "A" '("+ads" "-inbox")))
+    (slb-notmuch-bind-tags "!" '("+spam" "-inbox"))
+    (slb-notmuch-bind-tags "#" '("+del" "-inbox"))
+    (slb-notmuch-bind-tags "A" '("+ads" "-inbox")))
