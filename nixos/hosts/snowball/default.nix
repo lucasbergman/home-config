@@ -5,6 +5,7 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/users/audrey.nix
     ../../common/desktop.nix
     ./hardware-configuration.nix
   ];
