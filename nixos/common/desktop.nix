@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
+  mypkgs,
   ...
 }:
 {
@@ -27,4 +28,21 @@
       "gtk"
     ];
   };
+
+  environment.systemPackages = [
+    pkgs-unstable.discord
+    pkgs-unstable.google-chrome
+    pkgs-unstable.jetbrains.idea
+    pkgs-unstable.vscode-fhs
+    mypkgs.google-antigravity-ide
+  ];
+
+  fonts.packages = with pkgs; [
+    dejavu_fonts
+    font-awesome
+    google-fonts
+    nerd-fonts.jetbrains-mono
+    noto-fonts
+    noto-fonts-color-emoji
+  ];
 }

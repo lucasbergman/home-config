@@ -23,10 +23,6 @@
         pkgs.nixd
         pkgs.w3m
         mypkgs.google-antigravity-cli
-      ]
-      ++ lib.optionals slb.isDesktop [
-        pkgs-unstable.jetbrains.idea
-        mypkgs.google-antigravity-ide
       ];
 
       programs.emacs = {
@@ -55,17 +51,6 @@
         extraConfig = ''
           (load "${./emacs.el}")
         '';
-      };
-
-      programs.vscode = {
-        enable = slb.isDesktop;
-        profiles.default.extensions = with pkgs.vscode-extensions; [
-          bbenoist.nix
-          ms-python.debugpy
-          ms-python.mypy-type-checker
-          ms-python.python
-          ms-vscode-remote.remote-ssh
-        ];
       };
 
       services.vscode-server.enable = (!slb.isDesktop) && slb.enableDevelopment;

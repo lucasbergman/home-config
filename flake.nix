@@ -83,7 +83,18 @@
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
             inherit inputs;
-            pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
+            pkgs-unstable = import nixpkgs-unstable {
+              inherit system;
+              config.allowUnfreePredicate =
+                pkg:
+                builtins.elem (nixpkgs.lib.getName pkg) [
+                  "code"
+                  "discord"
+                  "google-chrome"
+                  "idea"
+                  "vscode"
+                ];
+            };
             mypkgs = outputs.packages.${system};
           };
         };

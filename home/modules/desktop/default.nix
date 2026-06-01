@@ -26,20 +26,10 @@
     fonts.fontconfig.enable = true;
 
     home.packages = [
-      pkgs.dejavu_fonts
-      pkgs.font-awesome
-      pkgs.google-fonts
-      pkgs.nerd-fonts.jetbrains-mono
-      pkgs.noto-fonts
-      pkgs.noto-fonts-color-emoji
-
       pkgs.grim
       pkgs.slurp
       pkgs.wf-recorder
       pkgs.wl-clipboard
-
-      pkgs-unstable.discord
-      pkgs-unstable.google-chrome
 
       (mypkgs.moneydance.override {
         clientJdk = pkgs.openjdk21.override { enableJavaFX = true; };
