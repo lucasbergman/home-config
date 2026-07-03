@@ -28,4 +28,8 @@
 
     linode.token = lib.tfRef "var.linode_token";
   };
+
+  data.linode_instance_type.nanode = {
+    id = "g6-nanode-1";
+  };
 }

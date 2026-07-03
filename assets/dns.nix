@@ -44,7 +44,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
       name = "mail.bergmans.us.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 300;
     };
 
@@ -52,7 +52,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
       name = "rspamd.bergmans.us.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 300;
     };
 
@@ -114,7 +114,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "lucas.bergman.house.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 1800;
     };
 
@@ -122,7 +122,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "mail.bergman.house.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 1800;
     };
 
@@ -146,7 +146,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = "matrix.bergman.house.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 300;
     };
 
@@ -248,7 +248,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.blurt.name";
       name = lib.tfRef "google_dns_managed_zone.blurt.dns_name";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 300;
     };
 
@@ -264,7 +264,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.blurt.name";
       name = "mail.blurt.chat.";
       type = "A";
-      rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
       ttl = 300;
     };
 

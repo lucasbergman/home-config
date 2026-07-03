@@ -20,7 +20,7 @@
   resource.linode_instance_disk.spot_boot = {
     label = "boot";
     linode_id = lib.tfRef "linode_instance.spot.id";
-    size = lib.tfRef "linode_instance.spot.specs.0.disk - linode_instance_disk.spot_swap.size";
+    size = lib.tfRef "data.linode_instance_type.nanode.disk - linode_instance_disk.spot_swap.size";
     image = lib.tfRef "data.linode_image.spot_nixos.id";
   };
 
@@ -48,7 +48,7 @@
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmans.name";
       name = "spot.bergmans.us.";
       type = "A";
-      rrdatas = lib.tfRef "[linode_instance.spot.ip_address]";
+      rrdatas = lib.tfRef "tolist(linode_instance.spot.ipv4)";
       ttl = 300;
     };
     bergmans_aaaa_spot = {

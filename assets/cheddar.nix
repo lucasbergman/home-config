@@ -1,5 +1,9 @@
 { lib, ... }:
 {
+  data.linode_instance_type.cheddar = {
+    id = lib.tfRef "var.linode_type";
+  };
+
   resource.linode_instance.cheddar = {
     label = "cheddar";
     type = lib.tfRef "var.linode_type";
@@ -24,7 +28,7 @@
   resource.linode_instance_disk.cheddar_boot = {
     label = "boot";
     linode_id = lib.tfRef "linode_instance.cheddar.id";
-    size = lib.tfRef "linode_instance.cheddar.specs.0.disk - linode_instance_disk.cheddar_swap.size - linode_instance_disk.cheddar_install.size";
+    size = lib.tfRef "data.linode_instance_type.cheddar.disk - linode_instance_disk.cheddar_swap.size - linode_instance_disk.cheddar_install.size";
   };
 
   resource.linode_volume.cheddar_data = {
@@ -80,7 +84,7 @@
   };
 
   resource.linode_rdns.cheddar = {
-    address = lib.tfRef "linode_instance.cheddar.ip_address";
+    address = lib.tfRef "tolist(linode_instance.cheddar.ipv4)[0]";
     rdns = "smtp.bergmans.us";
   };
 
@@ -96,7 +100,7 @@
         managed_zone = zone;
         name = "${name}.bergmans.us.";
         type = "A";
-        rrdatas = lib.tfRef "[linode_instance.cheddar.ip_address]";
+        rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
         ttl = 300;
       };
       mkip6 = name: {

@@ -169,7 +169,7 @@ builtins.foldl' lib.attrsets.recursiveUpdate { } [
         project = "smartmouse-web";
         name = "mail.smartmousetravel.com.";
         type = "A";
-        rrdatas = [ (lib.tfRef "linode_instance.cheddar.ip_address") ];
+        rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
         ttl = 300;
       };
 
