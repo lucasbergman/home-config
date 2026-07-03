@@ -2,12 +2,14 @@
   lib,
   config,
   pkgs,
+  mypkgs,
   ...
 }:
 {
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/users/hermes.nix
     ../../linode
     ./hardware-configuration.nix
   ];
@@ -19,6 +21,10 @@
 
   networking.nftables.enable = true;
   networking.firewall.enable = true;
+
+  environment.systemPackages = [
+    mypkgs.hermes-agent
+  ];
 
   slb.backups.enable = false;
   slb.nebula.enable = true;
