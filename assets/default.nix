@@ -5,8 +5,9 @@
     ./base.nix
     ./cheddar.nix
     ./dns.nix
-    ./iam.nix
     ./hedwig.nix
+    ./hermes.nix
+    ./iam.nix
     ./mail.nix
     ./secrets.nix
     ./snowball.nix
