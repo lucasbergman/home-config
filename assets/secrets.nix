@@ -2,6 +2,7 @@
 {
   resource.google_project_service.project = {
     service = "secretmanager.googleapis.com";
+    disable_on_destroy = true;
   };
 
   resource.google_secret_manager_secret.mullvad_account = {
