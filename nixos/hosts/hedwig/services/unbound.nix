@@ -1,4 +1,8 @@
-{ ... }:
+{ config, lib, ... }:
+let
+  nebulaIp = config.slb.nebula.ip;
+  hasNebula = config.slb.nebula.enable && nebulaIp != null;
+in
 {
   services.unbound = {
     enable = true;
@@ -8,14 +12,15 @@
           "127.0.0.1"
           "::1"
           "enp3s0"
-          "bergnet0"
-          "nebula.bergnet"
-        ];
+        ]
+        ++ lib.optional hasNebula nebulaIp;
         interface-action = [
           "enp3s0 allow"
-          "bergnet0 allow"
-          "nebula.bergnet allow"
-        ];
+        ]
+        ++ lib.optional hasNebula "nebula.bergnet allow";
+        # Allow binding to the Nebula IP address even if the nebula.bergnet interface
+        # is not yet created/up at startup (uses Linux IP_FREEBIND socket option)
+        ip-freebind = true;
       };
       forward-zone = [
         {
