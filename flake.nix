@@ -125,6 +125,9 @@
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
+            config.permittedInsecurePackages = [
+              "olm-3.2.16"
+            ];
             overlays = [ gomod2nix.overlays.default ];
           };
         };

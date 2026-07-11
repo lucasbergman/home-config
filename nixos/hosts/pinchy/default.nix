@@ -22,6 +22,10 @@
   networking.nftables.enable = true;
   networking.firewall.enable = true;
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "olm-3.2.16"
+  ];
+
   environment.systemPackages = [
     mypkgs.hermes-agent
   ];

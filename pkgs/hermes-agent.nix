@@ -26,6 +26,7 @@ buildFHSEnv {
       sqlite
       libxml2
       libxslt
+      olm
 
       # Runtime deps for Hermes Agent
       python3

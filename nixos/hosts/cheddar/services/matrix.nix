@@ -58,6 +58,7 @@ in
       enable_metrics = true;
       media_store_path = "${dataDirectory}/media";
       database.name = "sqlite3";
+      registration_shared_secret_path = "${dataDirectory}/registration_secret";
 
       listeners = [
         {
