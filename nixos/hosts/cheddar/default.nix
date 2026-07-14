@@ -8,6 +8,7 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/users/hermes.nix
     ../../linode
     ./hardware-configuration.nix
     ./services

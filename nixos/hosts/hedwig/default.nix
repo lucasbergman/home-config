@@ -9,6 +9,7 @@
     ../../common/global
     ../../common/users
     ../../common/users/augie.nix
+    ../../common/users/hermes.nix
     ./hardware-configuration.nix
     ./services
   ];
