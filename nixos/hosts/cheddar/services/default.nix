@@ -1,5 +1,6 @@
 {
   imports = [
+    ./element.nix
     ./lucas-www.nix
     ./mail.nix
     ./matrix.nix

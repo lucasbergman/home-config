@@ -158,6 +158,22 @@
       ttl = 300;
     };
 
+    bergmanhouse_a_element = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "element.bergman.house.";
+      type = "A";
+      rrdatas = lib.tfRef "tolist(linode_instance.cheddar.ipv4)";
+      ttl = 300;
+    };
+
+    bergmanhouse_aaaa_element = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "element.bergman.house.";
+      type = "AAAA";
+      rrdatas = [ (lib.tfRef "split(\"/\", linode_instance.cheddar.ipv6)[0]") ];
+      ttl = 300;
+    };
+
     bergmanhouse_a = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = lib.tfRef "google_dns_managed_zone.bergmanhouse.dns_name";
