@@ -42,6 +42,23 @@
     gcpInstanceKeyPath = null;
   };
 
+  systemd.services.hermes-gateway = {
+    description = "Hermes Agent Gateway";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    environment = {
+      HOME = "/home/hermes";
+    };
+    serviceConfig = {
+      User = "hermes";
+      Group = "hermes";
+      WorkingDirectory = "/home/hermes";
+      ExecStart = "${mypkgs.hermes-agent}/bin/hermes gateway";
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
 }
