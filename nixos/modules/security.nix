@@ -219,7 +219,7 @@
         defaults = {
           email = "lucas@bergmans.us";
           dnsProvider = "gcloud";
-          credentialsFile = infoPath;
+          environmentFile = infoPath;
         };
 
         certs."${cfg.acmeHostName}" = { };

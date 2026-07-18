@@ -32,6 +32,7 @@
   };
 
   boot.zfs.extraPools = [ "storage" ];
+  boot.zfs.forceImportRoot = false;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -60,7 +61,7 @@
   };
 
   networking.nameservers = [ "192.168.101.3" ];
-  services.resolved.fallbackDns = [
+  services.resolved.settings.Resolve.FallbackDNS = [
     "75.75.75.75"
     "75.75.76.76"
   ];

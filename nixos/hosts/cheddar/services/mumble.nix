@@ -38,8 +38,8 @@ in
       "Welcome to Mumble at ${mumbleHost}. "
       + "This server contains chemicals known to the state of California to cause cancer."
     );
-    sslCert = "/var/lib/acme/${mumbleHost}/cert.pem";
-    sslKey = "/var/lib/acme/${mumbleHost}/key.pem";
+    tls.certPath = "/var/lib/acme/${mumbleHost}/cert.pem";
+    tls.keyPath = "/var/lib/acme/${mumbleHost}/key.pem";
     password = "$SERVER_PASSWORD";
     environmentFile = passwordEnvFile;
 

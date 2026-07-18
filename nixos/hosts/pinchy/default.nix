@@ -33,9 +33,9 @@
   slb.backups.enable = false;
   slb.nebula.enable = true;
 
-  services.resolved.extraConfig = ''
-    MulticastDNS=no
-  '';
+  services.resolved.settings = {
+    Resolve.MulticastDNS = "no";
+  };
 
   slb.security = {
     enable = true;

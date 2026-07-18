@@ -265,15 +265,15 @@ in
   };
 
   security.acme.certs.${dovecotTLSHost} = {
-    reloadServices = [ "dovecot2.service" ];
+    reloadServices = [ "dovecot.service" ];
   };
 
   security.acme.certs.${dovecotLegacyTLSHost} = {
-    reloadServices = [ "dovecot2.service" ];
+    reloadServices = [ "dovecot.service" ];
   };
 
   slb.security.secrets.dovecot-userdb = {
-    before = [ "dovecot2.service" ];
+    before = [ "dovecot.service" ];
     outPath = dovecotUserFile;
     group = "dovecot2";
     secretPath = dovecotUserFileSecret;
@@ -282,48 +282,51 @@ in
 
   services.dovecot2 = {
     enable = true;
-    enablePop3 = true;
-    enableImap = true;
-    enableLmtp = false;
     enablePAM = false;
-
-    sslServerCert = "/var/lib/acme/${dovecotTLSHost}/cert.pem";
-    sslServerKey = "/var/lib/acme/${dovecotTLSHost}/key.pem";
     createMailUser = false;
-    mailUser = "vmail";
-    mailGroup = "vmail";
 
-    extraConfig = ''
-      service auth {
-        unix_listener ${config.services.postfix.settings.main.queue_directory}/private/auth {
-          mode = 0666
-          user = dovecot2
-          group = dovecot2
-        }
-      }
+    settings = {
+      mail_uid = "vmail";
+      mail_gid = "vmail";
 
-      passdb {
-        driver = passwd-file
-        args = scheme=CRYPT username_format=%u /run/dovecot_users
-        default_fields = userdb_mail=maildir
-      }
+      protocols = {
+        pop3 = true;
+        imap = true;
+        lmtp = false;
+      };
 
-      userdb {
-        driver = passwd-file
-        args = username_format=%u /run/dovecot_users
-      }
+      ssl_cert = "</var/lib/acme/${dovecotTLSHost}/cert.pem";
+      ssl_key = "</var/lib/acme/${dovecotTLSHost}/key.pem";
+      ssl_min_protocol = "TLSv1.2";
 
-      namespace inbox {
-        inbox = yes
-      }
+      "service auth" = {
+        "unix_listener ${config.services.postfix.settings.main.queue_directory}/private/auth" = {
+          mode = "0666";
+          user = "dovecot2";
+          group = "dovecot2";
+        };
+      };
 
-      local_name ${dovecotLegacyTLSHost} {
-        ssl_cert = </var/lib/acme/${dovecotLegacyTLSHost}/cert.pem
-        ssl_key = </var/lib/acme/${dovecotLegacyTLSHost}/key.pem
-      }
+      passdb = {
+        driver = "passwd-file";
+        args = "scheme=CRYPT username_format=%u /run/dovecot_users";
+        default_fields = "userdb_mail=maildir";
+      };
 
-      ssl_min_protocol = TLSv1.2
-    '';
+      userdb = {
+        driver = "passwd-file";
+        args = "username_format=%u /run/dovecot_users";
+      };
+
+      "namespace inbox" = {
+        inbox = true;
+      };
+
+      "local_name ${dovecotLegacyTLSHost}" = {
+        ssl_cert = "</var/lib/acme/${dovecotLegacyTLSHost}/cert.pem";
+        ssl_key = "</var/lib/acme/${dovecotLegacyTLSHost}/key.pem";
+      };
+    };
   };
 
   slb.security.secrets.openarc-private-key = {

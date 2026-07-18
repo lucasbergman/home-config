@@ -41,7 +41,7 @@
     location = "linode";
     included-units = [
       "alertmanager.service"
-      "dovecot2.service"
+      "dovecot.service"
       "grafana.service"
       # TODO: Add matrix-synapse.service, but it's super noisy
       "murmur.service"

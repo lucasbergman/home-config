@@ -225,6 +225,9 @@ in
         enabled = true;
         from_address = "grafana@bergmans.us";
       };
+      security = {
+        secret_key = "SW2YcwTIb9zpOOhoPsMm";
+      };
     };
   };
 

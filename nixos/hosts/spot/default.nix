@@ -27,10 +27,9 @@
 
   slb.backups.enable = false;
 
-  # Turn off mDNS; it's pointless on a cloud VM
-  services.resolved.extraConfig = ''
-    MulticastDNS=no
-  '';
+  services.resolved.settings = {
+    Resolve.MulticastDNS = "no";
+  };
 
   slb.security = {
     enable = true;
