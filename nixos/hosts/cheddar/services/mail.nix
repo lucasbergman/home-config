@@ -289,11 +289,10 @@ in
       mail_uid = "vmail";
       mail_gid = "vmail";
 
-      protocols = {
-        pop3 = true;
-        imap = true;
-        lmtp = false;
-      };
+      protocols = [
+        "pop3"
+        "imap"
+      ];
 
       ssl_cert = "</var/lib/acme/${dovecotTLSHost}/cert.pem";
       ssl_key = "</var/lib/acme/${dovecotTLSHost}/key.pem";
