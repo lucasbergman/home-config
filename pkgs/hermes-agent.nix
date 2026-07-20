@@ -55,19 +55,19 @@ buildFHSEnv {
       nss
       pango
       systemd
-      xorg.libX11
-      xorg.libXcomposite
-      xorg.libXcursor
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXi
-      xorg.libXrandr
-      xorg.libXrender
-      xorg.libXScrnSaver
-      xorg.libXtst
-      xorg.libxcb
-      xorg.libxshmfence
+      libx11
+      libxcomposite
+      libxcursor
+      libxdamage
+      libxext
+      libxfixes
+      libxi
+      libxrandr
+      libxrender
+      libxscrnsaver
+      libxtst
+      libxcb
+      libxshmfence
     ];
 
   runScript = writeScript "hermes-wrapper" ''
