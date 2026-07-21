@@ -46,6 +46,7 @@ let
       name,
       domain,
       project ? "bergmans-services",
+      policy ? "quarantine",
     }:
     {
       resource.google_dns_record_set."${name}_dmarc" = {
@@ -53,7 +54,7 @@ let
         managed_zone = name;
         name = "_dmarc.${domain}.";
         type = "TXT";
-        rrdatas = [ "\"v=DMARC1; p=none; rua=mailto:postmaster@${domain}\"" ];
+        rrdatas = [ "\"v=DMARC1; p=${policy}; rua=mailto:postmaster@${domain}\"" ];
         ttl = 3600;
       };
     };
