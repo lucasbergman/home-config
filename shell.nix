@@ -14,6 +14,7 @@
       pkgs.go
       pkgs.home-manager
       pkgs.jq
+      pkgs.nebula
       pkgs.nix
       pkgs.nixfmt
       pkgs.nvd

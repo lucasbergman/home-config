@@ -44,5 +44,7 @@
     in
     {
       snowball_restic_password_snowball = mkMember "restic_password_snowball";
+      snowball_nebula_cert = mkMember "nebula_cert_snowball";
+      snowball_nebula_key = mkMember "nebula_key_snowball";
     };
 }

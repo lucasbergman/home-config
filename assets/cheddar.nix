@@ -199,5 +199,7 @@
       cheddar_mail_arc_private_key = mkMember "mail_arc_private_key_202510";
       cheddar_mail_dkim_private_key = mkMember "mail_dkim_private_key_202601";
       cheddar_rats_api_key = mkMember "rats_api_key";
+      cheddar_nebula_cert = mkMember "nebula_cert_cheddar";
+      cheddar_nebula_key = mkMember "nebula_key_cheddar";
     };
 }

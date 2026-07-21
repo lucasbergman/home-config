@@ -79,5 +79,7 @@
       hedwig_mullvad_wg_key_hedwig = mkMember "mullvad_wg_key_hedwig";
       hedwig_mullvad_account = mkMember "mullvad_account";
       hedwig_home_assistant_secrets_file = mkMember "home_assistant_secrets_file";
+      hedwig_nebula_cert = mkMember "nebula_cert_hedwig";
+      hedwig_nebula_key = mkMember "nebula_key_hedwig";
     };
 }

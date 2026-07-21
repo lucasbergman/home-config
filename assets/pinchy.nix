@@ -72,4 +72,17 @@
     role = "roles/logging.logWriter";
     member = "serviceAccount:\${google_service_account.instance_pinchy.email}";
   };
+
+  resource.google_secret_manager_secret_iam_member =
+    let
+      mkMember = secret: {
+        secret_id = lib.tfRef "google_secret_manager_secret.${secret}.secret_id";
+        role = "roles/secretmanager.secretAccessor";
+        member = "serviceAccount:\${google_service_account.instance_pinchy.email}";
+      };
+    in
+    {
+      pinchy_nebula_cert = mkMember "nebula_cert_pinchy";
+      pinchy_nebula_key = mkMember "nebula_key_pinchy";
+    };
 }
