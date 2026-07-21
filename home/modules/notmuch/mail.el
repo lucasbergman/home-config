@@ -12,7 +12,10 @@
   mail-envelope-from "lucas@bergmans.us")
 
 ;; Set w3m as HTML renderer
-(setq mm-text-html-renderer 'shr)
+(setq mm-text-html-renderer 'shr
+      shr-use-fonts t
+      shr-use-colors nil
+      shr-max-width 86)
 
 (defmacro slb-notmuch-bind-tags (key tags)
   "Binds KEY in notmuch-search-mode-map to an interactive tagger for TAGS."
