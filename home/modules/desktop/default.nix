@@ -38,6 +38,7 @@
 
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "hyprlang";
       settings = import ./hyprland.nix;
 
       # Installed at the NixOS level
