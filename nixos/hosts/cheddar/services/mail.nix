@@ -433,6 +433,7 @@ in
     };
     locals = {
       "actions.conf".text = ''
+        add_header = 6;
         reject = 15;
         greylist = null;
       '';
@@ -479,19 +480,69 @@ in
       '';
 
       "force_actions.conf".text = ''
-        rules {
-          REJECT_MISSING_MSGID {
-            action = "reject";
-            expression = "MISSING_MID";
-            message = "Message-ID header is missing";
-          }
-        }
+                rules {
+                  REJECT_MISSING_MSGID {
+                    action = "reject";
+                    expression = "MISSING_MID";
+                    message = "Message-ID header is missing";
+                  }
+        	  REJECT_DMARC_POLICY_REJECT {
+        	    action = "reject";
+                    expression = "DMARC_POLICY_REJECT";
+                    message = "DMARC policy requires rejection";
+        	  }
+                }
       '';
 
       "rbl.conf".text = ''
         .include(priority=5, duplicate=merge) "${ratsRBLConfigFile}"
       '';
 
+      "multimap.conf".text = ''
+        ONMICROSOFT_FROM {
+          type = "from";
+          filter = "email:domain";
+          regexp = true;
+          map = [
+            "/(^|\\.)onmicrosoft\\.com$/i",
+          ];
+          score = 5.0;
+          description = "Sender domain is an onmicrosoft.com tenant domain";
+        }
+
+        ONMICROSOFT_REPLYTO {
+          type = "header";
+          header = "reply-to";
+          filter = "email:domain";
+          regexp = true;
+          map = [
+            "/(^|\\.)onmicrosoft\\.com$/i",
+          ];
+          score = 5.0;
+          description = "Reply-To header is an onmicrosoft.com tenant domain";
+        }
+
+        CS25_NET_FROM {
+          type = "from";
+          filter = "email:domain";
+          regexp = true;
+          map = [
+            "/(^|\\.)cs25\\.net$/i",
+          ];
+          score = 8.0;
+          description = "Sender domain is cs25.net";
+        }
+
+        CS25_NET_URL {
+          type = "url";
+          filter = "top";
+          map = [
+            "cs25.net",
+          ];
+          score = 8.0;
+          description = "Message body contains cs25.net domain URL";
+        }
+      '';
     };
   };
 
@@ -520,6 +571,9 @@ in
       }
       "RBL_MAILSPIKE_WORST" {
         weight = 6.0;
+      }
+      "DMARC_POLICY_QUARANTINE" {
+        weight = 10.0;
       }
     }
   '';
