@@ -1,9 +1,18 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   config = lib.mkIf config.slb.isDesktop {
     programs.hyprlock = {
       enable = true;
+      package = pkgs.hyprlock.overrideAttrs (oldAttrs: {
+        dontStrip = true;
+        cmakeBuildType = "Debug";
+      });
       settings = {
         general = {
           disable_loading = true;
