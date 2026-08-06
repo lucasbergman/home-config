@@ -157,6 +157,21 @@ in
     mapFiles.virtual_mailbox = virtualMailboxFile;
     mapFiles.sasl_passwd = saslPasswordFile;
 
+    # Custom Postfix delivery agent for SES outbound mail. Strips our local
+    # DKIM signature because SES modifies message header, which breaks the
+    # signature. (SES adds its own, valid signature.) Direct deliveries bypass
+    # this transport and retain the local signature.
+    settings.master."ses-smtp" = {
+      type = "unix";
+      command = "smtp";
+      args = [
+        "-o"
+        "smtp_header_checks=regexp:${pkgs.writeText "strip-local-dkim.regexp" ''
+          /^DKIM-Signature:.*s=${opendkimSelector}/ STRIP
+        ''}"
+      ];
+    };
+
     settings.main = {
       compatibility_level = "3.7";
 
@@ -247,6 +262,9 @@ in
 
       # Explicitly pass our domain name to rspamd for the authserv-id
       milter_macro_daemon_name = postfixTLSHost;
+
+      # By default, outbound mail goes through Amazon SES
+      default_transport = "ses-smtp";
 
       # Route null-sender mail (bounces/DSNs) directly instead of via SES,
       # which rejects empty sender. "smtp:" = smtp transport with empty nexthop,
