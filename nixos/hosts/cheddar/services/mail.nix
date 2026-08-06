@@ -572,6 +572,9 @@ in
       "RBL_MAILSPIKE_WORST" {
         weight = 6.0;
       }
+      "DMARC_POLICY_SOFTFAIL" {
+        weight = 8.0;
+      }
       "DMARC_POLICY_QUARANTINE" {
         weight = 10.0;
       }
