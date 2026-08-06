@@ -173,7 +173,7 @@ in
     };
 
     settings.main = {
-      compatibility_level = "3.7";
+      compatibility_level = "3.11";
 
       myhostname = postfixTLSHost;
       mydomain = postfixDomain;
