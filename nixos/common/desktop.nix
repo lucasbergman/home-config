@@ -34,6 +34,7 @@
     pkgs-unstable.google-chrome
     pkgs-unstable.jetbrains.idea
     pkgs-unstable.vscode-fhs
+    mypkgs.google-antigravity-hub
     mypkgs.google-antigravity-ide
   ];
 

@@ -6,6 +6,7 @@
   asn-blocklist-gen = pkgs.callPackage ./asn-blocklist-gen { };
   gcp-secret-subst = pkgs.callPackage ./gcp-secret-subst { };
   google-antigravity-cli = pkgs.callPackage ./google-antigravity-cli.nix { };
+  google-antigravity-hub = pkgs.callPackage ./google-antigravity-hub.nix { };
   google-antigravity-ide = pkgs.callPackage ./google-antigravity-ide.nix { };
   hermes-agent = pkgs.callPackage ./hermes-agent.nix { };
   ip-abuse-report = pkgs.callPackage ./ip-abuse-report { };
