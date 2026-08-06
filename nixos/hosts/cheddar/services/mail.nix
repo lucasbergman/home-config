@@ -17,9 +17,9 @@ let
   transportFile = "/run/postfix_transport";
   transportSecret = "projects/bergmans-services/secrets/mail-transport/versions/3";
   virtualMailboxFile = "/run/virtual_mailbox";
-  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/6";
+  virtualMailboxSecret = "projects/bergmans-services/secrets/mail-virtual-mailbox/versions/7";
   virtualAliasFile = "/run/virtual_alias";
-  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/6";
+  virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/7";
   vmail_uid = 2000;
   vmail_gid = 2000;
   openarcUID = 2002;
@@ -142,7 +142,7 @@ in
     enable = true;
 
     postmasterAlias = "root";
-    rootAlias = "lucas@bergmans.us";
+    rootAlias = "postmaster@bergmans.us";
 
     enableSubmission = true;
     submissionOptions = {
