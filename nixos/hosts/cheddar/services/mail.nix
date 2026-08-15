@@ -509,6 +509,11 @@ in
                     expression = "DMARC_POLICY_REJECT";
                     message = "DMARC policy requires rejection";
         	  }
+                  REJECT_DMARC_POLICY_QUARANTINE {
+                    action = "reject";
+                    expression = "DMARC_POLICY_QUARANTINE";
+                    message = "DMARC policy requires quarantine";
+                  }
                 }
       '';
 
@@ -585,16 +590,16 @@ in
         weight = 4.0;
       }
       "RECEIVED_SPAMHAUS_SBL" {
-        weight = 6.0;
+        weight = 8.0;
       }
       "RBL_MAILSPIKE_WORST" {
-        weight = 6.0;
+        weight = 8.0;
       }
       "DMARC_POLICY_SOFTFAIL" {
         weight = 8.0;
       }
-      "DMARC_POLICY_QUARANTINE" {
-        weight = 10.0;
+      "R_DKIM_NA" {
+        weight = 3.0;
       }
     }
   '';
