@@ -620,34 +620,6 @@ in
     };
   };
 
-  services.spamassassin = {
-    enable = false;
-    debug = true;
-    config = ''
-      rewrite_header Subject [SPAM]
-
-      # Set threshold for spam classification (default is 5)
-      required_score 6.0
-    '';
-  };
-
-  systemd.services.spamass-milter = {
-    enable = false;
-    description = "SpamAssassin Milter";
-    after = [
-      "spamd.service"
-      "network.target"
-    ];
-    requires = [ "spamd.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      ExecStart = "${mypkgs.spamass-milter}/bin/spamass-milter -p inet:8894@localhost";
-      User = "spamd";
-      Group = "spamd";
-      Restart = "on-failure";
-    };
-  };
-
   networking.firewall.allowedTCPPorts = [
     25 # SMTP
     587 # SMTP Submission
