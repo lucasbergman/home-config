@@ -6,7 +6,6 @@
 }:
 let
   promcfg = config.services.prometheus;
-  homeNetworkCfg = config.slb.homeNetwork;
   alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
@@ -29,7 +28,6 @@ in
     listenAddress = "10.7.1.4";
     ruleFiles = [
       (mkYAML "mail.rules" ./monitoring_mail.nix { inherit lib; })
-      (mkYAML "prober_home_dns.rules" ./monitoring_prober_home_dns.nix { })
       (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix { })
     ];
 
@@ -63,33 +61,6 @@ in
             regex = "(.+):(.*)$";
             target_label = "instance";
             replacement = "cheddar:$2";
-          }
-        ];
-      }
-      {
-        job_name = "home_dns";
-        metrics_path = "/probe";
-        scrape_interval = "5m";
-        params = {
-          module = [ "home_dns" ];
-        };
-        static_configs = [ { targets = [ "8.8.8.8:53" ]; } ];
-        relabel_configs = [
-          {
-            source_labels = [ "__address__" ];
-            target_label = "__param_target";
-          }
-          {
-            source_labels = [ "__param_target" ];
-            target_label = "instance";
-          }
-          {
-            target_label = "__address__";
-            replacement = "[::1]:${toString promcfg.exporters.blackbox.port}";
-          }
-          {
-            target_label = "instance";
-            replacement = "cheddar:${toString promcfg.exporters.blackbox.port}";
           }
         ];
       }
@@ -138,10 +109,7 @@ in
       blackbox = {
         enable = true;
         listenAddress = "[::1]";
-        configFile = mkYAML "blackbox.yml" ./monitoring_blackbox.nix {
-          cfg = homeNetworkCfg;
-          inherit lib;
-        };
+        configFile = mkYAML "blackbox.yml" ./monitoring_blackbox.nix { };
       };
 
       node = {

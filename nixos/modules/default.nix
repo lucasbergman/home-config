@@ -1,13 +1,5 @@
-{ lib, ... }:
+{ ... }:
 {
-  options = {
-    slb.homeNetwork.addrIPv4 = lib.mkOption {
-      description = "Known IPv4 address of the house";
-      type = lib.types.str;
-      default = "24.14.200.170";
-    };
-  };
-
   imports = [
     ./asn-blocking.nix
     ./bgpdata.nix
