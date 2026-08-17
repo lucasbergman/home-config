@@ -4,7 +4,7 @@
     slb.homeNetwork.addrIPv4 = lib.mkOption {
       description = "Known IPv4 address of the house";
       type = lib.types.str;
-      default = "24.12.172.200";
+      default = "24.14.200.170";
     };
   };
 

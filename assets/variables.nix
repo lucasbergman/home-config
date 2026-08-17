@@ -51,7 +51,7 @@
     slb_house_ipv4 = {
       description = "IPv4 address of the legacy house server";
       type = "string";
-      default = "24.12.172.200";
+      default = "24.14.200.170";
     };
   };
 }
