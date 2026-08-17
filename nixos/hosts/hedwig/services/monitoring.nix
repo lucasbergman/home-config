@@ -152,7 +152,13 @@ in
         node = {
           enable = true;
           listenAddress = "[::1]";
-          enabledCollectors = [ "systemd" ];
+          enabledCollectors = [
+            "systemd"
+            "textfile"
+          ];
+          extraFlags = [
+            "--collector.textfile.directory=/run/prometheus-node-exporter"
+          ];
         };
         smartctl = {
           enable = true;
@@ -168,6 +174,51 @@ in
         };
       };
     };
+
+  systemd.services.prom-wan-ip-probe = {
+    description = "STUN WAN IP and DNS match prober";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      RuntimeDirectory = "prometheus-node-exporter";
+      RuntimeDirectoryPreserve = "yes";
+    };
+    path = with pkgs; [
+      coreutils
+      dnsutils
+      gnused
+      stuntman
+    ];
+    script = ''
+      set -euo pipefail
+      PROM_FILE="/run/prometheus-node-exporter/home_wan_ip.prom"
+      TMP_FILE="$PROM_FILE.$$"
+
+      WAN_IP=$(stunclient stun.l.google.com 19302 \
+        | sed -n 's/.*Mapped address: \([0-9.]*\):.*/\1/p')
+      DNS_IP=$(dig +short +time=3 +tries=2 @8.8.8.8 bergman.house A)
+
+      MATCH=0
+      if [ "$WAN_IP" = "$DNS_IP" ]; then
+        MATCH=1
+      fi
+
+      cat <<EOF > "$TMP_FILE"
+      # HELP home_wan_dns_match 1 if current WAN IP matches public DNS A record, 0 otherwise
+      # TYPE home_wan_dns_match gauge
+      home_wan_dns_match{wan_ip="$WAN_IP",dns_ip="$DNS_IP"} $MATCH
+      EOF
+      mv "$TMP_FILE" "$PROM_FILE"
+    '';
+  };
+
+  systemd.timers.prom-wan-ip-probe = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "1m";
+      OnUnitActiveSec = "10m";
+    };
+  };
 
   users.groups.disk.members = [ "smartctl-exporter" ];
 

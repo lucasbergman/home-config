@@ -186,5 +186,21 @@ in
         }
       ];
     }
+    {
+      name = "home_wan";
+      rules = [
+        {
+          alert = "HomeIPAddressChanged";
+          expr = "home_wan_dns_match == 0";
+          labels = {
+            severity = "mail";
+          };
+          annotations = {
+            summary = "Home WAN IP changed to {{ $labels.wan_ip }}";
+            description = "Home WAN IP is {{ $labels.wan_ip }}, but bergman.house resolves to {{ $labels.dns_ip }}";
+          };
+        }
+      ];
+    }
   ];
 }
