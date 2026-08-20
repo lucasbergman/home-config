@@ -86,6 +86,7 @@
                 builtins.elem (nixpkgs.lib.getName pkg) [
                   "code"
                   "discord"
+                  "discord-unwrapped"
                   "google-chrome"
                   "idea"
                   "vscode"
