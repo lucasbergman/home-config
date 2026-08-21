@@ -48,7 +48,7 @@
 
         # Do a one-way sync from Fastmail to disk, just in case they have data loss
         fastmail = {
-          maildir.path = "/home/lucas/mail-backup/fastmail";
+          maildir.path = "../mail-backup/fastmail";
           imap = {
             host = "imap.fastmail.com";
             port = 993;
