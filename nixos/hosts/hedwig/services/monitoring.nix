@@ -120,7 +120,7 @@ in
 
         configuration = {
           global = {
-            smtp_smarthost = "cheddar.internal.bergman.house:587";
+            smtp_smarthost = "cheddar.priv.bergman.house:587";
             smtp_from = "alertmanager@bergmans.us";
           };
           route = {
