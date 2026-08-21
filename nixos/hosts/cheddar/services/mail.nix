@@ -51,12 +51,18 @@ let
   ];
   allMailDomains = virtualMailboxDomains ++ virtualAliasDomains;
 
+  # Fastmail blacklists a lot of domains, so we may as well early-reject
+  # any mail from them
   blacklistedDomains = [
+    "autogearmasters.com"
     "cs25.net"
+    "gulerkaraca.com"
+    "havasugold.com"
     "seaspraymta2.com"
     "sounder-logo.shop"
     "storiesoftherabbitkingdom.com"
     "theartofplantgrowth.com"
+    "thetransfertutor.com"
     "wildlifefieldguide.com"
     "worldleafknowledge.com"
   ];
