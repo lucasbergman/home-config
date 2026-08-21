@@ -172,9 +172,12 @@ in
           record = "node:last_boot_time_seconds";
           expr = "node_boot_time_seconds";
         }
+        # Using node_boot_time_seconds and ... preserves node_boot_time_seconds as
+        # the metric value instead of the change count (usually 1.0). That way $value
+        # in the annotation is the Unix timestamp of the boot time.
         {
           alert = "node_rebooted";
-          expr = "changes(node_boot_time_seconds[1h]) > 0";
+          expr = "node_boot_time_seconds and changes(node_boot_time_seconds[1h]) > 0";
           for = "5m";
           labels = {
             severity = "notify";
