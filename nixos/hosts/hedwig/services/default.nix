@@ -7,6 +7,7 @@
     ./mullvad.nix
     ./plex.nix
     ./unbound.nix
+    ./unifi_cert.nix
   ];
 
   virtualisation.oci-containers.backend = "podman";

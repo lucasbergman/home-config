@@ -182,6 +182,14 @@
       ttl = 300;
     };
 
+    bergmanhouse_a_gw = {
+      managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
+      name = "gw.bergman.house.";
+      type = "A";
+      rrdatas = [ "192.168.101.1" ];
+      ttl = 300;
+    };
+
     bergmanhouse_txt = {
       managed_zone = lib.tfRef "google_dns_managed_zone.bergmanhouse.name";
       name = lib.tfRef "google_dns_managed_zone.bergmanhouse.dns_name";
