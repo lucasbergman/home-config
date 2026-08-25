@@ -193,6 +193,7 @@ in
       set -euo pipefail
       PROM_FILE="/run/prometheus-node-exporter/home_wan_ip.prom"
       TMP_FILE="$PROM_FILE.$$"
+      trap "rm -f '$TMP_FILE'" EXIT INT TERM
 
       WAN_IP=$(stunclient stun.l.google.com 19302 \
         | sed -n 's/.*Mapped address: \([0-9.]*\):.*/\1/p')
