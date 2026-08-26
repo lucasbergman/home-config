@@ -1,97 +1,184 @@
 * {
     border: none;
     border-radius: 0;
+    font-family:
+        "JetBrainsMono NF", "JetBrainsMono Nerd Font", "Font Awesome 7 Free",
+        "Noto Color Emoji", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: rgba(20, 20, 20, 0.8);
-    color: #ffffff;
-    font-family:
-        "JetBrainsMono NF", "Font Awesome 7 Free", "Noto Color Emoji", sans-serif;
-    font-size: 14px;
-    transition-property: background-color;
-    transition-duration: 0.5s;
+    background-color: transparent;
+    color: #c0caf5;
 }
 
-.modules-left {
-    margin-left: 10px;
-}
-
+.modules-left,
+.modules-center,
 .modules-right {
-    margin-right: 10px;
+    background-color: rgba(26, 27, 38, 0.88);
+    border: 1px solid rgba(122, 162, 247, 0.2);
+    border-radius: 12px;
+    padding: 2px 6px;
 }
 
-#custom-expand-icon {
-    color: #5b6268;
-    padding-right: 5px;
-}
-
-#idle_inhibitor {
-    padding-right: 12px;
-    color: #51afef;
-}
-
+/* Custom logo */
 #custom-logo {
     font-size: 16px;
-    margin-right: 12px;
-    color: #51afef;
+    padding: 0 8px;
+    color: #7aa2f7;
+    transition: all 0.3s ease;
+}
+
+#custom-logo:hover {
+    color: #bb9af7;
+}
+
+/* Workspaces */
+#workspaces {
+    padding: 0 4px;
 }
 
 #workspaces button {
-    padding: 0 4px;
-    color: #ffffff;
-    opacity: 0.5;
+    padding: 0 6px;
+    color: #565f89;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    color: #c0caf5;
+    background-color: rgba(122, 162, 247, 0.15);
 }
 
 #workspaces button.active {
-    opacity: 1;
-}
-
-#workspaces button.urgent {
-    color: #ff6c6b;
-    opacity: 1;
-}
-
-#clock,
-#cpu,
-#battery,
-#network,
-#pulseaudio,
-#bluetooth,
-#tray {
-    padding: 0 8px;
-}
-
-#clock {
+    color: #7aa2f7;
     font-weight: bold;
 }
 
-#cpu {
-    color: #98be65;
+#workspaces button.urgent {
+    color: #f7768e;
+    background-color: rgba(247, 118, 142, 0.2);
 }
 
-#battery.charging {
-    color: #98be65;
+/* Window Title */
+#window {
+    padding: 0 8px;
+    color: #9aa5ce;
+    font-size: 12px;
+    font-weight: normal;
 }
 
-#battery.warning:not(.charging) {
-    color: #ecbe7b;
+/* Idle Inhibitor & Clock */
+#idle_inhibitor {
+    padding: 0 8px;
+    color: #7aa2f7;
 }
 
-#battery.critical:not(.charging) {
-    color: #ff6c6b;
+#idle_inhibitor.activated {
+    color: #9ece6a;
+}
+
+#clock {
+    padding: 0 8px;
+    color: #c0caf5;
+    font-weight: 600;
+}
+
+/* Tray Expander */
+#custom-expand-icon {
+    color: #565f89;
+    padding: 0 4px;
+}
+
+#tray {
+    padding: 0 6px;
+}
+
+/* Status Modules */
+#pulseaudio,
+#bluetooth,
+#network,
+#cpu,
+#memory,
+#battery {
+    padding: 0 8px;
+    margin: 2px 2px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#pulseaudio {
+    color: #7aa2f7;
 }
 
 #pulseaudio.muted {
-    color: #5b6268;
+    color: #565f89;
 }
 
+#bluetooth {
+    color: #7dcfff;
+}
+
+#bluetooth.disabled {
+    color: #565f89;
+}
+
+#network {
+    color: #2ac3de;
+}
+
+#network.disconnected {
+    color: #f7768e;
+}
+
+#cpu {
+    color: #bb9af7;
+}
+
+#memory {
+    color: #e0af68;
+}
+
+#battery {
+    color: #9ece6a;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #73daca;
+}
+
+#battery.warning:not(.charging) {
+    color: #e0af68;
+}
+
+#battery.critical:not(.charging) {
+    color: #f7768e;
+    animation-name: blink;
+    animation-duration: 0.8s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        color: #ffffff;
+        background-color: rgba(247, 118, 142, 0.5);
+    }
+}
+
+/* Tooltips */
 tooltip {
-    background: rgba(43, 48, 59, 0.9);
-    border: 1px solid rgba(100, 114, 125, 0.5);
+    background-color: rgba(26, 27, 38, 0.95);
+    border: 1px solid rgba(122, 162, 247, 0.3);
+    border-radius: 10px;
+    padding: 6px 10px;
 }
 
 tooltip label {
-    color: #ffffff;
+    color: #c0caf5;
+    font-size: 12px;
 }
