@@ -55,9 +55,24 @@ let
   # any mail from them
   blacklistedDomains = [
     "autogearmasters.com"
+    "balboniadvertising.com"
+    "bravotechlabs.com"
+    "broadmoorautobody.com"
+    "chvire14.com"
     "cs25.net"
+    "demolizionibelvedere.com"
+    "drloranedick.com"
+    "e-aidma.com"
+    "eforjenerator.com"
     "gulerkaraca.com"
     "havasugold.com"
+    "hotel-villar-arene.com"
+    "imperialinnandsuites.com"
+    "kingsbridge-estate-agents.com"
+    "lebelvedere-arles.com"
+    "legacoopragusa.com"
+    "loganphotographics.com"
+    "mocvba.com"
     "seaspraymta2.com"
     "sounder-logo.shop"
     "storiesoftherabbitkingdom.com"
@@ -65,6 +80,7 @@ let
     "thetransfertutor.com"
     "wildlifefieldguide.com"
     "worldleafknowledge.com"
+    "xiajuanwlkj.com"
   ];
 in
 {
