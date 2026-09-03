@@ -556,7 +556,12 @@ in
             REJECT_DMARC_POLICY_QUARANTINE {
               action = "reject";
               expression = "DMARC_POLICY_QUARANTINE";
-              message = "DMARC policy requires quarantine";
+              message = "DMARC misaligned";
+            }
+            REJECT_SEM_URIBL_FRESH15 {
+              action = "reject";
+              expression = "SEM_URIBL_FRESH15";
+              message = "No mail from brand new domains";
             }
           }
         '';
