@@ -50,46 +50,6 @@ let
     "smartmousetravel.com"
   ];
   allMailDomains = virtualMailboxDomains ++ virtualAliasDomains;
-
-  # Fastmail blacklists a lot of domains, so we may as well early-reject
-  # any mail from them
-  blacklistedDomains = [
-    "alyconner.com"
-    "autogearmasters.com"
-    "balboniadvertising.com"
-    "bravotechlabs.com"
-    "broadmoorautobody.com"
-    "chvire14.com"
-    "cs25.net"
-    "demolizionibelvedere.com"
-    "drloranedick.com"
-    "e-aidma.com"
-    "eforjenerator.com"
-    "glebesydney.com"
-    "gretchenbooks.com"
-    "gulerkaraca.com"
-    "havasugold.com"
-    "hotel-villar-arene.com"
-    "imperialinnandsuites.com"
-    "kingsbridge-estate-agents.com"
-    "lebelvedere-arles.com"
-    "legacoopragusa.com"
-    "loganphotographics.com"
-    "mgmotoservice.com"
-    "mocvba.com"
-    "onestroke-tae.com"
-    "rbjc3.shop"
-    "seaspraymta2.com"
-    "sounder-logo.shop"
-    "storiesoftherabbitkingdom.com"
-    "theartofplantgrowth.com"
-    "thetransfertutor.com"
-    "uytigb.shop"
-    "wellnessgeniuslab.com"
-    "wildlifefieldguide.com"
-    "worldleafknowledge.com"
-    "xiajuanwlkj.com"
-  ];
 in
 {
   security.acme.certs.${postfixTLSHost} = {
@@ -465,190 +425,163 @@ in
     '';
   };
 
-  services.rspamd =
-    let
-      domainRegexMap = lib.concatMapStringsSep "\n" (d: "\"/(^|\\.)" + (lib.escapeRegex d) + "$/i\",");
-    in
-    {
-      enable = true;
-      workers = {
-        normal = { };
-        controller = {
-          bindSockets = [ "[::1]:11334" ];
-          extraConfig = ''
-            password = "$2$zsjqsssfx9bnh5r15eayryk8awtqi1sk$ycqd9jpom1n7enuqnfy77t613rhwb7za4u94gkaeaxn1361zf1qb";
-          '';
-        };
-        rspamd_proxy = {
-          type = "rspamd_proxy";
-          bindSockets = [
-            "[::1]:11332"
-            "127.0.0.1:11332"
-          ];
-          extraConfig = ''
-            upstream "local" {
-              default = yes;
-              self_scan = yes;
-            }
-          '';
-        };
+  services.rspamd = {
+    enable = true;
+    workers = {
+      normal = { };
+      controller = {
+        bindSockets = [ "[::1]:11334" ];
+        extraConfig = ''
+          password = "$2$zsjqsssfx9bnh5r15eayryk8awtqi1sk$ycqd9jpom1n7enuqnfy77t613rhwb7za4u94gkaeaxn1361zf1qb";
+        '';
       };
-      locals = {
-        "actions.conf".text = ''
-          add_header = 6;
-          reject = 15;
-          greylist = null;
-        '';
-
-        "greylist.conf".text = ''
-          enabled = false;
-        '';
-
-        "dkim_signing.conf".text = ''
-          path = "${opendkimKeyFile}";
-          selector = "${opendkimSelector}";
-          use_domain = "bergmans.us";
-        '';
-
-        "arc.conf".text = ''
-          path = "${openarcKeyFile}";
-          selector = "${openarcSelector}";
-
-          # Sign/seal incoming external mail; that usually gets forwarded
-          sign_inbound = true;
-          use_domain_sign_inbound = "bergmans.us";
-
-          # No reason to ARC-sign local mail
-          sign_authenticated = false;
-          sign_local = false;
-        '';
-
-        # Just disable the fuzzy_check module. This caused me no end of trouble,
-        # catching totally normal ad campaigns and "there was a new sign-in to
-        # your blah-blah account."
-        "fuzzy_check.conf".text = ''
-          enabled = false;
-        '';
-
-        "settings.conf".text = ''
-          # Whitelist locally generated mail (bounces, cron jobs, etc)
-          whitelist_local {
-            priority = high;
-            ip = ["127.0.0.0/8", "::1/128", "10.7.1.0/24"];
-            apply {
-              score = -100.0;
-            }
-          }
-        '';
-
-        "force_actions.conf".text = ''
-          rules {
-            REJECT_MISSING_MSGID {
-              action = "reject";
-              expression = "MISSING_MID";
-              message = "Message-ID header is missing";
-            }
-            REJECT_DMARC_POLICY_REJECT {
-              action = "reject";
-              expression = "DMARC_POLICY_REJECT";
-              message = "DMARC policy requires rejection";
-            }
-            REJECT_DMARC_POLICY_QUARANTINE {
-              action = "reject";
-              expression = "DMARC_POLICY_QUARANTINE";
-              message = "DMARC misaligned";
-            }
-            REJECT_SEM_URIBL_FRESH15 {
-              action = "reject";
-              expression = "SEM_URIBL_FRESH15";
-              message = "No mail from brand new domains";
-            }
-          }
-        '';
-
-        "rbl.conf".text = ''
-          .include(priority=5, duplicate=merge) "${ratsRBLConfigFile}"
-        '';
-
-        "multimap.conf".text = ''
-          ONMICROSOFT_FROM {
-            type = "from";
-            filter = "email:domain";
-            regexp = true;
-            map = [
-              "/(^|\\.)onmicrosoft\\.com$/i",
-            ];
-            score = 5.0;
-            description = "Sender domain is an onmicrosoft.com tenant domain";
-          }
-
-          ONMICROSOFT_REPLYTO {
-            type = "header";
-            header = "reply-to";
-            filter = "email:domain";
-            regexp = true;
-            map = [
-              "/(^|\\.)onmicrosoft\\.com$/i",
-            ];
-            score = 5.0;
-            description = "Reply-To header is an onmicrosoft.com tenant domain";
-          }
-
-          BLACKLISTED_DOMAIN_FROM {
-            type = "from";
-            filter = "email:domain";
-            regexp = true;
-            map = [
-              ${domainRegexMap blacklistedDomains}
-            ];
-            score = 8.0;
-            description = "Sender domain is blacklisted";
-          }
-
-          BLACKLISTED_DOMAIN_REPLYTO {
-            type = "header";
-            header = "reply-to";
-            filter = "email:domain";
-            regexp = true;
-            map = [
-              ${domainRegexMap blacklistedDomains}
-            ];
-            score = 8.0;
-            description = "Reply-To header is a blacklisted domain";
-          }
-        '';
-
-        "redis.conf".text = ''
-          servers = "${config.services.redis.servers.rspamd.unixSocket}";
-        '';
-
-        "groups.conf".text = ''
-          symbols {
-            "RATS_SPAM" {
-              weight = 0.0;
-            }
-            "RATS_NOPTR" {
-              weight = 7.0;
-            }
-            "INVALID_MSGID" {
-              weight = 4.0;
-            }
-            "RECEIVED_SPAMHAUS_SBL" {
-              weight = 8.0;
-            }
-            "RBL_MAILSPIKE_WORST" {
-              weight = 8.0;
-            }
-            "DMARC_POLICY_SOFTFAIL" {
-              weight = 8.0;
-            }
-            "R_DKIM_NA" {
-              weight = 3.0;
-            }
+      rspamd_proxy = {
+        type = "rspamd_proxy";
+        bindSockets = [
+          "[::1]:11332"
+          "127.0.0.1:11332"
+        ];
+        extraConfig = ''
+          upstream "local" {
+            default = yes;
+            self_scan = yes;
           }
         '';
       };
     };
+    locals = {
+      "actions.conf".text = ''
+        add_header = 6;
+        reject = 15;
+        greylist = null;
+      '';
+
+      "greylist.conf".text = ''
+        enabled = false;
+      '';
+
+      "dkim_signing.conf".text = ''
+        path = "${opendkimKeyFile}";
+        selector = "${opendkimSelector}";
+        use_domain = "bergmans.us";
+      '';
+
+      "arc.conf".text = ''
+        path = "${openarcKeyFile}";
+        selector = "${openarcSelector}";
+
+        # Sign/seal incoming external mail; that usually gets forwarded
+        sign_inbound = true;
+        use_domain_sign_inbound = "bergmans.us";
+
+        # No reason to ARC-sign local mail
+        sign_authenticated = false;
+        sign_local = false;
+      '';
+
+      # Just disable the fuzzy_check module. This caused me no end of trouble,
+      # catching totally normal ad campaigns and "there was a new sign-in to
+      # your blah-blah account."
+      "fuzzy_check.conf".text = ''
+        enabled = false;
+      '';
+
+      "settings.conf".text = ''
+        # Whitelist locally generated mail (bounces, cron jobs, etc)
+        whitelist_local {
+          priority = high;
+          ip = ["127.0.0.0/8", "::1/128", "10.7.1.0/24"];
+          apply {
+            score = -100.0;
+          }
+        }
+      '';
+
+      "force_actions.conf".text = ''
+        rules {
+          REJECT_MISSING_MSGID {
+            action = "reject";
+            expression = "MISSING_MID";
+            message = "Message-ID header is missing";
+          }
+          REJECT_DMARC_POLICY_REJECT {
+            action = "reject";
+            expression = "DMARC_POLICY_REJECT";
+            message = "DMARC policy requires rejection";
+          }
+          REJECT_DMARC_POLICY_QUARANTINE {
+            action = "reject";
+            expression = "DMARC_POLICY_QUARANTINE";
+            message = "DMARC misaligned";
+          }
+          REJECT_SEM_URIBL_FRESH15 {
+            action = "reject";
+            expression = "SEM_URIBL_FRESH15";
+            message = "No mail from brand new domains";
+          }
+        }
+      '';
+
+      "rbl.conf".text = ''
+        .include(priority=5, duplicate=merge) "${ratsRBLConfigFile}"
+      '';
+
+      "multimap.conf".text = ''
+        ONMICROSOFT_FROM {
+          type = "from";
+          filter = "email:domain";
+          regexp = true;
+          map = [
+            "/(^|\\.)onmicrosoft\\.com$/i",
+          ];
+          score = 5.0;
+          description = "Sender domain is an onmicrosoft.com tenant domain";
+        }
+
+        ONMICROSOFT_REPLYTO {
+          type = "header";
+          header = "reply-to";
+          filter = "email:domain";
+          regexp = true;
+          map = [
+            "/(^|\\.)onmicrosoft\\.com$/i",
+          ];
+          score = 5.0;
+          description = "Reply-To header is an onmicrosoft.com tenant domain";
+        }
+      '';
+
+      "redis.conf".text = ''
+        servers = "${config.services.redis.servers.rspamd.unixSocket}";
+      '';
+
+      "groups.conf".text = ''
+        symbols {
+          "RATS_SPAM" {
+            weight = 0.0;
+          }
+          "RATS_NOPTR" {
+            weight = 7.0;
+          }
+          "INVALID_MSGID" {
+            weight = 4.0;
+          }
+          "RECEIVED_SPAMHAUS_SBL" {
+            weight = 8.0;
+          }
+          "RBL_MAILSPIKE_WORST" {
+            weight = 8.0;
+          }
+          "DMARC_POLICY_SOFTFAIL" {
+            weight = 8.0;
+          }
+          "R_DKIM_NA" {
+            weight = 3.0;
+          }
+        }
+      '';
+    };
+  };
 
   services.redis.servers.rspamd = {
     enable = true;
