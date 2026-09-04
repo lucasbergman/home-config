@@ -218,6 +218,18 @@ in
       smtpd_sender_restrictions = "reject_unknown_sender_domain";
       smtpd_tls_auth_only = true; # only allow SMTP auth over TLS connection
 
+      # Allow localhost and mesh VPN to use XCLIENT to simulate client IP/metadata
+      smtpd_authorized_xclient_hosts = [
+        "127.0.0.1"
+        "[::1]"
+        "10.7.1.0/24"
+      ];
+
+      # Hold test messages in queue instead of delivering
+      header_checks = "regexp:${pkgs.writeText "header_checks.regexp" ''
+        /^X-Queue-Hold:/ HOLD
+      ''}";
+
       # Enable authentication for incoming SMTP; non-local clients can only
       # use us as a relay or skip spam checks if they're SASL-authenticated.
       # (See permit_sasl_authenticated above.)
