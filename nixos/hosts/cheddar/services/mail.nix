@@ -531,7 +531,18 @@ in
             expression = "SEM_URIBL_FRESH15";
             message = "No mail from brand new domains";
           }
+          REJECT_PHISHING {
+            action = "reject";
+            expression = "DBL_PHISH | PH_SURBL_MULTI";
+            message = "Phishing domain";
+          }
         }
+      '';
+
+      # Override upstream Rspamd's 12.5 cap so multiple domain blocklist hits can
+      # combine beyond the 15-point threshold
+      "surbl_group.conf".text = ''
+        max_score = 25.0;
       '';
 
       "rbl.conf".text = ''
@@ -589,6 +600,21 @@ in
           }
           "R_DKIM_NA" {
             weight = 3.0;
+          }
+          "DBL_SPAM" {
+            weight = 8.0;
+          }
+          "DBL_PHISH" {
+            weight = 9.0;
+          }
+          "PH_SURBL_MULTI" {
+            weight = 9.0;
+          }
+          "URIBL_BLACK" {
+            weight = 8.0;
+          }
+          "ABUSE_SURBL" {
+            weight = 6.5;
           }
         }
       '';
