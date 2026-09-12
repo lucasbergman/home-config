@@ -6,8 +6,8 @@
 }:
 
 let
-  version = "2.9.1-4871453687021568";
-  hash = "sha256-AW2/akLFpJqsT6QD16iSBKPHyTN5nJXsuRrCwW+jTe0=";
+  version = "2.13.0-6362815968182272";
+  hash = "sha256-pHokNNkgAIeS885D71AtSGwybSCYCCWQgxgAtbCT9kM=";
 
   unwrapped = stdenv.mkDerivation {
     pname = "google-antigravity-hub-unwrapped";
