@@ -499,11 +499,6 @@ in
 
       "force_actions.conf".text = ''
         rules {
-          REJECT_MISSING_MSGID {
-            action = "reject";
-            expression = "MISSING_MID";
-            message = "Message-ID header is missing";
-          }
           REJECT_DMARC_POLICY_REJECT {
             action = "reject";
             expression = "DMARC_POLICY_REJECT";
