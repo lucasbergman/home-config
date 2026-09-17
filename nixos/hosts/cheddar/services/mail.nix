@@ -302,18 +302,25 @@ in
     enable = true;
     enablePAM = false;
     createMailUser = false;
+    package = pkgs.dovecot;
 
     settings = {
+      dovecot_config_version = "2.4.4";
+      dovecot_storage_version = "2.4.0";
+
       mail_uid = "vmail";
       mail_gid = "vmail";
+      mail_driver = "maildir";
+      mail_home = "${mailDirectory}/users/%{user | domain}/%{user | username}";
+      mail_path = "~/";
 
-      protocols = [
-        "pop3"
-        "imap"
-      ];
+      protocols = {
+        pop3 = true;
+        imap = true;
+      };
 
-      ssl_cert = "</var/lib/acme/${dovecotTLSHost}/cert.pem";
-      ssl_key = "</var/lib/acme/${dovecotTLSHost}/key.pem";
+      ssl_server_cert_file = "/var/lib/acme/${dovecotTLSHost}/cert.pem";
+      ssl_server_key_file = "/var/lib/acme/${dovecotTLSHost}/key.pem";
       ssl_min_protocol = "TLSv1.2";
 
       "service auth" = {
@@ -324,15 +331,15 @@ in
         };
       };
 
-      passdb = {
-        driver = "passwd-file";
-        args = "scheme=CRYPT username_format=%u /run/dovecot_users";
-        default_fields = "userdb_mail=maildir";
+      "passdb passwd-file" = {
+        passwd_file_path = dovecotUserFile;
+        auth_username_format = "%{user}";
+        default_password_scheme = "CRYPT";
       };
 
-      userdb = {
-        driver = "passwd-file";
-        args = "username_format=%u /run/dovecot_users";
+      "userdb passwd-file" = {
+        passwd_file_path = dovecotUserFile;
+        auth_username_format = "%{user}";
       };
 
       "namespace inbox" = {
@@ -340,8 +347,8 @@ in
       };
 
       "local_name ${dovecotLegacyTLSHost}" = {
-        ssl_cert = "</var/lib/acme/${dovecotLegacyTLSHost}/cert.pem";
-        ssl_key = "</var/lib/acme/${dovecotLegacyTLSHost}/key.pem";
+        ssl_server_cert_file = "/var/lib/acme/${dovecotLegacyTLSHost}/cert.pem";
+        ssl_server_key_file = "/var/lib/acme/${dovecotLegacyTLSHost}/key.pem";
       };
     };
   };
