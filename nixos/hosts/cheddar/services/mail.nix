@@ -50,6 +50,13 @@ let
     "smartmousetravel.com"
   ];
   allMailDomains = virtualMailboxDomains ++ virtualAliasDomains;
+
+  # Known domains that we accept authenticated mail from, even if they discuss spam or
+  # link to suspect/phishing domains
+  trustedNerdDomains = [
+    "dnalounge.com"
+    "jwz.org"
+  ];
 in
 {
   security.acme.certs.${postfixTLSHost} = {
@@ -523,8 +530,29 @@ in
           }
           REJECT_PHISHING {
             action = "reject";
-            expression = "DBL_PHISH | PH_SURBL_MULTI";
+            expression = "(DBL_PHISH | PH_SURBL_MULTI) & !(WHITELIST_DKIM | WHITELIST_SPF)";
             message = "Phishing domain";
+          }
+        }
+      '';
+
+      "whitelist.conf".text = ''
+        rules {
+          "WHITELIST_DKIM" = {
+            valid_dkim = true;
+            domains = [
+              ${lib.concatMapStringsSep "\n      " (d: ''"${d}",'') trustedNerdDomains}
+            ];
+            score = -15.0;
+            description = "Mail cryptographically signed by trusted domain";
+          }
+          "WHITELIST_SPF" = {
+            valid_spf = true;
+            domains = [
+              ${lib.concatMapStringsSep "\n      " (d: ''"${d}",'') trustedNerdDomains}
+            ];
+            score = -10.0;
+            description = "Mail from authorized SPF IP of trusted domain";
           }
         }
       '';
