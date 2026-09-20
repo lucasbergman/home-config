@@ -42,7 +42,6 @@
               magit
               mu4e
               nix-mode
-              notmuch
               smex
               use-package
               w3m

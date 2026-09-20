@@ -9,7 +9,7 @@
     vscode-server.homeModules.default
     ./desktop
     ./development
-    ./notmuch
+    ./fastmail-backup
   ];
 
   options.slb = {
@@ -122,12 +122,10 @@
           primary = true;
           address = "lucas@bergmans.us";
           realName = name;
-          notmuch.enable = true;
         };
         bergmanhouse = {
           address = "lucas@bergman.house";
           realName = name;
-          notmuch.enable = true;
         };
       };
   };
