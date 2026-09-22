@@ -29,6 +29,7 @@
 
     home.packages = [
       pkgs.bitwarden-cli
+      pkgs.ghostty.terminfo
       pkgs.inetutils
       pkgs.jq
       pkgs.netcat-gnu
