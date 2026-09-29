@@ -1,7 +1,6 @@
 let
   mumbleHost = "mumble.bergmans.us";
   dataDirectory = "/data/murmur";
-  passwordEnvFile = "/run/murmur-password.env";
   passwordSecretID = "projects/bergmans-services/secrets/mumble-password/versions/1";
 in
 {
@@ -16,12 +15,8 @@ in
   };
 
   slb.security.secrets.murmur-password = {
-    before = [ "murmur.service" ];
-    outPath = passwordEnvFile;
-    group = "murmur";
-    template = pkgs.writeText "murmur-password-tmpl" ''
-      SERVER_PASSWORD={{gcpSecret "${passwordSecretID}"}}
-    '';
+    restartUnits = [ "murmur.service" ];
+    secretPath = passwordSecretID;
   };
 
   # Make sure that the murmur server storage directory exists and
@@ -41,7 +36,6 @@ in
     tls.certPath = "/var/lib/acme/${mumbleHost}/cert.pem";
     tls.keyPath = "/var/lib/acme/${mumbleHost}/key.pem";
     password = "$SERVER_PASSWORD";
-    environmentFile = passwordEnvFile;
 
     # Putting database= here is a bit scary (a different hard-coded value
     # appears earlier in the file), but Mumble's INI file parsing seems to
@@ -51,7 +45,12 @@ in
     '';
   };
 
-  systemd.services.murmur.serviceConfig.ReadWritePaths = [ dataDirectory ];
+  systemd.services.murmur = {
+    preStart = lib.mkBefore ''
+      export SERVER_PASSWORD="$(cat "$CREDENTIALS_DIRECTORY/murmur-password")"
+    '';
+    serviceConfig.ReadWritePaths = [ dataDirectory ];
+  };
 
   networking.firewall.allowedTCPPorts = [ 64738 ];
   networking.firewall.allowedUDPPorts = [ 64738 ];
