@@ -32,7 +32,7 @@
     passwordSecretID = "projects/bergmans-services/secrets/restic-password-cheddar/versions/1";
   };
 
-  slb.security.gcpInstanceKeyPath = ./gcp-instance-key.json;
+  slb.security.gcpInstanceKeyPath = null;
 
   slb.nginx.enable = true;
 
