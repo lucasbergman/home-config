@@ -30,13 +30,6 @@
           "${n.hostName}.${n.domain}";
       };
 
-      gcpInstanceKeyPath = lib.mkOption {
-        # Setting this to null means that an operator put a hand-installed key at
-        # /etc/gcp-instance-creds.json
-        type = with lib.types; nullOr path;
-        description = "Google Cloud service account encrypted private key path";
-      };
-
       secrets = lib.mkOption {
         default = { };
         type =
@@ -174,39 +167,23 @@
             UMask = 337;
           };
 
-          script =
-            with builtins;
-            let
-              # Use the host's EdDSA 25519 key for SOPS
-              hostKeyPaths = map (getAttr "path") config.services.openssh.hostKeys;
-              edDSAKey = lib.lists.findSingle (lib.hasInfix "ed25519") "" "" hostKeyPaths;
-              sopsKeyPath =
-                assert edDSAKey != "";
-                edDSAKey;
-              keyPath = if cfg.gcpInstanceKeyPath == null then "" else cfg.gcpInstanceKeyPath;
-            in
-            ''
-              if [ -n "${keyPath}" ]; then
-                # Decrypt a SOPS-encrypted instance key
-                install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-                env SOPS_AGE_KEY=$(${pkgs.ssh-to-age}/bin/ssh-to-age -private-key < "${sopsKeyPath}") \
-                  ${pkgs.sops}/bin/sops --decrypt ${keyPath} > ${credsPath}
-              elif [ -f "${installedCredsPath}" ]; then
-                # Install a hand-installed instance key
-                install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-                cat ${installedCredsPath} > ${credsPath}
-              else
-                echo "No GCP instance key found at ${installedCredsPath}" >&2
-                exit 1
-              fi
+          script = ''
+            if [ -f "${installedCredsPath}" ]; then
+              # Install a hand-installed instance key
+              install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
+              cat ${installedCredsPath} > ${credsPath}
+            else
+              echo "No GCP instance key found at ${installedCredsPath}" >&2
+              exit 1
+            fi
 
-              # Make a handy file with GCP project and service account info
-              install -m 0444 /dev/null ${infoPath}
-              cat >${infoPath} <<EOF
-              GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
-              GCE_SERVICE_ACCOUNT_FILE=${credsPath}
-              EOF
-            '';
+            # Make a handy file with GCP project and service account info
+            install -m 0444 /dev/null ${infoPath}
+            cat >${infoPath} <<EOF
+            GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
+            GCE_SERVICE_ACCOUNT_FILE=${credsPath}
+            EOF
+          '';
         };
       }
       // (lib.mapAttrs' (

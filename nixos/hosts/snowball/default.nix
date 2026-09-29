@@ -32,10 +32,6 @@
   # This is a desktop
   time.timeZone = "America/Chicago";
 
-  slb.security = {
-    gcpInstanceKeyPath = null; # key is installed by hand
-  };
-
   slb.backups = {
     gcsPath = "/snowball";
     backupPaths = [

@@ -81,8 +81,6 @@
   nixpkgs.config.allowUnfreePredicate =
     pkg: builtins.elem (pkgs.lib.getName pkg) [ "plexmediaserver" ];
 
-  slb.security.gcpInstanceKeyPath = null;
-
   slb.backups = {
     gcsPath = "/hedwig";
     backupPaths = [

@@ -37,11 +37,6 @@
     Resolve.MulticastDNS = "no";
   };
 
-  slb.security = {
-    enable = true;
-    gcpInstanceKeyPath = null;
-  };
-
   systemd.services.hermes-gateway = {
     description = "Hermes Agent Gateway";
     wantedBy = [ "multi-user.target" ];

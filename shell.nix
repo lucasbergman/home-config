@@ -19,8 +19,6 @@
       pkgs.nixfmt
       pkgs.nvd
       pkgs.python3
-      pkgs.sops
-      pkgs.ssh-to-age
       pkgs.terranix
 
       # These packages have actively packaging and otherwise fast-moving
