@@ -37,8 +37,9 @@
           attrsOf (submodule {
             options = {
               outPath = lib.mkOption {
-                description = "Output path for secret material";
-                type = path;
+                description = "Output path for secret material. If null, the secret is written to /run/credstore/<name> for use with systemd credentials.";
+                type = nullOr path;
+                default = null;
               };
               secretPath = lib.mkOption {
                 description = "Path to secret to write; cannot be set with template";
@@ -61,12 +62,12 @@
                 default = [ ];
               };
               owner = lib.mkOption {
-                description = "User that will own the output file";
+                description = "User that will own the output file (only used when outPath != null)";
                 type = str;
                 default = "root";
               };
               group = lib.mkOption {
-                description = "Group that will own the output file; if null, output file is not group-readable";
+                description = "Group that will own the output file; if null, output file is not group-readable (only used when outPath != null)";
                 type = nullOr str;
                 default = null;
               };
@@ -92,6 +93,7 @@
         let
           mode = if conf.group == null then "0600" else "0640";
           group = if conf.group == null then "root" else conf.group;
+          targetPath = if conf.outPath != null then conf.outPath else "/run/credstore/${name}";
           tmpl =
             if conf.template == null then
               assert conf.secretPath != null;
@@ -111,15 +113,23 @@
           };
           environment.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 
-          script = ''
-            [[ -f ${conf.outPath} ]] || install -m 0600 /dev/null ${conf.outPath}
-            chown ${conf.owner}:${group} ${conf.outPath}
-            chmod ${mode} ${conf.outPath}
-            ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${tmpl} > ${conf.outPath}
-          '';
+          script =
+            if conf.outPath != null then
+              ''
+                [[ -f ${conf.outPath} ]] || install -m 0600 /dev/null ${conf.outPath}
+                chown ${conf.owner}:${group} ${conf.outPath}
+                chmod ${mode} ${conf.outPath}
+                ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${tmpl} > ${conf.outPath}
+              ''
+            else
+              ''
+                mkdir -p /run/credstore
+                install -m 0400 /dev/null ${targetPath}
+                ${mypkgs.gcp-secret-subst}/bin/gcp-secret-subst ${tmpl} > ${targetPath}
+              '';
         };
 
-      # Append the given secret service to the target's bindsTo list
+      # Append the given secret service to the target's bindsTo, after, and requires lists
       addBindsTo =
         acc: secretUnit: targetUnit:
         let
@@ -127,7 +137,11 @@
         in
         acc
         // {
-          ${unitName}.bindsTo = (acc.${unitName}.bindsTo or [ ]) ++ [ secretUnit ];
+          ${unitName} = (acc.${unitName} or { }) // {
+            bindsTo = (acc.${unitName}.bindsTo or [ ]) ++ [ secretUnit ];
+            after = (acc.${unitName}.after or [ ]) ++ [ secretUnit ];
+            requires = (acc.${unitName}.requires or [ ]) ++ [ secretUnit ];
+          };
         };
 
       # Get a flattened list of {secret, target} pairs from restartUnits options
@@ -147,6 +161,42 @@
         secrets:
         lib.foldl' (acc: { secretUnit, targetUnit }: addBindsTo acc secretUnit targetUnit) { } (
           allRestartBindings secrets
+        );
+
+      # For secrets without outPath, inject LoadCredential into units listed in restartUnits
+      addCredentialBinding =
+        acc: secretName: targetUnit:
+        let
+          unitName = lib.removeSuffix ".service" targetUnit;
+        in
+        acc
+        // {
+          ${unitName} = (acc.${unitName} or { }) // {
+            serviceConfig = (acc.${unitName}.serviceConfig or { }) // {
+              LoadCredential = (acc.${unitName}.serviceConfig.LoadCredential or [ ]) ++ [ secretName ];
+            };
+          };
+        };
+
+      allCredentialBindings =
+        secrets:
+        lib.concatLists (
+          lib.mapAttrsToList (
+            name: conf:
+            if conf.outPath == null then
+              map (unit: {
+                secretName = name;
+                targetUnit = unit;
+              }) conf.restartUnits
+            else
+              [ ]
+          ) secrets
+        );
+
+      mkCredentialBindings =
+        secrets:
+        lib.foldl' (acc: { secretName, targetUnit }: addCredentialBinding acc secretName targetUnit) { } (
+          allCredentialBindings secrets
         );
     in
     lib.mkIf cfg.enable {
@@ -189,7 +239,7 @@
       // (lib.mapAttrs' (
         name: value: lib.nameValuePair ("secret-" + name) (mkSecretService name value)
       ) cfg.secrets)
-      // (mkRestartBindings cfg.secrets);
+      // (lib.recursiveUpdate (mkRestartBindings cfg.secrets) (mkCredentialBindings cfg.secrets));
 
       security.acme = {
         acceptTerms = true;
