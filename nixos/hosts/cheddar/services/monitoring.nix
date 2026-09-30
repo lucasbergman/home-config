@@ -6,7 +6,6 @@
 }:
 let
   promcfg = config.services.prometheus;
-  alertmanagerEnvFile = "/run/alertmanager.env";
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
   mkYAML =
@@ -15,12 +14,8 @@ let
 in
 {
   slb.security.secrets."pagerduty-key" = {
-    outPath = alertmanagerEnvFile;
-    template = pkgs.writeText "alertmanager.env" ''
-      PAGERDUTY_SERVICE_KEY={{gcpSecret "projects/bergmans-services/secrets/pagerduty-key/versions/1"}}
-    '';
-    before = [ "alertmanager.service" ];
-    group = "prometheus";
+    restartUnits = [ "alertmanager.service" ];
+    secretPath = "projects/bergmans-services/secrets/pagerduty-key/versions/1";
   };
 
   services.prometheus = {
@@ -127,7 +122,6 @@ in
     alertmanager = {
       enable = true;
       listenAddress = "10.7.1.4";
-      environmentFile = alertmanagerEnvFile;
       logLevel = "debug";
 
       extraFlags = [
@@ -178,6 +172,10 @@ in
       };
     };
   };
+
+  systemd.services.alertmanager.preStart = lib.mkBefore ''
+    export PAGERDUTY_SERVICE_KEY="$(cat "$CREDENTIALS_DIRECTORY/pagerduty-key")"
+  '';
 
   services.grafana = {
     enable = true;
