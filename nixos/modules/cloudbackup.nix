@@ -40,6 +40,17 @@
         description = "List of patterns to exclude from backup";
         default = [ ];
       };
+
+      pruneOpts = lib.mkOption {
+        type = with lib.types; listOf str;
+        description = "List of options for restic forget --prune";
+        default = [
+          "--keep-daily 7"
+          "--keep-weekly 4"
+          "--keep-monthly 12"
+          "--keep-yearly 1"
+        ];
+      };
     };
   };
 
@@ -62,6 +73,7 @@
           environmentFile = resticEnvFile.outPath;
           passwordFile = myPasswordFile;
           exclude = cfg.exclude;
+          pruneOpts = cfg.pruneOpts;
 
           # Create the repo if it doesn't already exist. I guess this is
           # slightly dangerous, but doing without it is a hassle.
