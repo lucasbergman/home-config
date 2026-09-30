@@ -17,15 +17,19 @@ Terraform state is stored in a Google Cloud Storage bucket. Minimum survival com
 
 ```shell
 # Check that our Terraform state storage bucket exists already:
-$ gsutil ls -p bergmans-services
+$ gcloud storage ls --project=bergmans-services
 gs://bergmans-services-home/
 
 # If it doesn't exist, create it:
-$ gsutil mb -p bergmans-services -b on --pap enforced gs://bergmans-services-home
+$ gcloud storage buckets create --project=bergmans-services \
+    --uniform-bucket-level-access \
+    --public-access-prevention \
+    gs://bergmans-services-home
 
-# The -b and --pap options nail down bucket security; the first turns on
-# "uniform bucket access" and the second turns on "public access prevention" so
-# it can't accidentally be exposed over the internet.
+# The --uniform-bucket-level-access and --public-access-prevention options nail
+# down bucket security; the first turns on "uniform bucket access" and the second
+# turns on "public access prevention" so it can't accidentally be exposed over
+# the internet.
 ```
 
 ## Setting Up Secrets
