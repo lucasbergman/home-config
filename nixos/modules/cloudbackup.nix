@@ -60,7 +60,6 @@
         GOOGLE_APPLICATION_CREDENTIALS=/run/gcp-instance-creds.json
       '';
       cfg = config.slb.backups;
-      myPasswordFile = "/run/restic-password";
     in
     lib.mkIf cfg.enable {
       services.restic.backups = {
@@ -71,7 +70,7 @@
           repository = "gs:bergmans-services-backup:${cfg.gcsPath}";
           paths = cfg.backupPaths;
           environmentFile = resticEnvFile.outPath;
-          passwordFile = myPasswordFile;
+          passwordFile = "/run/credstore/restic-password";
           exclude = cfg.exclude;
           pruneOpts = cfg.pruneOpts;
 
@@ -85,8 +84,7 @@
       };
 
       slb.security.secrets.restic-password = {
-        before = [ "restic-backups-gcsbackup.service" ];
-        outPath = myPasswordFile;
+        restartUnits = [ "restic-backups-gcsbackup.service" ];
         secretPath = cfg.passwordSecretID;
       };
     };
