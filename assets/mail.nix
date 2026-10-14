@@ -54,7 +54,7 @@ let
         managed_zone = name;
         name = "_dmarc.${domain}.";
         type = "TXT";
-        rrdatas = [ "\"v=DMARC1; p=${policy}; rua=mailto:postmaster@${domain}\"" ];
+        rrdatas = [ "\"v=DMARC1; p=${policy}; rua=mailto:postmaster+dmarc@${domain}\"" ];
         ttl = 3600;
       };
     };
