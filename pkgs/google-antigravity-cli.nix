@@ -7,11 +7,11 @@
 
 stdenv.mkDerivation rec {
   pname = "google-antigravity-cli";
-  version = "1.2.11-6016716732497920";
+  version = "1.3.5-6164039479459840";
 
   src = fetchurl {
     url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/${version}/linux-x64/cli_linux_x64.tar.gz";
-    hash = "sha256-yRxixeb6lU9afh17mtQX10nbSqYKS6Cz1gTewbZF0ZA=";
+    hash = "sha256-AHpaRNuvHK6kZMPZhIxjsvaZRbAai/iFLFbEd6ZDdM8=";
   };
 
   sourceRoot = ".";
