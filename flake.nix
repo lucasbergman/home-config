@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
     flake-utils.url = "github:numtide/flake-utils";
 
     idiotbox = {
@@ -25,8 +30,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     terranix = {
       url = "github:terranix/terranix";
+      inputs.flake-parts.follows = "flake-parts";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -35,7 +48,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.flake-parts.follows = "flake-parts";
+    };
   };
 
   outputs =
@@ -43,8 +59,10 @@
       self,
       nixpkgs,
       nixpkgs-unstable,
+      flake-parts,
       flake-utils,
       gomod2nix,
+      hermes-agent,
       home-manager,
       idiotbox,
       terranix,
@@ -118,16 +136,17 @@
       {
         formatter = treefmtConfig.wrapper;
 
-        packages = import ./pkgs {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            config.permittedInsecurePackages = [
-              "olm-3.2.16"
-            ];
-            overlays = [ gomod2nix.overlays.default ];
+        packages =
+          (import ./pkgs {
+            pkgs = import nixpkgs {
+              inherit system;
+              config.allowUnfree = true;
+              overlays = [ gomod2nix.overlays.default ];
+            };
+          })
+          // {
+            hermes-agent = hermes-agent.packages.${system}.default;
           };
-        };
 
         apps = import ./lib/terraform-apps.nix {
           inherit pkgs;
@@ -156,7 +175,10 @@
           ./nixos/hosts/hedwig
           idiotbox.nixosModules."x86_64-linux".default
         ];
-        pinchy = mkHost "x86_64-linux" [ ./nixos/hosts/pinchy ];
+        pinchy = mkHost "x86_64-linux" [
+          ./nixos/hosts/pinchy
+          hermes-agent.nixosModules.default
+        ];
         snowball = mkHost "x86_64-linux" [ ./nixos/hosts/snowball ];
         spot = mkHost "x86_64-linux" [ ./nixos/hosts/spot ];
       };

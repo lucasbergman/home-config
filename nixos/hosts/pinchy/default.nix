@@ -22,36 +22,23 @@
   networking.nftables.enable = true;
   networking.firewall.enable = true;
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "olm-3.2.16"
-  ];
+  users.users.hermes.linger = true;
 
-  environment.systemPackages = [
-    mypkgs.hermes-agent
-  ];
+  services.hermes-agent = {
+    enable = true;
+    createUser = false;
+    user = "hermes";
+    group = "hermes";
+    stateDir = "/home/hermes";
+    workingDirectory = "/home/hermes";
+    addToSystemPackages = true;
+  };
 
   slb.backups.enable = false;
   slb.nebula.enable = true;
 
   services.resolved.settings = {
     Resolve.MulticastDNS = "no";
-  };
-
-  systemd.services.hermes-gateway = {
-    description = "Hermes Agent Gateway";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    environment = {
-      HOME = "/home/hermes";
-    };
-    serviceConfig = {
-      User = "hermes";
-      Group = "hermes";
-      WorkingDirectory = "/home/hermes";
-      ExecStart = "${mypkgs.hermes-agent}/bin/hermes gateway";
-      Restart = "on-failure";
-      RestartSec = "10s";
-    };
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
