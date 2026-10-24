@@ -15,4 +15,18 @@
     role = "roles/aiplatform.user";
     member = "serviceAccount:\${google_service_account.hermes.email}";
   };
+
+  resource.google_secret_manager_secret.hermes_matrix_access_token = {
+    secret_id = "hermes-matrix-access-token";
+    replication = {
+      auto = { };
+    };
+  };
+
+  resource.google_secret_manager_secret.hermes_matrix_recovery_key = {
+    secret_id = "hermes-matrix-recovery-key";
+    replication = {
+      auto = { };
+    };
+  };
 }

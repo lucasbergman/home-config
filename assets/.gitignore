@@ -1,2 +1,4 @@
 /.terraform
 /*private-key*
+/config-*.tf.json
+/plan-*
