@@ -106,7 +106,7 @@
                   "discord"
                   "discord-unwrapped"
                   "google-chrome"
-                  "idea"
+                  "intellij-idea"
                   "vscode"
                 ];
             };
