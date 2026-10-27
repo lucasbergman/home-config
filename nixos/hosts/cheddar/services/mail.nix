@@ -289,6 +289,21 @@ in
     };
   };
 
+  # NixOS's postfix-setup.service recreates /var/lib/postfix/conf from scratch on
+  # every start/restart. When postmap runs as root on secrets with mode 0640,
+  # it inherits mode 0640 but ownership root:root. Unprivileged Postfix daemons
+  # (running as user/group postfix, e.g. postfix/virtual) are then unable to read
+  # lookup maps such as virtual_mailbox.db, causing delivery deferrals with
+  # "Permission denied". Ensure all generated .db files are readable by the postfix group.
+  systemd.services.postfix-setup.postStart = ''
+    for db in /var/lib/postfix/conf/*.db; do
+      if [ -e "$db" ]; then
+        ${pkgs.coreutils}/bin/chgrp postfix "$db"
+        ${pkgs.coreutils}/bin/chmod 0640 "$db"
+      fi
+    done
+  '';
+
   security.acme.certs.${dovecotTLSHost} = {
     reloadServices = [ "dovecot.service" ];
   };
