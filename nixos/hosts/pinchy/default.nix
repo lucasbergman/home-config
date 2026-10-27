@@ -45,10 +45,11 @@
     stateDir = "/home/hermes";
     workingDirectory = "/home/hermes";
     addToSystemPackages = true;
+    extraPackages = with pkgs; [ ripgrep ];
 
     settings = {
       model = {
-        default = "google/gemini-3-flash-preview";
+        default = "gemini-3-flash-preview";
         provider = "vertex";
       };
       terminal = {
