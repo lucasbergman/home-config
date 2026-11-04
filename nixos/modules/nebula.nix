@@ -101,6 +101,10 @@ in
       };
     };
 
+    systemd.tmpfiles.rules = lib.mkIf cfg.useSecretManager [
+      "d /run/nebula 0770 root nebula-${networkName} -"
+    ];
+
     systemd.services."nebula@${networkName}" = lib.mkIf cfg.useSecretManager {
       after = [
         "secret-nebula-cert.service"
@@ -111,7 +115,6 @@ in
         "secret-nebula-key.service"
       ];
       serviceConfig = {
-        RuntimeDirectory = "nebula";
         StateDirectory = "nebula";
       };
       preStart = ''

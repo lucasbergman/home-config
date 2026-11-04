@@ -116,6 +116,7 @@
           script =
             if conf.outPath != null then
               ''
+                install -d -m 0755 $(dirname ${conf.outPath})
                 [[ -f ${conf.outPath} ]] || install -m 0600 /dev/null ${conf.outPath}
                 chown ${conf.owner}:${group} ${conf.outPath}
                 chmod ${mode} ${conf.outPath}
