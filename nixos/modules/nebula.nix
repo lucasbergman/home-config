@@ -45,12 +45,14 @@ in
       "nebula-cert" = {
         outPath = "/run/nebula/host.crt";
         secretPath = "projects/bergmans-services/secrets/nebula-cert-${config.networking.hostName}/versions/latest";
-        restartUnits = [ "nebula-${networkName}.service" ];
+        restartUnits = [ "nebula@${networkName}.service" ];
+        group = "nebula-${networkName}";
       };
       "nebula-key" = {
         outPath = "/run/nebula/host.key";
         secretPath = "projects/bergmans-services/secrets/nebula-key-${config.networking.hostName}/versions/latest";
-        restartUnits = [ "nebula-${networkName}.service" ];
+        restartUnits = [ "nebula@${networkName}.service" ];
+        group = "nebula-${networkName}";
       };
     };
 
@@ -99,7 +101,7 @@ in
       };
     };
 
-    systemd.services."nebula-${networkName}" = lib.mkIf cfg.useSecretManager {
+    systemd.services."nebula@${networkName}" = lib.mkIf cfg.useSecretManager {
       after = [
         "secret-nebula-cert.service"
         "secret-nebula-key.service"
@@ -108,8 +110,11 @@ in
         "secret-nebula-cert.service"
         "secret-nebula-key.service"
       ];
+      serviceConfig = {
+        RuntimeDirectory = "nebula";
+        StateDirectory = "nebula";
+      };
       preStart = ''
-        mkdir -p /run/nebula /var/lib/nebula
         if [ ! -s /run/nebula/host.crt ] && [ -s /var/lib/nebula/host.crt ]; then
           cp /var/lib/nebula/host.crt /run/nebula/host.crt
         fi
@@ -118,10 +123,10 @@ in
           chmod 0600 /run/nebula/host.key
         fi
         if [ -s /run/nebula/host.crt ]; then
-          cp /run/nebula/host.crt /var/lib/nebula/host.crt
+          cp -f /run/nebula/host.crt /var/lib/nebula/host.crt
         fi
         if [ -s /run/nebula/host.key ]; then
-          cp /run/nebula/host.key /var/lib/nebula/host.key
+          cp -f /run/nebula/host.key /var/lib/nebula/host.key
           chmod 0600 /var/lib/nebula/host.key
         fi
       '';
