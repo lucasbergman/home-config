@@ -35,7 +35,7 @@ in
 
     useSecretManager = lib.mkOption {
       type = lib.types.bool;
-      default = false; # TODO: enable by default
+      default = true;
       description = "Whether to fetch Nebula certificates and keys from GCP Secret Manager.";
     };
   };
