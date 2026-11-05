@@ -42,9 +42,10 @@ rotate_host() {
     local host="$1"
     local ip="$2"
     local is_lighthouse="${3:-false}"
+    local cert_name="${4:-${host}.priv.bergman.house}"
 
     echo "--------------------------------------------------------"
-    echo "==> Rotating Nebula keypair for host: $host ($ip)..."
+    echo "==> Rotating Nebula keypair for host: $host ($ip, name: $cert_name)..."
 
     local groups=""
     if [[ $is_lighthouse == "true" ]]; then
@@ -52,7 +53,7 @@ rotate_host() {
     fi
 
     nebula-cert sign \
-        -name "$host" \
+        -name "$cert_name" \
         -ip "$ip/24" \
         $groups \
         -ca-crt "$CA_CRT" \
@@ -83,16 +84,24 @@ declare -A HOST_IPS=(
     ["pinchy"]="10.7.1.5"
 )
 
+declare -A HOST_NAMES=(
+    ["spot"]="spot.priv.bergman.house"
+    ["hedwig"]="hedwig.priv.bergman.house"
+    ["snowball"]="snowball.priv.bergman.house"
+    ["cheddar"]="cheddar.priv.bergman.house"
+    ["pinchy"]="pinchy.priv.bergman.house"
+)
+
 declare -A IS_LIGHTHOUSE=(
     ["spot"]="true"
 )
 
 if [[ $TARGET_HOST == "all" ]]; then
-    for host in "${!HOST_IPS[@]}"; do
-        rotate_host "$host" "${HOST_IPS[$host]}" "${IS_LIGHTHOUSE[$host]:-false}"
+    for host in spot hedwig snowball cheddar pinchy; do
+        rotate_host "$host" "${HOST_IPS[$host]}" "${IS_LIGHTHOUSE[$host]:-false}" "${HOST_NAMES[$host]:-${host}.priv.bergman.house}"
     done
 elif [[ -n ${HOST_IPS[$TARGET_HOST]:-} ]]; then
-    rotate_host "$TARGET_HOST" "${HOST_IPS[$TARGET_HOST]}" "${IS_LIGHTHOUSE[$TARGET_HOST]:-false}"
+    rotate_host "$TARGET_HOST" "${HOST_IPS[$TARGET_HOST]}" "${IS_LIGHTHOUSE[$TARGET_HOST]:-false}" "${HOST_NAMES[$TARGET_HOST]:-${TARGET_HOST}.priv.bergman.house}"
 else
     echo "Error: Unknown host '$TARGET_HOST'" >&2
     exit 1
