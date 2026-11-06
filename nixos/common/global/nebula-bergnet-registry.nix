@@ -31,5 +31,15 @@
       name = "lucas-pixel9.priv.bergman.house";
       isNixos = false;
     };
+    audrey-macbook = {
+      ip = "10.7.1.22";
+      name = "audrey-macbook.priv.bergman.house";
+      isNixos = false;
+    };
+    resa-macbook = {
+      ip = "10.7.1.23";
+      name = "resa-macbook.priv.bergman.house";
+      isNixos = false;
+    };
   };
 }
