@@ -8,8 +8,10 @@
   imports = [
     ../../common/global
     ../../common/users
+    ../../common/users/audrey.nix
     ../../common/users/augie.nix
     ../../common/users/hermes.nix
+    ../../common/users/resa.nix
     ./hardware-configuration.nix
     ./services
   ];
