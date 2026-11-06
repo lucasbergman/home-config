@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs-unstable, ... }:
 let
   mediaDirectory = "/storage/media/photos";
   externalHost = "photos.bergman.house";
@@ -6,21 +6,9 @@ let
   serverHostAddr = "192.168.101.3";
 in
 {
-  # TODO: Fix albumentations tests breaking the immich build
-  nixpkgs.overlays = [
-    (final: prev: {
-      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-        (python-final: python-prev: {
-          albumentations = python-prev.albumentations.overridePythonAttrs (oldAttrs: {
-            doCheck = false;
-          });
-        })
-      ];
-    })
-  ];
-
   services.immich = {
     enable = true;
+    package = pkgs-unstable.immich;
     host = serverHostAddr;
     mediaLocation = mediaDirectory;
   };
