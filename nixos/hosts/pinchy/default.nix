@@ -49,7 +49,7 @@
 
     settings = {
       model = {
-        default = "gemini-3-flash-preview";
+        default = "google/gemini-3.8-flash";
         provider = "vertex";
       };
       terminal = {
