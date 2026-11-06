@@ -161,7 +161,11 @@ in
       MATRIX_HOMESERVER = "https://matrix.bergman.house";
       MATRIX_E2EE_MODE = "required";
       MATRIX_USER_ID = "@hermes:bergman.house";
-      MATRIX_ALLOWED_USERS = "@lucas:bergman.house";
+      MATRIX_ALLOWED_USERS = lib.concatStringsSep "," [
+        "@lucas:bergman.house"
+        "@cristin:bergman.house"
+        "@audrey:bergman.house"
+      ];
 
       GITHUB_APP_KEY_PATH = "/run/hermes/github-app-key.pem";
       GITHUB_APP_CLIENT_ID = "Iv23liJABvsUqKAoz9vo";
