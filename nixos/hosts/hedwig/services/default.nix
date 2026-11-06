@@ -6,6 +6,7 @@
     ./monitoring.nix
     ./mullvad.nix
     ./plex.nix
+    ./samba.nix
     ./unbound.nix
     ./unifi_cert.nix
   ];
