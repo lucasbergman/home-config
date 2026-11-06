@@ -59,6 +59,7 @@ in
         {
           job_name = "unifi";
           scrape_interval = "10s";
+          scrape_timeout = "10s";
           static_configs = [ { targets = [ unpollercfg.prometheusListenAddr ]; } ];
           relabel_configs = [
             {
