@@ -86,5 +86,6 @@
       pinchy_nebula_key = mkMember "nebula_key_pinchy";
       pinchy_hermes_matrix_access_token = mkMember "hermes_matrix_access_token";
       pinchy_hermes_matrix_recovery_key = mkMember "hermes_matrix_recovery_key";
+      pinchy_hermes_github_app_private_key = mkMember "hermes_github_app_private_key";
     };
 }

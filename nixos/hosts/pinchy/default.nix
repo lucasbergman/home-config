@@ -5,6 +5,76 @@
   mypkgs,
   ...
 }:
+let
+  githubAppToken =
+    pkgs.writers.writePython3Bin "github-app-token"
+      {
+        libraries = with pkgs.python3Packages; [
+          pyjwt
+          cryptography
+          requests
+        ];
+      }
+      ''
+        import os
+        import sys
+        import time
+        import jwt
+        import requests
+
+        key_path = os.environ.get(
+            "GITHUB_APP_KEY_PATH",
+            "/run/hermes/github-app-key.pem",
+        )
+        client_id = os.environ.get(
+            "GITHUB_APP_CLIENT_ID",
+            "Iv23liJABvsUqKAoz9vo",
+        )
+
+        if not os.path.exists(key_path):
+            sys.exit(f"Error: Private key not found at {key_path}")
+
+        with open(key_path, "r") as f:
+            private_key = f.read()
+
+        now = int(time.time())
+        payload = {
+            "iat": now - 60,
+            "exp": now + 600,
+            "iss": client_id,
+        }
+        jwt_token = jwt.encode(payload, private_key, algorithm="RS256")
+
+        headers = {
+            "Authorization": f"Bearer {jwt_token}",
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "Cogsworth-Bot",
+        }
+
+        inst_url = "https://api.github.com/app/installations"
+        inst_res = requests.get(inst_url, headers=headers)
+        if inst_res.status_code != 200:
+            sys.exit(f"Failed to fetch installations: {inst_res.text}")
+
+        installations = inst_res.json()
+        if not installations:
+            sys.exit(
+                "Error: GitHub App is not installed on any accounts or repos. "
+                "Go to GitHub App settings -> 'Install App' and install it."
+            )
+
+        installation_id = installations[0]["id"]
+        token_url = (
+            f"https://api.github.com/app/installations/{installation_id}"
+            "/access_tokens"
+        )
+        token_res = requests.post(token_url, headers=headers)
+        if token_res.status_code != 201:
+            sys.exit(f"Failed to generate access token: {token_res.text}")
+
+        print(token_res.json()["token"])
+      '';
+in
 {
   imports = [
     ../../common/global
@@ -37,6 +107,20 @@
     restartUnits = [ "hermes-agent.service" ];
   };
 
+  slb.security.secrets."hermes-github-app-key" = {
+    outPath = "/run/hermes/github-app-key.pem";
+    owner = "hermes";
+    group = "hermes";
+    secretPath = "projects/bergmans-services/secrets/hermes-github-app-private-key/versions/latest";
+    restartUnits = [ "hermes-agent.service" ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    githubAppToken
+    git
+    gh
+  ];
+
   services.hermes-agent = {
     enable = true;
     createUser = false;
@@ -45,7 +129,12 @@
     stateDir = "/home/hermes";
     workingDirectory = "/home/hermes";
     addToSystemPackages = true;
-    extraPackages = with pkgs; [ ripgrep ];
+    extraPackages = with pkgs; [
+      gh
+      git
+      githubAppToken
+      ripgrep
+    ];
 
     settings = {
       model = {
@@ -73,6 +162,9 @@
       MATRIX_E2EE_MODE = "required";
       MATRIX_USER_ID = "@hermes:bergman.house";
       MATRIX_ALLOWED_USERS = "@lucas:bergman.house";
+
+      GITHUB_APP_KEY_PATH = "/run/hermes/github-app-key.pem";
+      GITHUB_APP_CLIENT_ID = "Iv23liJABvsUqKAoz9vo";
     };
 
     hermesHomeFiles = {
@@ -95,6 +187,73 @@
 
         Give depth only when the user asks for detail, teaches, or the stakes demand
         it, not by default.
+
+        One of the ways you can be of use is by making code changes for the users
+        and sending them to GitHub as pull requests (PRs) for approval. You have a
+        specific skill to make changes to the home-config repo.
+
+        When changing or proposing edits to any repository or interacting with
+        GitHub, use your GitHub App credentials:
+        - Run `export GH_TOKEN=$(github-app-token)` to authenticate git and gh.
+        - Author commits as:
+          cogsworth[bot] <5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com>
+        - Push branches and create pull requests using `gh pr create --repo <repo-name>`.
+      '';
+
+      "skills/home-config/SKILL.md" = ''
+        ---
+        name: home-config
+        description: "Guidelines and workflow for modifying home-config and opening GitHub pull requests"
+        metadata:
+          hermes:
+            tags: [Git, GitHub, PullRequest, NixOS, home-config]
+        ---
+
+        # Home-Config Workflow
+
+        This skill explains how Cogsworth makes changes to the
+        `lucasbergman/home-config` repository and submits them as GitHub pull
+        requests.
+
+        ## Authentication
+        Generate an installation token on demand:
+        ```bash
+        export GH_TOKEN=$(github-app-token)
+        ```
+        This token is valid for 1 hour and works with both `gh` and Git.
+
+        ## Git Identity
+        Set your commit author identity:
+        ```bash
+        git config user.name "cogsworth[bot]"
+        git config user.email "5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com"
+        ```
+
+        ## Creating a Pull Request
+        1. Clone or update repository:
+           ```bash
+           git clone https://x-access-token:$GH_TOKEN@github.com/lucasbergman/home-config.git
+           cd home-config
+           ```
+        2. Create a branch and make changes:
+           ```bash
+           git checkout -b <descriptive-branch-name>
+           # make changes...
+           git commit -am "Commit message"
+           ```
+        3. Push the branch:
+           ```bash
+           git push origin <descriptive-branch-name>
+           ```
+        4. Create the Pull Request:
+           ```bash
+           GH_TOKEN=$GH_TOKEN gh pr create \
+             --repo lucasbergman/home-config \
+             --head <descriptive-branch-name> \
+             --base main \
+             --title "Short title" \
+             --body "Summary of changes"
+           ```
       '';
     };
   };

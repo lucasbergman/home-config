@@ -29,4 +29,11 @@
       auto = { };
     };
   };
+
+  resource.google_secret_manager_secret.hermes_github_app_private_key = {
+    secret_id = "hermes-github-app-private-key";
+    replication = {
+      auto = { };
+    };
+  };
 }
