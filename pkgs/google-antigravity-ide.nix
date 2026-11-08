@@ -6,8 +6,8 @@
 }:
 
 let
-  version = "2.5.5-4923483625488384";
-  hash = "sha256-DFIzspfSs667Ya9J+JRAEsKVPTYaXrsWl4SQY2kX+DE=";
+  version = "2.6.0-5526304964083712";
+  hash = "sha256-sGCnx2eRA7K2GXUvjuejCI3SQafSB9QxGXS1bqb5Q1Y=";
   weirdURLHash = "j0qc3";
 
   unwrapped = stdenv.mkDerivation {
