@@ -6,6 +6,7 @@
     ../../common/global
     ../../common/users
     ../../common/users/audrey.nix
+    ../../common/users/resa.nix
     ../../common/desktop.nix
     ./hardware-configuration.nix
   ];
