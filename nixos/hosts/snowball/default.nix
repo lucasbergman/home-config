@@ -58,6 +58,16 @@
   security.polkit.enable = true;
   hardware.graphics.enable = true;
 
+  # Disable system sleep/suspend. Desktop environments like KDE Plasma
+  # enable automatic sleep by default when idle. Experimentally, this
+  # desktop has trouble resuming properly.
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend = "no";
+    AllowHibernation = "no";
+    AllowHybridSleep = "no";
+    AllowSuspendThenHibernate = "no";
+  };
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.11";
 }
