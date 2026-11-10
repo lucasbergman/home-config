@@ -22,10 +22,9 @@ let
   virtualAliasSecret = "projects/bergmans-services/secrets/mail-virtual-alias/versions/7";
   vmail_uid = 2000;
   vmail_gid = 2000;
-  openarcUID = 2002;
-  openarcSelector = "arc202510";
-  openarcKeyFile = "/run/openarc.key";
-  openarcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
+  arcSelector = "arc202510";
+  arcKeyFile = "/run/arc.key";
+  arcKeySecret = "projects/bergmans-services/secrets/mail-arc-private-key-202510/versions/1";
   ratsRBLConfigFile = "/run/rspamd-rats-rbl.conf";
   ratsAPIKeySecret = "projects/bergmans-services/secrets/rats-api-key/versions/1";
   opendkimSelector = "dkim202601";
@@ -68,7 +67,6 @@ in
     groups.vmail.gid = vmail_gid;
     groups.mailkeys.members = [
       "opendkim"
-      "openarc"
       "rspamd"
     ];
     users.vmail = {
@@ -375,32 +373,12 @@ in
     };
   };
 
-  slb.security.secrets.openarc-private-key = {
-    after = [ "openarc-setup.service" ];
-    before = [
-      "openarc.service"
-      "rspamd.service"
-    ];
-    outPath = openarcKeyFile;
+  slb.security.secrets.arc-private-key = {
+    before = [ "rspamd.service" ];
+    outPath = arcKeyFile;
     owner = "root";
     group = "mailkeys";
-    secretPath = openarcKeySecret;
-  };
-
-  services.openarc = {
-    enable = false;
-    uid = openarcUID;
-    domain = "bergmans.us";
-    selector = openarcSelector;
-    keyFile = openarcKeyFile;
-    socket = "inet:8891@localhost";
-    mode = "sv";
-    internalHosts = [
-      "127.0.0.1"
-      "::1"
-      "10.7.1.0/24"
-    ];
-    milterUsers = [ "postfix" ];
+    secretPath = arcKeySecret;
   };
 
   slb.security.secrets.opendkim-private-key = {
@@ -496,8 +474,8 @@ in
       '';
 
       "arc.conf".text = ''
-        path = "${openarcKeyFile}";
-        selector = "${openarcSelector}";
+        path = "${arcKeyFile}";
+        selector = "${arcSelector}";
 
         # Sign/seal incoming external mail; that usually gets forwarded
         sign_inbound = true;
@@ -670,8 +648,8 @@ in
       SyslogSuccess = "true";
       InternalHosts = "127.0.0.1,::1,10.7.1.0/24";
 
-      # Match OpenARC's authserv-id so OpenARC trusts and includes our
-      # Authentication-Results in ARC-Authentication-Results
+      # Match ARC authserv-id so Authentication-Results are trusted and
+      # included in ARC-Authentication-Results
       AuthservID = "bergmans.us";
     };
   };
