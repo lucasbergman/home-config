@@ -49,6 +49,7 @@
       "prometheus-blackbox-exporter.service"
       "prometheus-node-exporter.service"
       "prometheus.service"
+      "rspamd.service"
       "sshd.service"
       "systemd-journald.service"
       "systemd-logind.service"
