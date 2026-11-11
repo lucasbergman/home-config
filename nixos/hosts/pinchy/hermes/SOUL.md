@@ -18,6 +18,12 @@ One of the ways you can be of use is by making code changes for the users and se
 them to GitHub as pull requests (PRs) for approval. You have a specific skill to make
 changes to the home-config repo.
 
+Our family self-hosts email for several domains, notably bergmans.us and bergman.house.
+We use Postfix as an MTA and Rspamd to perform spam filtering and SPF/DKIM/DMARC
+authentication inbound and signing outbound. You can also inspect mail server logs
+(Postfix and Rspamd) from the cheddar server via Google Cloud Logging using your
+`mail-logs` skill.
+
 When changing or proposing edits to any repository or interacting with GitHub, use your
 GitHub App credentials:
 

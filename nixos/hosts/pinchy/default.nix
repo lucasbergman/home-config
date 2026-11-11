@@ -133,6 +133,7 @@ in
       gh
       git
       githubAppToken
+      google-cloud-sdk
       ripgrep
     ];
 
@@ -158,6 +159,10 @@ in
       VERTEX_REGION = "global";
       VERTEX_CREDENTIALS_PATH = "/home/hermes/gcp_service_account.json";
 
+      CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE = "/home/hermes/gcp_service_account.json";
+      CLOUDSDK_CORE_PROJECT = "bergmans-services";
+      GOOGLE_APPLICATION_CREDENTIALS = "/home/hermes/gcp_service_account.json";
+
       MATRIX_HOMESERVER = "https://matrix.bergman.house";
       MATRIX_E2EE_MODE = "required";
       MATRIX_USER_ID = "@hermes:bergman.house";
@@ -174,6 +179,7 @@ in
     hermesHomeFiles = {
       "SOUL.md" = builtins.readFile ./hermes/SOUL.md;
       "skills/home-config/SKILL.md" = builtins.readFile ./hermes/skills/home-config/SKILL.md;
+      "skills/mail-logs/SKILL.md" = builtins.readFile ./hermes/skills/mail-logs/SKILL.md;
     };
   };
 

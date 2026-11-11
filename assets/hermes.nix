@@ -16,6 +16,12 @@
     member = "serviceAccount:\${google_service_account.hermes.email}";
   };
 
+  resource.google_project_iam_member.hermes_logs_viewer = {
+    project = lib.tfRef "var.gcp_project";
+    role = "roles/logging.viewer";
+    member = "serviceAccount:\${google_service_account.hermes.email}";
+  };
+
   resource.google_secret_manager_secret.hermes_matrix_access_token = {
     secret_id = "hermes-matrix-access-token";
     replication = {
