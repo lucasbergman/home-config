@@ -36,6 +36,13 @@
     };
   };
 
+  resource.google_secret_manager_secret.hermes_home_assistant_token = {
+    secret_id = "hermes-home-assistant-token";
+    replication = {
+      auto = { };
+    };
+  };
+
   resource.google_secret_manager_secret.hermes_github_app_private_key = {
     secret_id = "hermes-github-app-private-key";
     replication = {

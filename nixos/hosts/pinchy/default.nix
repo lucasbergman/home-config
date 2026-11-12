@@ -103,6 +103,7 @@ in
     template = pkgs.writeText "hermes-secrets.env" ''
       MATRIX_ACCESS_TOKEN="{{gcpSecret "projects/bergmans-services/secrets/hermes-matrix-access-token/versions/latest"}}"
       MATRIX_RECOVERY_KEY="{{gcpSecret "projects/bergmans-services/secrets/hermes-matrix-recovery-key/versions/latest"}}"
+      HASS_TOKEN="{{gcpSecret "projects/bergmans-services/secrets/hermes-home-assistant-token/versions/latest"}}"
     '';
     restartUnits = [ "hermes-agent.service" ];
   };
@@ -129,6 +130,9 @@ in
     stateDir = "/home/hermes";
     workingDirectory = "/home/hermes";
     addToSystemPackages = true;
+    extraPlugins = [
+      mypkgs.hermes-plugin-homeassistant
+    ];
     extraPackages = with pkgs; [
       gh
       git
@@ -138,6 +142,9 @@ in
     ];
 
     settings = {
+      plugins = {
+        enabled = [ "homeassistant" ];
+      };
       model = {
         default = "google/gemini-3.8-flash";
         provider = "vertex";
@@ -174,6 +181,8 @@ in
 
       GITHUB_APP_KEY_PATH = "/run/hermes/github-app-key.pem";
       GITHUB_APP_CLIENT_ID = "Iv23liJABvsUqKAoz9vo";
+
+      HASS_URL = "http://10.7.1.2:8123";
     };
 
     hermesHomeFiles = {

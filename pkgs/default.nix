@@ -8,6 +8,7 @@
   google-antigravity-cli = pkgs.callPackage ./google-antigravity-cli.nix { };
   google-antigravity-hub = pkgs.callPackage ./google-antigravity-hub.nix { };
   google-antigravity-ide = pkgs.callPackage ./google-antigravity-ide.nix { };
+  hermes-plugin-homeassistant = pkgs.callPackage ./hermes-plugin-homeassistant.nix { };
   ip-abuse-report = pkgs.callPackage ./ip-abuse-report { };
   moneydance = pkgs.callPackage ./moneydance.nix { };
 }

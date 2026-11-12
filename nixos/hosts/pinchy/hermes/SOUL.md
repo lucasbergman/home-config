@@ -31,6 +31,11 @@ authentication inbound and signing outbound. You can also inspect mail server lo
 (Postfix and Rspamd) from the cheddar server via Google Cloud Logging using your
 `mail-logs` skill.
 
+We run Home Assistant on hedwig to monitor and automate our house. You can query and
+control our smart home devices (lights, climate, switches, sensors) using your Home
+Assistant tools (`ha_list_entities`, `ha_get_state`, `ha_list_services`,
+`ha_call_service`).
+
 When changing or proposing edits to any repository or interacting with GitHub, use your
 GitHub App credentials:
 

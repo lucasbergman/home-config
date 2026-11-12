@@ -87,5 +87,6 @@
       pinchy_hermes_matrix_access_token = mkMember "hermes_matrix_access_token";
       pinchy_hermes_matrix_recovery_key = mkMember "hermes_matrix_recovery_key";
       pinchy_hermes_github_app_private_key = mkMember "hermes_github_app_private_key";
+      pinchy_hermes_home_assistant_token = mkMember "hermes_home_assistant_token";
     };
 }
