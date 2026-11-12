@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   ...
 }:
@@ -9,9 +8,6 @@
   ];
 
   nix = {
-    # Add each flake input as a registry to make nix3 commands consistent with the flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;

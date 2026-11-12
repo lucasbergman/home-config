@@ -69,7 +69,7 @@
       treefmt-nix,
       vscode-server,
       ...
-    }@inputs:
+    }:
     let
       inherit (self) outputs;
 
@@ -91,12 +91,22 @@
       mkHost =
         system: hostModules:
         let
-          defaultNixOSModules = [ ./nixos/modules ];
+          defaultNixOSModules = [
+            ./nixos/modules
+
+            # Pin nixpkgs in the system registry so ad hoc commands (e.g. 'nix
+            # shell') use the system's pinned versions without network lookups
+            {
+              nix.registry = {
+                nixpkgs.flake = nixpkgs;
+                nixpkgs-unstable.flake = nixpkgs-unstable;
+              };
+            }
+          ];
         in
         nixpkgs.lib.nixosSystem {
           modules = defaultNixOSModules ++ hostModules;
           specialArgs = {
-            inherit inputs;
             pkgs-unstable = import nixpkgs-unstable {
               inherit system;
               config.allowUnfreePredicate =
