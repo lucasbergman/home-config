@@ -146,7 +146,7 @@ in
         enabled = [ "homeassistant" ];
       };
       model = {
-        default = "google/gemini-4-hydrogen";
+        default = "google/gemini-3.8-flash";
         provider = "vertex";
       };
       terminal = {
