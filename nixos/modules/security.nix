@@ -107,6 +107,7 @@
           wantedBy = [ "multi-user.target" ];
           inherit (conf) before;
           after = [ "instance-key.service" ] ++ conf.after;
+          requires = [ "instance-key.service" ];
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true; # Stay "active" so bindsTo works
@@ -215,25 +216,30 @@
           before = [ "acme-${cfg.acmeHostName}.service" ]; # TODO hack
           serviceConfig = {
             Type = "oneshot";
+            RemainAfterExit = true;
             UMask = 337;
           };
 
           script = ''
             if [ -f "${installedCredsPath}" ]; then
-              # Install a hand-installed instance key
-              install -m 0440 -g ${config.users.groups.gcpinstance.name} /dev/null ${credsPath}
-              cat ${installedCredsPath} > ${credsPath}
+              # Install a hand-installed instance key atomically so concurrent readers
+              # never observe a truncated credentials file.
+              credsTmp=$(mktemp "${credsPath}.XXXXXX")
+              install -m 0440 -g ${config.users.groups.gcpinstance.name} "${installedCredsPath}" "$credsTmp"
+              mv -f "$credsTmp" "${credsPath}"
             else
               echo "No GCP instance key found at ${installedCredsPath}" >&2
               exit 1
             fi
 
             # Make a handy file with GCP project and service account info
-            install -m 0444 /dev/null ${infoPath}
-            cat >${infoPath} <<EOF
+            infoTmp=$(mktemp "${infoPath}.XXXXXX")
+            cat >"$infoTmp" <<EOF
             GCE_PROJECT=$(${pkgs.jq}/bin/jq -r .project_id <${credsPath})
             GCE_SERVICE_ACCOUNT_FILE=${credsPath}
             EOF
+            chmod 0444 "$infoTmp"
+            mv -f "$infoTmp" "${infoPath}"
           '';
         };
       }
