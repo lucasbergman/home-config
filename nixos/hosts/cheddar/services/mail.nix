@@ -508,12 +508,12 @@ in
         rules {
           REJECT_DMARC_POLICY_REJECT {
             action = "reject";
-            expression = "DMARC_POLICY_REJECT";
+            expression = "DMARC_POLICY_REJECT & !ARC_ALLOW";
             message = "DMARC policy requires rejection";
           }
           REJECT_DMARC_POLICY_QUARANTINE {
             action = "reject";
-            expression = "DMARC_POLICY_QUARANTINE";
+            expression = "DMARC_POLICY_QUARANTINE & !ARC_ALLOW";
             message = "DMARC misaligned";
           }
           REJECT_SEM_URIBL_FRESH15 {
@@ -630,7 +630,7 @@ in
             weight = 8.0;
           }
           "DMARC_POLICY_SOFTFAIL" {
-            weight = 8.0;
+            weight = 3.0;
           }
           "R_DKIM_NA" {
             weight = 3.0;
