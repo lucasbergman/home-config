@@ -29,6 +29,8 @@ in
   config = lib.mkIf cfg.enable {
     systemd.services.bgp-data = {
       description = "Fetch BGP table from bgp.tools";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
       startAt = "daily";
       path = with pkgs; [ curl ];
 
