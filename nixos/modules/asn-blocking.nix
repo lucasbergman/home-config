@@ -43,7 +43,7 @@ in
 
         chain input {
           type filter hook input priority -10; policy accept;
-          ip saddr @${cfg.setName} drop
+          ip saddr @${cfg.setName} counter drop comment "asn-blocking"
         }
       '';
     };

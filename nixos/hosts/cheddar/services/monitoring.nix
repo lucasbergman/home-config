@@ -8,9 +8,17 @@ let
   promcfg = config.services.prometheus;
   dataDirectory = "/data/prometheus";
   grafanaDataDirectory = "/data/grafana";
+  textfileDir = "/run/prometheus-node-exporter";
   mkYAML =
     name: path: attrs:
     pkgs.writeText name (builtins.toJSON (import path attrs));
+  promNftablesBlocked = pkgs.writers.writePython3 "prom-nftables-blocked" {
+    # Ignore flake8 rules that conflict with Black formatting (enforced by treefmt)
+    flakeIgnore = [
+      "E203"
+      "E501"
+    ];
+  } (builtins.readFile ./prom-nftables-blocked.py);
 in
 {
   slb.security.secrets."pagerduty-key" = {
@@ -110,7 +118,13 @@ in
       node = {
         enable = true;
         listenAddress = "[::1]";
-        enabledCollectors = [ "systemd" ];
+        enabledCollectors = [
+          "systemd"
+          "textfile"
+        ];
+        extraFlags = [
+          "--collector.textfile.directory=${textfileDir}"
+        ];
       };
 
       postfix = {
@@ -176,6 +190,33 @@ in
   systemd.services.alertmanager.preStart = lib.mkBefore ''
     export PAGERDUTY_SERVICE_KEY="$(cat "$CREDENTIALS_DIRECTORY/pagerduty-key")"
   '';
+
+  networking.firewall.extraInputRules = lib.mkAfter ''
+    counter drop comment "nixos-fw-input"
+  '';
+
+  systemd.services.prom-nftables-blocked = {
+    description = "Export nftables drop counters for Prometheus";
+    after = [ "nftables.service" ];
+    wants = [ "nftables.service" ];
+    path = [ pkgs.nftables ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      ExecStart = "${promNftablesBlocked} ${textfileDir}/nftables_blocked.prom";
+      RuntimeDirectory = "prometheus-node-exporter";
+      RuntimeDirectoryPreserve = "yes";
+    };
+  };
+
+  systemd.timers.prom-nftables-blocked = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "15s";
+      OnUnitActiveSec = "1m";
+      AccuracySec = "5s";
+    };
+  };
 
   services.grafana = {
     enable = true;
