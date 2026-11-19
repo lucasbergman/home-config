@@ -80,8 +80,22 @@
   slb.asnBlocking = {
     enable = true;
     asns = [
+      "AS10429" # Vivo (Telefônica Brasil) (BR)
+      "AS135377" # UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED (HK)
+      "AS18881" # TELEFÔNICA BRASIL LTDA (BR)
+      "AS208137" # Feo Prest SRL (RO)
+      "AS209605" # UAB Host Baltic (LT)
       "AS215929" # Data Campus Limited (HK)
+      "AS25159" # PJSC MegaFon (RU)
+      "AS29518" # Bredband2 AB (SE)
+      "AS329278" # Truehost Cloud Limited (KE)
       "AS4134" # China Telecom Backbone (CN)
+      "AS4766" # Korea Telecom (KR)
+      "AS47890" # UNMANAGED LTD (GB)
+      "AS48090" # TECHOFF SRV LIMITED (GB)
+      "AS4837" # China Unicom Backbone (CN)
+      "AS51852" # Private Layer INC (PA)
+      "AS9318" # SK Broadband Co Ltd (KR)
       "AS9498" # Bharti Airtel Ltd (IN)
       "AS9808" # China Mobile Backbone (CN)
     ];
