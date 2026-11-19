@@ -556,6 +556,15 @@ in
         max_score = 25.0;
       '';
 
+      "composites.conf".text = ''
+        LANG_CJK_SPAM {
+          expression = "LANG_CJK & (RBL_SPAMHAUS_CSS | BAD_REP_POLICIES | g+:surbl | g+:rbl) & !(WHITELIST_DKIM | WHITELIST_SPF | WHITELIST_DMARC | WHITELIST_SPF_DKIM)";
+          score = 9.0;
+          policy = "leave";
+          description = "CJK-language message combined with reputation or blocklist hit";
+        }
+      '';
+
       "rbl.conf".text = ''
         .include(priority=5, duplicate=merge) "${ratsRBLConfigFile}"
       '';
@@ -583,6 +592,17 @@ in
           score = 5.0;
           description = "Reply-To header is an onmicrosoft.com tenant domain";
         }
+
+        LANG_CJK {
+          type = "selector";
+          selector = "languages";
+          regexp = true;
+          map = [
+            "/^(ja|zh(-.*)?|ko)$/i",
+          ];
+          score = 0.0;
+          description = "Message has a CJK language part";
+        }
       '';
 
       "redis.conf".text = ''
@@ -601,6 +621,9 @@ in
             weight = 4.0;
           }
           "RECEIVED_SPAMHAUS_SBL" {
+            weight = 8.0;
+          }
+          "RBL_SPAMHAUS_CSS" {
             weight = 8.0;
           }
           "RBL_MAILSPIKE_WORST" {
