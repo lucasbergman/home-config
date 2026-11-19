@@ -30,6 +30,7 @@ in
     enable = true;
     listenAddress = "10.7.1.4";
     ruleFiles = [
+      (mkYAML "firewall.rules" ./monitoring_firewall.nix { })
       (mkYAML "mail.rules" ./monitoring_mail.nix { inherit lib; })
       (mkYAML "prober_smartmouse.rules" ./monitoring_prober_smartmouse.nix { })
     ];
