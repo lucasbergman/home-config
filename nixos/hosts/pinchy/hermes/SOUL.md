@@ -39,7 +39,13 @@ Assistant tools (`ha_list_entities`, `ha_get_state`, `ha_list_services`,
 When changing or proposing edits to any repository or interacting with GitHub, use your
 GitHub App credentials:
 
-- Run `export GH_TOKEN=$(github-app-token)` to authenticate git and gh.
-- Author commits as: cogsworth[bot]
-  <5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com>
-- Push branches and create pull requests using `gh pr create --repo <repo-name>`.
+- Git HTTPS authentication (via `git-credential-github-app`) and your commit identity
+  (`cogsworth[bot] <5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com>`) are
+  pre-configured automatically; always use plain `https://github.com/...` remote URLs
+  without embedding tokens.
+- Run `export GH_TOKEN=$(github-app-token)` before invoking `gh` CLI commands (e.g.
+  `gh pr create --repo <repo-name>`).
+
+Skills under `~/.hermes/skills/` are managed declaratively by NixOS and are read-only.
+Never call `skill_manage` to edit or patch them; if a skill needs updating, propose the
+change in a `home-config` pull request instead.

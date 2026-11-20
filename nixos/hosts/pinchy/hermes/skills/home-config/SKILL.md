@@ -12,48 +12,77 @@ metadata:
 This skill explains how Cogsworth makes changes to the `lucasbergman/home-config`
 repository and submits them as GitHub pull requests.
 
-## Authentication
+## Authentication & Git Identity
 
-Generate an installation token on demand:
+Git HTTPS authentication (`git-credential-github-app`) and commit identity
+(`cogsworth[bot] <5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com>`) are
+pre-configured via `GIT_CONFIG_*` environment variables.
 
-```bash
-export GH_TOKEN=$(github-app-token)
-```
+- Always use the plain HTTPS remote URL:
+  `https://github.com/lucasbergman/home-config.git` (never embed `GH_TOKEN` in the
+  remote URL—tokens expire after 1 hour).
+- If an existing checkout has a token embedded in `origin`, fix it once with:
+  `git remote set-url origin https://github.com/lucasbergman/home-config.git`
+- For `gh` CLI commands, generate a fresh token on demand:
+  `export GH_TOKEN=$(github-app-token)`
 
-This token is valid for 1 hour and works with both `gh` and Git.
+## Local Checkout & Tooling
 
-## Git Identity
+- Keep a persistent checkout at `/home/hermes/home-config` and reuse it instead of
+  re-cloning.
+- Core tools (`git`, `gh`, `nixfmt`, `jq`, `rg`) are already in `PATH`.
+- For any other tool you need, use `nix run nixpkgs#<pkg>` or
+  `nix shell nixpkgs#<pkg> --command ...` (`nixpkgs` is pinned in the system flake
+  registry).
+- **Do NOT run `nix develop` on `pinchy`.** The dev shell includes heavy packages like
+  `terraform` and can OOM or time out on this small VM.
 
-Set your commit author identity:
+## Repository Layout
 
-```bash
-git config user.name "cogsworth[bot]"
-git config user.email "5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com"
-```
+- `flake.nix` — flake inputs, `nixosConfigurations`, `homeConfigurations`, `packages`,
+  `devShells`, and `formatter` (`treefmt`).
+- `pkgs/` — custom packages registered in `pkgs/default.nix`.
+- `nixos/hosts/<host>/` — per-host configs (`cheddar`, `hedwig`, `pinchy`, `snowball`,
+  `spot`). Cogsworth's own config, `SOUL.md`, and skills live under
+  `nixos/hosts/pinchy/`.
+- `nixos/common/` & `nixos/modules/` — shared NixOS modules and user definitions.
+- `home/` — Home Manager configs (`lucas@hedwig`, `lucas@snowball`).
+- `assets/` — Terranix infrastructure definitions.
 
-## Creating a Pull Request
+## Workflow
 
-1. Clone or update repository:
+Combine related shell steps into single commands to minimize round trips:
+
+1. Sync `main` and create a feature branch:
     ```bash
-    git clone https://x-access-token:$GH_TOKEN@github.com/lucasbergman/home-config.git
-    cd home-config
-    ```
-2. Create a branch and make changes:
-    ```bash
+    cd /home/hermes/home-config || git clone https://github.com/lucasbergman/home-config.git /home/hermes/home-config
+    cd /home/hermes/home-config
+    git checkout main && git pull --ff-only origin main
     git checkout -b <descriptive-branch-name>
-    # make changes...
-    git commit -am "Commit message"
     ```
-3. Push the branch:
+2. Make changes.
+3. Format and verify before committing:
+    - Run `nix fmt` (or `nixfmt <file>` for single Nix edits).
+    - For custom packages: `nix build .#<pkg-name> --no-link`
+    - For NixOS host edits:
+      `nix eval .#nixosConfigurations.<host>.config.system.build.toplevel.drvPath`
+4. Commit, push, and open the PR:
     ```bash
-    git push origin <descriptive-branch-name>
-    ```
-4. Create the Pull Request:
-    ```bash
-    GH_TOKEN=$GH_TOKEN gh pr create \
+    git add <files>
+    git commit -m "<short summary>"
+    git push -u origin <descriptive-branch-name>
+    GH_TOKEN=$(github-app-token) gh pr create \
       --repo lucasbergman/home-config \
       --head <descriptive-branch-name> \
       --base main \
-      --title "Short title" \
-      --body "Summary of changes"
+      --title "<Short title>" \
+      --body "<Brief summary of what changed>"
     ```
+
+## PR Style
+
+- Keep commit messages and PR bodies brief and focused on _what_ changed and _why_.
+- Do **not** include boilerplate verification checklists (e.g. "Verified: `nix fmt`,
+  clean build")—clean formatting and builds are expected.
+- Do **not** parrot what particular details changed in each file; that is obvious from
+  the diff.

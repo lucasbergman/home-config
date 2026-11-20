@@ -74,6 +74,13 @@ let
 
         print(token_res.json()["token"])
       '';
+
+  gitCredentialGithubApp = pkgs.writeShellScriptBin "git-credential-github-app" ''
+    if [ "$1" = "get" ]; then
+      echo "username=x-access-token"
+      echo "password=$(${githubAppToken}/bin/github-app-token)"
+    fi
+  '';
 in
 {
   imports = [
@@ -136,8 +143,11 @@ in
     extraPackages = with pkgs; [
       gh
       git
+      gitCredentialGithubApp
       githubAppToken
       google-cloud-sdk
+      jq
+      nixfmt
       ripgrep
     ];
 
@@ -152,6 +162,93 @@ in
       terminal = {
         backend = "local";
         cwd = "/home/hermes";
+      };
+      # Gemini Flash has a 1M-token window; the default 0.5 threshold wouldn't
+      # compress until ~500K tokens. Compress early (~80K) to keep bills low.
+      compression = {
+        enabled = true;
+        threshold = 0.08;
+        target_ratio = 0.2;
+        protect_last_n = 12;
+      };
+      # Disable post-turn background review (re-sends full context and cannot
+      # patch NixOS-managed read-only skills).
+      auxiliary = {
+        background_review = {
+          enabled = false;
+        };
+      };
+      display = {
+        interim_assistant_messages = false;
+        tool_progress = "off";
+      };
+      # Prune bundled skills irrelevant to this headless NixOS server to trim
+      # baseline system-prompt tokens on every API call.
+      skills = {
+        disabled = [
+          "airtable"
+          "apple-notes"
+          "apple-reminders"
+          "architecture-diagram"
+          "arxiv"
+          "ascii-art"
+          "ascii-video"
+          "audiocraft-audio-generation"
+          "baoyu-infographic"
+          "blogwatcher"
+          "box"
+          "claude-code"
+          "claude-design"
+          "codex"
+          "comfyui"
+          "competitor-news-monitor"
+          "computer-use"
+          "design-md"
+          "document-to-action-items"
+          "dogfood"
+          "evaluating-llms-harness"
+          "excalidraw"
+          "findmy"
+          "gif-search"
+          "google-workspace"
+          "heartmula"
+          "hermes-agent-skill-authoring"
+          "himalaya"
+          "huggingface-hub"
+          "humanizer"
+          "imessage"
+          "inspecting-hermes-desktop-dom"
+          "jupyter-live-kernel"
+          "llama-cpp"
+          "llm-wiki"
+          "manim-video"
+          "meeting-action-items"
+          "nano-pdf"
+          "node-inspect-debugger"
+          "notion"
+          "obsidian"
+          "ocr-and-documents"
+          "opencode"
+          "openhue"
+          "p5js"
+          "petdex"
+          "polymarket"
+          "popular-web-designs"
+          "powerpoint"
+          "pretext"
+          "python-debugpy"
+          "segment-anything-model"
+          "serving-llms-vllm"
+          "sketch"
+          "songsee"
+          "songwriting-and-ai-music"
+          "spike"
+          "touchdesigner-mcp"
+          "weekly-review-planning"
+          "weights-and-biases"
+          "xurl"
+          "yuanbao"
+        ];
       };
       platforms = {
         matrix = {
@@ -172,6 +269,7 @@ in
 
       MATRIX_HOMESERVER = "https://matrix.bergman.house";
       MATRIX_E2EE_MODE = "required";
+      MATRIX_DM_AUTO_THREAD = "true";
       MATRIX_USER_ID = "@hermes:bergman.house";
       MATRIX_ALLOWED_USERS = lib.concatStringsSep "," [
         "@lucas:bergman.house"
@@ -182,7 +280,16 @@ in
       GITHUB_APP_KEY_PATH = "/run/hermes/github-app-key.pem";
       GITHUB_APP_CLIENT_ID = "Iv23liJABvsUqKAoz9vo";
 
-      HASS_URL = "http://10.7.1.2:8123";
+      # Pre-configure git HTTPS auth (dynamic GitHub App token) and bot identity
+      GIT_CONFIG_COUNT = "3";
+      GIT_CONFIG_KEY_0 = "credential.https://github.com.helper";
+      GIT_CONFIG_VALUE_0 = "${gitCredentialGithubApp}/bin/git-credential-github-app";
+      GIT_CONFIG_KEY_1 = "user.name";
+      GIT_CONFIG_VALUE_1 = "cogsworth[bot]";
+      GIT_CONFIG_KEY_2 = "user.email";
+      GIT_CONFIG_VALUE_2 = "5643112+lucasbergman-cogsworth[bot]@users.noreply.github.com";
+
+      HASS_URL = "http://hedwig.priv.bergman.house:8123";
     };
 
     hermesHomeFiles = {
