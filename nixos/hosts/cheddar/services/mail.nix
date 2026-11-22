@@ -56,6 +56,15 @@ let
     "dnalounge.com"
     "jwz.org"
   ];
+
+  # Store multimap regexps in files rather than inline /.../ strings, because
+  # rspamd's lua_maps treats map entries starting with "/" as filesystem paths.
+  onmicrosoftRegexMap = pkgs.writeText "onmicrosoft.regexp" ''
+    /(^|\.)onmicrosoft\.com$/i
+  '';
+  langCjkRegexMap = pkgs.writeText "lang-cjk.regexp" ''
+    /^(ja|zh(-.*)?|ko)$/i
+  '';
 in
 {
   security.acme.certs.${postfixTLSHost} = {
@@ -574,9 +583,7 @@ in
           type = "from";
           filter = "email:domain";
           regexp = true;
-          map = [
-            "/(^|\\.)onmicrosoft\\.com$/i",
-          ];
+          map = "${onmicrosoftRegexMap}";
           score = 5.0;
           description = "Sender domain is an onmicrosoft.com tenant domain";
         }
@@ -586,9 +593,7 @@ in
           header = "reply-to";
           filter = "email:domain";
           regexp = true;
-          map = [
-            "/(^|\\.)onmicrosoft\\.com$/i",
-          ];
+          map = "${onmicrosoftRegexMap}";
           score = 5.0;
           description = "Reply-To header is an onmicrosoft.com tenant domain";
         }
@@ -597,9 +602,7 @@ in
           type = "selector";
           selector = "languages";
           regexp = true;
-          map = [
-            "/^(ja|zh(-.*)?|ko)$/i",
-          ];
+          map = "${langCjkRegexMap}";
           score = 0.0;
           description = "Message has a CJK language part";
         }
