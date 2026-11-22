@@ -14,6 +14,9 @@
   services.home-assistant = {
     enable = true;
     extraPackages = ps: [ ps.grpcio ];
+    customComponents = with pkgs.home-assistant-custom-components; [
+      tuya_local
+    ];
     extraComponents = [
       "apple_tv"
       "brother"
