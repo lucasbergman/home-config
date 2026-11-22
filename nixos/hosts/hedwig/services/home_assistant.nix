@@ -13,7 +13,7 @@
 
   services.home-assistant = {
     enable = true;
-    package = (pkgs.home-assistant.override { extraPackages = ps: [ ps.grpcio ]; });
+    extraPackages = ps: [ ps.grpcio ];
     extraComponents = [
       "apple_tv"
       "brother"
