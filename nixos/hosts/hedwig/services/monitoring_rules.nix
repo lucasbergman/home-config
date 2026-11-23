@@ -166,6 +166,79 @@ in
       ];
     }
     {
+      name = "purifier";
+      interval = "1m";
+      rules =
+        let
+          mkPurifierSensor =
+            {
+              record,
+              metric,
+              suffix,
+              transform ? lib.trivial.id,
+            }:
+            {
+              inherit record;
+              expr = transform "label_replace(${metric}{entity=~'sensor\\\\..+_purifier_${suffix}'}, 'room', '$1', 'entity', 'sensor\\\\.(.+)_purifier_${suffix}')";
+            };
+          mkPurifierFan =
+            {
+              record,
+              metric,
+            }:
+            {
+              inherit record;
+              expr = "label_replace(${metric}{entity=~'fan\\\\..+_purifier'}, 'room', '$1', 'entity', 'fan\\\\.(.+)_purifier')";
+            };
+        in
+        [
+          (mkPurifierSensor {
+            record = "purifier:pm25_ugm3";
+            metric = "hass_sensor_pm25_u0xb5g_per_mu0xb3";
+            suffix = "pm2_5";
+          })
+          (mkPurifierSensor {
+            record = "purifier:voc_ugm3";
+            metric = "hass_sensor_volatile_organic_compounds_u0xb5g_per_mu0xb3";
+            suffix = "volatile_organic_compounds";
+          })
+          (mkPurifierSensor {
+            record = "purifier:co2_ppm";
+            metric = "hass_sensor_carbon_dioxide_ppm";
+            suffix = "carbon_dioxide";
+          })
+          (mkPurifierSensor {
+            record = "purifier:etoh_ppm";
+            metric = "hass_sensor_unit_ppm";
+            suffix = "etoh";
+          })
+          (mkPurifierSensor {
+            record = "purifier:filter_life_percent";
+            metric = "hass_sensor_unit_percent";
+            suffix = "filter_life";
+          })
+          (mkPurifierSensor {
+            record = "purifier:temperature_fahrenheit";
+            metric = "hass_sensor_temperature_celsius";
+            suffix = "temperature";
+            transform = e: "${e} * 9 / 5 + 32";
+          })
+          (mkPurifierSensor {
+            record = "purifier:humidity_percent";
+            metric = "hass_sensor_humidity_percent";
+            suffix = "humidity";
+          })
+          (mkPurifierFan {
+            record = "purifier:fan_on";
+            metric = "hass_fan_state";
+          })
+          (mkPurifierFan {
+            record = "purifier:fan_speed_percent";
+            metric = "hass_fan_speed_percent";
+          })
+        ];
+    }
+    {
       name = "node_health";
       rules = [
         {
