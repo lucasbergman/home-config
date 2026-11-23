@@ -236,6 +236,19 @@ in
             record = "purifier:fan_speed_percent";
             metric = "hass_fan_speed_percent";
           })
+          {
+            alert = "PurifierFilterLow";
+            expr = "purifier:filter_life_percent < 15";
+            for = "1h";
+            labels = {
+              severity = "mail";
+              slow_burn = "true";
+            };
+            annotations = {
+              summary = "Air purifier filter low in {{ $labels.room }} ({{ $value }}%)";
+              description = "{{ $labels.friendly_name }} is at {{ $value }}% (below 15%).";
+            };
+          }
         ];
     }
     {

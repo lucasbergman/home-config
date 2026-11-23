@@ -134,6 +134,12 @@ in
             group_interval = "5m";
             repeat_interval = "4h";
             receiver = "me-mail"; # default receiver
+            routes = [
+              {
+                matchers = [ "slow_burn = true" ];
+                repeat_interval = "24h";
+              }
+            ];
           };
           receivers = [
             {
